@@ -3,10 +3,10 @@ package com.ntouandroid.drawandguess
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class startActivity : AppCompatActivity() {
+class JoinRoomActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_start)
+        setContentView(R.layout.activity_join_room)
     }
 }
