@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/btnColorSelected"
+        android:layout_width="50sp"
+        android:layout_height="50sp" />
+    <com.berserker.berserkerapplication.PaintBoard
+        android:id="@+id/layout_paint_board"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/chatSection"/>
+
+    <RelativeLayout
+        android:id="@+id/chatSection"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/tv_recieve"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"/>
+        <EditText
+            android:id="@+id/message_et"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_below="@+id/tv_recieve"
+            android:layout_toLeftOf="@+id/send_message_btn"
+            android:layout_toStartOf="@+id/send_message_btn" />
+        <Button
+            android:id="@+id/send_message_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="@string/send_message_btn"
+            android:layout_below="@+id/tv_recieve"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/colorpicker" />
+</RelativeLayout>
