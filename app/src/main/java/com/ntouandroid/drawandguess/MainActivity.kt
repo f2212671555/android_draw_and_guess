@@ -2,7 +2,6 @@ package com.ntouandroid.drawandguess
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.ntouandroid.drawandguess.service.CountTimer
 
 class MainActivity : AppCompatActivity() {
 
