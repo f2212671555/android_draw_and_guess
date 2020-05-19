@@ -34,8 +34,7 @@ class DrawWebSocketListener : WebSocketListener() {
         Log.d("onFailure", "RoomWebSocketListener failure!!")
         webSocket.close(1000, null)
         close()
-        val webSocketListener = RoomWebSocketListener()
-        MyWebSocket.createWebSocket(webSocketListener, Config.WS_SCHEME + Config.WS_ROOM)
+        // reconnect...
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
