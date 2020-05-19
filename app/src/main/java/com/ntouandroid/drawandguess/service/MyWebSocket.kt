@@ -1,17 +1,23 @@
 package com.ntouandroid.drawandguess.service
 
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.WebSocketListener
+import android.os.Build
+import androidx.annotation.RequiresApi
+import okhttp3.*
+import retrofit2.Retrofit
+import java.time.Duration
+
 
 class MyWebSocket {
     companion object {
-        fun createWebSocket(webSocketListener: WebSocketListener, url: String) {
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun createWebSocket(webSocketListener: WebSocketListener, url: String): WebSocket {
             val request = Request.Builder().url(url).build()
-            val okHttpClient = OkHttpClient()
-            okHttpClient.newWebSocket(request, webSocketListener)
+            val okHttpClient = OkHttpClient.Builder().pingInterval(Duration.ofSeconds(10)).build()
+            val realWebSocket = okHttpClient.newWebSocket(request, webSocketListener)
 
             okHttpClient.dispatcher.executorService.shutdown()
+
+            return realWebSocket
         }
     }
 }
