@@ -4,10 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <Button
         android:id="@+id/btnColorSelected"
         android:layout_width="50sp"
         android:layout_height="50sp" />
+    <Button
+        android:id="@+id/eraser"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:text="eraser"
+        android:layout_toRightOf="@+id/btnColorSelected"/>
+    <Button
+        android:id="@+id/size"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:text="size"
+        android:layout_toRightOf="@+id/eraser"/>
+    <Button
+        android:id="@+id/backgroundClean"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:text="clean"
+        android:layout_toRightOf="@+id/size"/>
     <com.berserker.berserkerapplication.PaintBoard
         android:id="@+id/layout_paint_board"
         android:layout_width="match_parent"

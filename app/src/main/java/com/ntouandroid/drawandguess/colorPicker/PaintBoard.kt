@@ -62,6 +62,12 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         paint.color = Color.rgb(r, g, b)
     }
 
+    fun sizeChange(){
+        var size: Float = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.size
+
+        paint.strokeWidth = size.toFloat();//设置画笔宽度
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -71,6 +77,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         changeColor()
+        sizeChange()
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 startX = event.x
@@ -93,6 +100,10 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }
 
         return true
+    }
+
+    fun clean(){
+        mCanvas.drawColor(Color.argb(255,0,0,0))
     }
 
     fun saveBitmap(stream: OutputStream) {
