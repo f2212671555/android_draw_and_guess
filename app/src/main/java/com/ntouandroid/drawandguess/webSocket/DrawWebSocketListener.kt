@@ -6,12 +6,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.service.MyWebSocket
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
+import okhttp3.*
+import java.time.Duration
 
 class DrawWebSocketListener : WebSocketListener() {
     private lateinit var handler: Handler
+    private lateinit var url: HttpUrl
     private var isConnected: Boolean = false
 
     companion object {
@@ -53,6 +53,10 @@ class DrawWebSocketListener : WebSocketListener() {
         WEBSOCKET?.close(1000, "Connection closed")
     }
 
+    fun setUrl(url: HttpUrl) {
+        this.url = url
+    }
+    
     fun setHandler(handler: Handler) {
         this.handler = handler
     }

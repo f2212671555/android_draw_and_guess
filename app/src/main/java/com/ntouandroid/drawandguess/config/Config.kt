@@ -6,6 +6,7 @@ class Config {
         const val HTTP_SCHEME = "https://"
         const val HOST = "draw-and-guess-ntou.herokuapp.com"
         const val ROOM_LIST = "/room/list"
+        const val ROOM_USERS= "/room/users"
         const val CREATE_ROOM = "/room/create"
         const val JOIN_ROOM = "/room/join"
         const val QUIT_ROOM = "/room/quit"
