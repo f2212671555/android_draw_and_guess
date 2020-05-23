@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.ntouandroid.drawandguess.colorPicker.PaintActivity
 
 
 class JoinRoomActivity : AppCompatActivity() {
