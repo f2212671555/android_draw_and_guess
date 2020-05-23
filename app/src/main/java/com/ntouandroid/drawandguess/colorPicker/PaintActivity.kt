@@ -10,9 +10,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
 import com.ntouandroid.drawandguess.R
-import kotlinx.android.synthetic.main.activity_paint.*
 import kotlinx.android.synthetic.main.colorpicker.*
-import kotlinx.android.synthetic.main.sizechange.*
 
 class PaintActivity : AppCompatActivity() {
 
@@ -20,6 +18,7 @@ class PaintActivity : AppCompatActivity() {
     lateinit var size: Button
     var sizeNumGet: Float = 30.0f
     lateinit var clean: Button
+    lateinit var btnColorSelected: Button
     lateinit var sizeNumPrint: EditText
     lateinit var etMessage: EditText
     lateinit var tvMessage: TextView
@@ -27,6 +26,9 @@ class PaintActivity : AppCompatActivity() {
     lateinit var sizeCancelBtn: Button
     lateinit var sizeOkBtn: Button
     lateinit var sizeSelector: RelativeLayout
+    lateinit var colorSelector: RelativeLayout
+    lateinit var colorCancelBtn: Button
+    lateinit var colorOkBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,20 +39,29 @@ class PaintActivity : AppCompatActivity() {
         etMessage = findViewById(R.id.message_et)
         tvMessage = findViewById(R.id.tv_recieve)
         clean = findViewById(R.id.backgroundClean)
-        val openDialog = Dialog(this)
-        openDialog.setContentView(R.layout.sizechange)
-        sizeNumPrint = openDialog.findViewById(R.id.sizeNumPrint)
-        sizeCancelBtn = openDialog.findViewById(R.id.sizeCancelBtn)
-        sizeOkBtn = openDialog.findViewById(R.id.sizeOkBtn)
-        sizeSelector = openDialog.findViewById(R.id.sizeSelector)
+        btnColorSelected = findViewById(R.id.btnColorSelected)
 
+        val sizechangeDialog = Dialog(this)
+        sizechangeDialog.setContentView(R.layout.sizechange)
+        sizeNumPrint = sizechangeDialog.findViewById(R.id.sizeNumPrint)
+        sizeCancelBtn = sizechangeDialog.findViewById(R.id.sizeCancelBtn)
+        sizeOkBtn = sizechangeDialog.findViewById(R.id.sizeOkBtn)
+        sizeSelector = sizechangeDialog.findViewById(R.id.sizeSelector)
+        sizeNum = sizechangeDialog.findViewById(R.id.sizeNum)
+
+        val colorpickerDialog = Dialog(this)
+        colorpickerDialog.setContentView(R.layout.colorpicker)
+        colorSelector = colorpickerDialog.findViewById(R.id.colorSelector)
+        colorCancelBtn = colorpickerDialog.findViewById(R.id.colorCancelBtn)
+        colorOkBtn = colorpickerDialog.findViewById(R.id.colorOkBtn)
         btnColorSelected.setOnClickListener {
+            colorpickerDialog.show()
             colorSelector.visibility = View.VISIBLE
         }
 
-        sizeNum = openDialog.findViewById(R.id.sizeNum)
         eraser.setOnClickListener { eraserFun() }
         size.setOnClickListener {
+            sizechangeDialog.show()
             sizeSelector.visibility = View.VISIBLE
             sizeChange()
         }
@@ -147,10 +158,12 @@ class PaintActivity : AppCompatActivity() {
         })
 
         colorCancelBtn.setOnClickListener {
+            colorpickerDialog.dismiss()
             colorSelector.visibility = View.GONE
         }
 
         colorOkBtn.setOnClickListener {
+            colorpickerDialog.dismiss()
             val color: String = getColorString()
             setColor()
             btnColorSelected.setBackgroundColor(Color.parseColor(color))
@@ -171,9 +184,13 @@ class PaintActivity : AppCompatActivity() {
         })
 
         sizeCancelBtn.setOnClickListener {
+            sizechangeDialog.dismiss()
+            sizeSelector.visibility = View.GONE
         }
 
         sizeOkBtn.setOnClickListener {
+            sizechangeDialog.dismiss()
+            sizeSelector.visibility = View.GONE
             sizeChange()
         }
 
