@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.service
+package com.ntouandroid.drawandguess.utils
 
 import android.os.CountDownTimer
 
