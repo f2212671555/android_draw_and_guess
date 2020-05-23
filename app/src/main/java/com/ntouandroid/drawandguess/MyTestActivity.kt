@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
 
-class MyTestActivity(intent: Intent) : AppCompatActivity() {
+class MyTestActivity: AppCompatActivity() {
 
     lateinit var tv_test:TextView
 
