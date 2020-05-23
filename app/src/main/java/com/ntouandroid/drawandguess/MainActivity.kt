@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun btn_test_click(){
-        var intent = Intent(this,MyTestActivity::class.java)
-        MyTestActivity(intent)
+        var intent = Intent(this@MainActivity,MyTestActivity::class.java)
+        startActivity(intent)
     }
 
 }
