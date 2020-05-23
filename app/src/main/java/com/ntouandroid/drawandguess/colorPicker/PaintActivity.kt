@@ -14,12 +14,16 @@ import kotlinx.android.synthetic.main.activity_paint.*
 import kotlinx.android.synthetic.main.colorpicker.*
 import kotlinx.android.synthetic.main.sizechange.*
 
-class Paint : AppCompatActivity() {
+class PaintActivity : AppCompatActivity() {
 
     lateinit var eraser: Button
     lateinit var size: Button
     var sizeNumGet: Float = 30.0f
     lateinit var clean: Button
+
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,9 +143,19 @@ class Paint : AppCompatActivity() {
             btnColorSelected.setBackgroundColor(Color.parseColor(color))
             colorSelector.visibility = View.GONE
         }
+
+        roomid = intent.getStringExtra("roomid")
+        userid = intent.getStringExtra("userid")
+
+
+
+
     }
     companion object {
         var colorpaint = ColorPaint(0,0,0, 30.0f)
+        var roomid: String = ""
+        var userid: String = ""
+        var nextid: String = ""
     }
 
     fun eraserFun(){

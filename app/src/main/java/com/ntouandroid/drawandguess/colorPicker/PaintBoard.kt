@@ -6,17 +6,12 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.os.Handler
-import android.os.Message
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 
 
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.OutputStream
-import java.lang.ref.WeakReference
-import java.util.*
 
 
 class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -26,6 +21,10 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private var startX: Float = 0f
     private var startY: Float = 0f
+
+
+
+
 
 
     init {
@@ -44,26 +43,29 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         //paint.setStrokeWidth(30);//设置画笔宽度
         //paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
 
-        var r: Int = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.r
-        var g: Int = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.g
-        var b: Int = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.b
+        var r: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.r
+        var g: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.g
+        var b: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.b
 
         paint = Paint()
         paint
         paint.color = Color.rgb(r,g,b)
         paint.strokeWidth = 10f
+
+
+
     }
 
     fun changeColor(){
-        var r: Int = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.r
-        var g: Int = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.g
-        var b: Int = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.b
+        var r: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.r
+        var g: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.g
+        var b: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.b
 
         paint.color = Color.rgb(r, g, b)
     }
 
     fun sizeChange(){
-        var size: Float = com.ntouandroid.drawandguess.colorPicker.Paint.colorpaint.size
+        var size: Float = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.size
 
         paint.strokeWidth = size.toFloat();//设置画笔宽度
     }
@@ -76,6 +78,12 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+
+        if(PaintActivity.userid!=PaintActivity.nextid){
+            return true
+        }
+
+
         changeColor()
         sizeChange()
         when (event.action) {
