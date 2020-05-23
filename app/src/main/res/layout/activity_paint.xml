@@ -27,7 +27,7 @@
         android:layout_height="50sp"
         android:text="clean"
         android:layout_toRightOf="@+id/size"/>
-    <com.berserker.berserkerapplication.PaintBoard
+    <com.ntouandroid.drawandguess.colorPicker.PaintBoard
         android:id="@+id/layout_paint_board"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

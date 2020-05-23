@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MyTestActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,15 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".StartActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".CreateRoomActivity"
-            android:parentActivityName=".StartActivity" />
-        <activity
-            android:name=".JoinRoomActivity"
-            android:parentActivityName=".StartActivity" />
+        <activity android:name=".StartActivity" />
+        <activity android:name=".CreateRoomActivity" />
+        <activity android:name=".JoinRoomActivity" />
+        <activity android:name=".colorPicker.PaintActivity" />
+        <activity android:name=".MyTestActivity" />
     </application>
 
 </manifest>
