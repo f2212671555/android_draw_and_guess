@@ -21,6 +21,10 @@ class Paint : AppCompatActivity() {
     var sizeNumGet: Float = 30.0f
     lateinit var clean: Button
 
+
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
@@ -142,6 +146,9 @@ class Paint : AppCompatActivity() {
     }
     companion object {
         var colorpaint = ColorPaint(0,0,0, 30.0f)
+        var roomid: String = ""
+        var userid: String = ""
+        var nextid: String = ""
     }
 
     fun eraserFun(){
