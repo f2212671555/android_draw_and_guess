@@ -1,16 +1,26 @@
-package com.ntouandroid.drawandguess.colorPicker
+package com.ntouandroid.drawandguess
 
 import android.app.Dialog
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.SeekBar
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
-import com.ntouandroid.drawandguess.R
+import com.ntouandroid.drawandguess.bean.UserBean
+import com.ntouandroid.drawandguess.repository.MyRepository
+import com.ntouandroid.drawandguess.service.MyWebSocket
+import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
 import kotlinx.android.synthetic.main.colorpicker.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class PaintActivity : AppCompatActivity() {
 
@@ -19,17 +29,18 @@ class PaintActivity : AppCompatActivity() {
     var sizeNumGet: Float = 30.0f
     lateinit var clean: Button
     lateinit var btnColorSelected: Button
-    lateinit var sizeNumPrint: EditText
+
+    lateinit var colorR: SeekBar
+    lateinit var colorG: SeekBar
+    lateinit var colorB: SeekBar
+    lateinit var strColor: EditText
+
     lateinit var etMessage: EditText
     lateinit var tvMessage: TextView
-    lateinit var sizeNum: SeekBar
-    lateinit var sizeCancelBtn: Button
-    lateinit var sizeOkBtn: Button
-    lateinit var sizeSelector: RelativeLayout
-    lateinit var colorSelector: RelativeLayout
-    lateinit var colorCancelBtn: Button
-    lateinit var colorOkBtn: Button
+    lateinit var btnSendMessage: Button
+    private var myRoomWebSocketListener: RoomWebSocketListener? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
@@ -38,54 +49,58 @@ class PaintActivity : AppCompatActivity() {
         size = findViewById(R.id.size)
         etMessage = findViewById(R.id.message_et)
         tvMessage = findViewById(R.id.tv_recieve)
+        btnSendMessage = findViewById(R.id.send_message_btn)
+
         clean = findViewById(R.id.backgroundClean)
         btnColorSelected = findViewById(R.id.btnColorSelected)
 
-        val sizechangeDialog = Dialog(this)
-        sizechangeDialog.setContentView(R.layout.sizechange)
-        sizeNumPrint = sizechangeDialog.findViewById(R.id.sizeNumPrint)
-        sizeCancelBtn = sizechangeDialog.findViewById(R.id.sizeCancelBtn)
-        sizeOkBtn = sizechangeDialog.findViewById(R.id.sizeOkBtn)
-        sizeSelector = sizechangeDialog.findViewById(R.id.sizeSelector)
-        sizeNum = sizechangeDialog.findViewById(R.id.sizeNum)
+        initColorPickerDialog()
+        eraser.setOnClickListener { eraserFun() }
+        initSizeChangeDialog()
+        clean.setOnClickListener { backgroundClean() }
+
+        roomid = intent.getStringExtra("roomid")
+        userid = intent.getStringExtra("userid")
+        userName = intent.getStringExtra("userName")
+
+        initChatRoom()
+
+        btnSendMessage.setOnClickListener { sendMessage() }
+
+    }
+
+    private fun sendMessage() {
+        if (myRoomWebSocketListener != null) {
+            myRoomWebSocketListener!!.getWebSocket()?.send(etMessage.text.toString())
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun initChatRoom() {
+        val myRepository = MyRepository()
+        myRoomWebSocketListener = RoomWebSocketListener()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val userBean = UserBean(roomid, userid, userName)
+            val resultUserBean = myRepository.joinRoom(userBean)
+            println(resultUserBean)
+            userid = resultUserBean.userId.toString()
+            MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
+        }
+
+    }
+
+    private fun initColorPickerDialog() {
 
         val colorpickerDialog = Dialog(this)
         colorpickerDialog.setContentView(R.layout.colorpicker)
-        colorSelector = colorpickerDialog.findViewById(R.id.colorSelector)
-        colorCancelBtn = colorpickerDialog.findViewById(R.id.colorCancelBtn)
-        colorOkBtn = colorpickerDialog.findViewById(R.id.colorOkBtn)
-        btnColorSelected.setOnClickListener {
-            colorpickerDialog.show()
-            colorSelector.visibility = View.VISIBLE
-        }
-
-        eraser.setOnClickListener { eraserFun() }
-        size.setOnClickListener {
-            sizechangeDialog.show()
-            sizeSelector.visibility = View.VISIBLE
-            sizeChange()
-        }
-        clean.setOnClickListener { backgroundClean() }
-
-
-        sizeNumPrint.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                sizeNum.progress = Integer.parseInt(s.toString())
-            }
-
-            override fun beforeTextChanged(
-                s: CharSequence, start: Int,
-                count: Int, after: Int
-            ) {
-            }
-
-            override fun onTextChanged(
-                s: CharSequence, start: Int,
-                before: Int, count: Int
-            ) {
-
-            }
-        })
+//        val colorSelector: RelativeLayout = colorpickerDialog.findViewById(R.id.colorSelector)
+        val colorCancelBtn: Button = colorpickerDialog.findViewById(R.id.colorCancelBtn)
+        val colorOkBtn: Button = colorpickerDialog.findViewById(R.id.colorOkBtn)
+        colorR = colorpickerDialog.findViewById(R.id.colorR)
+        colorG = colorpickerDialog.findViewById(R.id.colorG)
+        colorB = colorpickerDialog.findViewById(R.id.colorB)
+        strColor = colorpickerDialog.findViewById(R.id.strColor)
 
         strColor.addTextChangedListener(object : TextWatcher {
 
@@ -159,7 +174,6 @@ class PaintActivity : AppCompatActivity() {
 
         colorCancelBtn.setOnClickListener {
             colorpickerDialog.dismiss()
-            colorSelector.visibility = View.GONE
         }
 
         colorOkBtn.setOnClickListener {
@@ -167,8 +181,47 @@ class PaintActivity : AppCompatActivity() {
             val color: String = getColorString()
             setColor()
             btnColorSelected.setBackgroundColor(Color.parseColor(color))
-            colorSelector.visibility = View.GONE
         }
+
+        btnColorSelected.setOnClickListener {
+            colorpickerDialog.show()
+        }
+    }
+
+    private fun initSizeChangeDialog() {
+        val sizechangeDialog = Dialog(this)
+        sizechangeDialog.setContentView(R.layout.sizechange)
+        val sizeNumPrint: EditText = sizechangeDialog.findViewById(R.id.sizeNumPrint)
+        val sizeCancelBtn: Button = sizechangeDialog.findViewById(R.id.sizeCancelBtn)
+        val sizeOkBtn: Button = sizechangeDialog.findViewById(R.id.sizeOkBtn)
+//        val sizeSelector: LinearLayout = sizechangeDialog.findViewById(R.id.sizeSelector)
+        val sizeNum: SeekBar = sizechangeDialog.findViewById(R.id.sizeNum)
+
+        size.setOnClickListener {
+            sizechangeDialog.show()
+            sizeChange()
+        }
+
+        sizeNumPrint.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                println(s.toString())
+//                sizeNum.progress = Integer.parseInt(s.toString())
+                // --- fix----
+            }
+
+            override fun beforeTextChanged(
+                s: CharSequence, start: Int,
+                count: Int, after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+
+            }
+        })
 
         sizeNum.max = 100
         sizeNum.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -185,19 +238,12 @@ class PaintActivity : AppCompatActivity() {
 
         sizeCancelBtn.setOnClickListener {
             sizechangeDialog.dismiss()
-            sizeSelector.visibility = View.GONE
         }
 
         sizeOkBtn.setOnClickListener {
             sizechangeDialog.dismiss()
-            sizeSelector.visibility = View.GONE
             sizeChange()
         }
-
-        roomid = intent.getStringExtra("roomid")
-        userid = intent.getStringExtra("userid")
-
-
     }
 
     companion object {
@@ -205,6 +251,7 @@ class PaintActivity : AppCompatActivity() {
         var roomid: String = ""
         var userid: String = ""
         var nextid: String = ""
+        var userName: String = ""
     }
 
     fun eraserFun() {

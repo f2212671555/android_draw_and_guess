@@ -23,7 +23,7 @@
         <activity android:name=".StartActivity" />
         <activity android:name=".CreateRoomActivity" />
         <activity android:name=".JoinRoomActivity" />
-        <activity android:name=".colorPicker.PaintActivity" />
+        <activity android:name=".PaintActivity" />
         <activity android:name=".MyTestActivity" />
     </application>
 

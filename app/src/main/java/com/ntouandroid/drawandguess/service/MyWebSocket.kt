@@ -17,7 +17,7 @@ class MyWebSocket {
             roomId: String,
             userId: String
         ): WebSocket {
-            val url = HttpUrl.Builder().scheme(Config.HTTP_SCHEME).host(Config.HOST)
+            val url = HttpUrl.Builder().scheme("https").host(Config.HOST)
                 .addPathSegment(Config.WS_ROOM)
                 .addPathSegment(roomId)
                 .addQueryParameter(Config.USER_ID_KEY, userId).build()
@@ -37,7 +37,7 @@ class MyWebSocket {
             roomId: String,
             userId: String
         ): WebSocket {
-            val url = HttpUrl.Builder().scheme(Config.HTTP_SCHEME).host(Config.HOST)
+            val url = HttpUrl.Builder().scheme("https").host(Config.HOST)
                 .addPathSegment(Config.WS_DRAW)
                 .addPathSegment(roomId)
                 .addQueryParameter(Config.USER_ID_KEY, userId).build()

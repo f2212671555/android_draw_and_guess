@@ -4,6 +4,7 @@ import com.ntouandroid.drawandguess.bean.RoomBean
 import com.ntouandroid.drawandguess.bean.TopicDetailBean
 import com.ntouandroid.drawandguess.bean.UserBean
 import com.ntouandroid.drawandguess.config.Config
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -16,10 +17,10 @@ interface MyServiceInterface {
     suspend fun getRoomUsers(@Query(Config.ROOM_ID_KEY) roomId: String): List<UserBean>
 
     @POST(Config.CREATE_ROOM)
-    suspend fun createRoom(roomBean: RoomBean): RoomBean
+    suspend fun createRoom(@Body roomBean: RoomBean): RoomBean
 
     @POST(Config.JOIN_ROOM)
-    suspend fun joinRoom(userBean: UserBean): UserBean
+    suspend fun joinRoom(@Body userBean: UserBean): UserBean
 
     @GET(Config.QUIT_ROOM)
     suspend fun quitRoom(

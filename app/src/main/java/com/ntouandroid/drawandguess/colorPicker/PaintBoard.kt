@@ -9,6 +9,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.ntouandroid.drawandguess.PaintActivity
 
 
 import java.io.OutputStream
@@ -43,9 +44,9 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         //paint.setStrokeWidth(30);//设置画笔宽度
         //paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
 
-        var r: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.r
-        var g: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.g
-        var b: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.b
+        var r: Int = PaintActivity.colorpaint.r
+        var g: Int = PaintActivity.colorpaint.g
+        var b: Int = PaintActivity.colorpaint.b
 
         paint = Paint()
         paint
@@ -57,15 +58,15 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun changeColor(){
-        var r: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.r
-        var g: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.g
-        var b: Int = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.b
+        var r: Int = PaintActivity.colorpaint.r
+        var g: Int = PaintActivity.colorpaint.g
+        var b: Int = PaintActivity.colorpaint.b
 
         paint.color = Color.rgb(r, g, b)
     }
 
     fun sizeChange(){
-        var size: Float = com.ntouandroid.drawandguess.colorPicker.PaintActivity.colorpaint.size
+        var size: Float = PaintActivity.colorpaint.size
 
         paint.strokeWidth = size.toFloat();//设置画笔宽度
     }
@@ -79,7 +80,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
-        if(PaintActivity.userid!=PaintActivity.nextid){
+        if(PaintActivity.userid!= PaintActivity.nextid){
             return true
         }
 

@@ -15,9 +15,11 @@ class RoomWebSocketListener : WebSocketListener() {
     private lateinit var handler: Handler
     private lateinit var url: HttpUrl
     private var isConnected: Boolean = false
+    private var webSocket: WebSocket? = null
 
-    companion object {
-        var WEBSOCKET: WebSocket? = null
+
+    fun getWebSocket():WebSocket? {
+        return webSocket
     }
 
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
@@ -41,18 +43,17 @@ class RoomWebSocketListener : WebSocketListener() {
 
     override fun onMessage(webSocket: WebSocket, text: String) {
         Log.d("onMessage", text)
-        handler.sendMessage(handler.obtainMessage(0, text))
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.d("onOpen", "hi")
         this.isConnected = true
-        WEBSOCKET = webSocket
+        this.webSocket = webSocket
 
     }
 
     private fun close() {
-        WEBSOCKET?.close(1000, "Connection closed")
+        webSocket?.close(1000, "Connection closed")
     }
 
     fun setUrl(url: HttpUrl) {

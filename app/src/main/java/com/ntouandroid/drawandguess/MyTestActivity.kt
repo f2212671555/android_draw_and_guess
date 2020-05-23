@@ -1,17 +1,20 @@
 package com.ntouandroid.drawandguess
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import com.ntouandroid.drawandguess.colorPicker.PaintActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.bean.RoomBean
+import com.ntouandroid.drawandguess.repository.MyRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class MyTestActivity: AppCompatActivity() {
+class MyTestActivity : AppCompatActivity() {
 
-    lateinit var tv_test:TextView
-    lateinit var btnTestPaint:Button
+    lateinit var tv_test: TextView
+    lateinit var btnTestPaint: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_test)
@@ -24,10 +27,18 @@ class MyTestActivity: AppCompatActivity() {
     }
 
     private fun goTestPaintBtn() {
-        val intent = Intent(this,PaintActivity::class.java)
-        intent.putExtra("roomid","123room")
-        intent.putExtra("userid","123user")
-        startActivity(intent)
+        val intent = Intent(this, PaintActivity::class.java)
+        val myRepository = MyRepository()
+        val userName = "BOB"
+        GlobalScope.launch(Dispatchers.IO) {
+            val roomBean = RoomBean("", "a好好玩s")
+            val resultRoomBean = myRepository.createRoom(roomBean)
+            println(resultRoomBean)
+            intent.putExtra("roomid", resultRoomBean.roomId.toString())
+            intent.putExtra("userid", "")
+            intent.putExtra("userName", userName)
+            startActivity(intent)
+        }
     }
 
 
