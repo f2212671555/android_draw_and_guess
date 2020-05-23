@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
 import com.ntouandroid.drawandguess.R
@@ -29,6 +26,7 @@ class PaintActivity : AppCompatActivity() {
     lateinit var sizeNum: SeekBar
     lateinit var sizeCancelBtn: Button
     lateinit var sizeOkBtn: Button
+    lateinit var sizeSelector: RelativeLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +42,7 @@ class PaintActivity : AppCompatActivity() {
         sizeNumPrint = openDialog.findViewById(R.id.sizeNumPrint)
         sizeCancelBtn = openDialog.findViewById(R.id.sizeCancelBtn)
         sizeOkBtn = openDialog.findViewById(R.id.sizeOkBtn)
+        sizeSelector = openDialog.findViewById(R.id.sizeSelector)
 
         btnColorSelected.setOnClickListener {
             colorSelector.visibility = View.VISIBLE
@@ -51,7 +50,10 @@ class PaintActivity : AppCompatActivity() {
 
         sizeNum = openDialog.findViewById(R.id.sizeNum)
         eraser.setOnClickListener { eraserFun() }
-        size.setOnClickListener { sizeChange() }
+        size.setOnClickListener {
+            sizeSelector.visibility = View.VISIBLE
+            sizeChange()
+        }
         clean.setOnClickListener { backgroundClean() }
 
 
