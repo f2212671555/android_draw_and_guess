@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MyTestActivity"></activity>
-        <activity android:name=".colorPicker.Paint" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,9 +30,6 @@
         <activity
             android:name=".JoinRoomActivity"
             android:parentActivityName=".StartActivity" />
-        <activity
-            android:name=".PaintActivity"
-            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>
