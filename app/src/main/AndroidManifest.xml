@@ -14,7 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MyTestActivity"></activity>
-        <activity android:name=".webSocket.MyTestActivity" />
         <activity android:name=".colorPicker.Paint" />
         <activity android:name=".MainActivity">
             <intent-filter>
