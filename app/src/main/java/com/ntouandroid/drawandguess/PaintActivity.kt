@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.webSocket
+package com.ntouandroid.drawandguess
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
