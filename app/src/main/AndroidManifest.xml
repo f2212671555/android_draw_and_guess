@@ -34,8 +34,6 @@
         <activity
             android:name=".PaintActivity"
             android:parentActivityName=".MainActivity" />
-
-
     </application>
 
 </manifest>
