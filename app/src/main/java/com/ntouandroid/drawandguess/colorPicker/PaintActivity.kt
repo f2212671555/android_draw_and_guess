@@ -145,10 +145,14 @@ class PaintActivity : AppCompatActivity() {
         })
 
         colorCancelBtn.setOnClickListener {
+            colorSelector.visibility = View.GONE
         }
 
         colorOkBtn.setOnClickListener {
-            sizeChange()
+            val color: String = getColorString()
+            setColor()
+            btnColorSelected.setBackgroundColor(Color.parseColor(color))
+            colorSelector.visibility = View.GONE
         }
 
         sizeNum.max = 100
@@ -165,14 +169,10 @@ class PaintActivity : AppCompatActivity() {
         })
 
         sizeCancelBtn.setOnClickListener {
-            colorSelector.visibility = View.GONE
         }
 
         sizeOkBtn.setOnClickListener {
-            val color: String = getColorString()
-            setColor()
-            btnColorSelected.setBackgroundColor(Color.parseColor(color))
-            colorSelector.visibility = View.GONE
+            sizeChange()
         }
 
         roomid = intent.getStringExtra("roomid")
