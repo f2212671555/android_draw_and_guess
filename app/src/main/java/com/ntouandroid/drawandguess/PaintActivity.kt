@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
+import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
 import com.ntouandroid.drawandguess.service.MyWebSocket
 import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
 import kotlinx.coroutines.Dispatchers
@@ -72,6 +73,7 @@ class PaintActivity : AppCompatActivity() {
         initChatRoom()
 
         btnSendMessage.setOnClickListener { sendMessage() }
+
 
     }
 
