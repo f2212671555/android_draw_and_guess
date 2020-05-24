@@ -50,14 +50,14 @@ class RoomWebSocketListener : WebSocketListener() {
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        Log.d("onOpen", "hi")
+        Log.d("onOpen", "RoomWebSocketListener onOpen")
         this.isConnected = true
         this.webSocket = webSocket
 
     }
 
     private fun close() {
-        webSocket?.close(1000, "Connection closed")
+        webSocket?.close(1000, "RoomWebSocketListener Connection closed")
     }
 
     fun setUrl(url: HttpUrl) {

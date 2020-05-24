@@ -3,6 +3,7 @@ package com.ntouandroid.drawandguess.service
 import com.ntouandroid.drawandguess.bean.RoomBean
 import com.ntouandroid.drawandguess.bean.TopicDetailBean
 import com.ntouandroid.drawandguess.bean.UserBean
+import com.ntouandroid.drawandguess.bean.UserJoinRoomBean
 import com.ntouandroid.drawandguess.config.Config
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,7 +21,7 @@ interface MyServiceInterface {
     suspend fun createRoom(@Body roomBean: RoomBean): RoomBean
 
     @POST(Config.JOIN_ROOM)
-    suspend fun joinRoom(@Body userBean: UserBean): UserBean
+    suspend fun joinRoom(@Body userBean: UserBean): UserJoinRoomBean
 
     @GET(Config.QUIT_ROOM)
     suspend fun quitRoom(

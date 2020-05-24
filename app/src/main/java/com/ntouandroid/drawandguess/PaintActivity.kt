@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
 import com.ntouandroid.drawandguess.bean.UserBean
+import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
 import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
@@ -67,6 +68,8 @@ class PaintActivity : AppCompatActivity() {
         userid = intent.getStringExtra("userid")
         userName = intent.getStringExtra("userName")
 
+        val paintB: PaintBoard = findViewById(R.id.layout_paint_board)
+        paintB.initDrawRoom(roomid, userid)
         initChatRoom()
 
         btnSendMessage.setOnClickListener { sendMessage() }
@@ -81,15 +84,12 @@ class PaintActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initChatRoom() {
-        val myRepository = MyRepository()
+
         myRoomWebSocketListener = RoomWebSocketListener()
         val outerClass = WeakReference(this)
         val myHandler = MyHandler(outerClass)
         GlobalScope.launch(Dispatchers.IO) {
-            val userBean = UserBean(roomid, userid, userName)
-            val resultUserBean = myRepository.joinRoom(userBean)
-            println(resultUserBean)
-            userid = resultUserBean.userId.toString()
+
             MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
 
             myRoomWebSocketListener!!.setHandler(myHandler)
