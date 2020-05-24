@@ -4,6 +4,8 @@ import android.app.Dialog
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
@@ -21,6 +23,7 @@ import kotlinx.android.synthetic.main.colorpicker.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
 class PaintActivity : AppCompatActivity() {
 
@@ -79,13 +82,16 @@ class PaintActivity : AppCompatActivity() {
     private fun initChatRoom() {
         val myRepository = MyRepository()
         myRoomWebSocketListener = RoomWebSocketListener()
-
+        val outerClass = WeakReference(this)
+        val myHandler = MyHandler(outerClass)
         GlobalScope.launch(Dispatchers.IO) {
             val userBean = UserBean(roomid, userid, userName)
             val resultUserBean = myRepository.joinRoom(userBean)
             println(resultUserBean)
             userid = resultUserBean.userId.toString()
             MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
+
+            myRoomWebSocketListener!!.setHandler(myHandler)
         }
 
     }
@@ -288,5 +294,12 @@ class PaintActivity : AppCompatActivity() {
         var b = Integer.toHexString(((255 * colorB.progress) / colorB.max))
         if (b.length == 1) b = "0" + b
         return "#" + r + g + b
+    }
+
+    class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
+        override fun handleMessage(msg: Message) {
+            outerClass.get()?.tvMessage?.append(msg?.obj.toString())
+        }
+
     }
 }
