@@ -37,7 +37,7 @@
                 android:imeOptions="actionDone"
                 android:maxLength="8"
                 android:padding="5sp"
-                android:text="30"
+                android:text="10"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp" />
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="30px"
-            android:progress="255"
+            android:progress="10"
             android:progressDrawable="@drawable/seekbar_r_progress"
             android:thumb="@drawable/seekbar_r_thumb" />
     </LinearLayout>

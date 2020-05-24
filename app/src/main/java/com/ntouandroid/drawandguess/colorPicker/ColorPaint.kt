@@ -4,5 +4,5 @@ data class ColorPaint(
     var r: Int = 0,
     var g: Int = 0,
     var b: Int = 0,
-    var size: Float = 30.0f
+    var size: Float = 10.0f
 )

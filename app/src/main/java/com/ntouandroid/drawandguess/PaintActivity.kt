@@ -29,7 +29,7 @@ class PaintActivity : AppCompatActivity() {
 
     lateinit var eraser: Button
     lateinit var size: Button
-    var sizeNumGet: Float = 30.0f
+    var sizeNumGet: Float = 10.0f
     lateinit var clean: Button
     lateinit var btnColorSelected: Button
 
@@ -48,6 +48,7 @@ class PaintActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
 
+        lateinit var btnColorPreview: Button
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
         etMessage = findViewById(R.id.message_et)
@@ -103,6 +104,7 @@ class PaintActivity : AppCompatActivity() {
 //        val colorSelector: RelativeLayout = colorpickerDialog.findViewById(R.id.colorSelector)
         val colorCancelBtn: Button = colorpickerDialog.findViewById(R.id.colorCancelBtn)
         val colorOkBtn: Button = colorpickerDialog.findViewById(R.id.colorOkBtn)
+        val btnColorPreview: Button = colorpickerDialog.findViewById(R.id.btnColorPreview)
         colorR = colorpickerDialog.findViewById(R.id.colorR)
         colorG = colorpickerDialog.findViewById(R.id.colorG)
         colorB = colorpickerDialog.findViewById(R.id.colorB)
@@ -211,7 +213,7 @@ class PaintActivity : AppCompatActivity() {
         sizeNumPrint.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 println(s.toString())
-//                sizeNum.progress = Integer.parseInt(s.toString())
+                sizeNum.progress = Integer.parseInt(s.toString(),10)
                 // --- fix----
             }
 
@@ -237,8 +239,10 @@ class PaintActivity : AppCompatActivity() {
                 seekBar: SeekBar, progress: Int,
                 fromUser: Boolean
             ) {
-                val sizeGet = Integer.toHexString(sizeNum.progress)
-                sizeNumPrint.setText(sizeGet.replace("#", "").toUpperCase())
+                println(sizeNum.progress)
+                val sizeGet = Integer.parseInt((sizeNum.progress).toString())
+                sizeNumPrint.setText((sizeNum.progress).toString())
+                sizeNumGet = sizeGet.toFloat()
             }
         })
 
