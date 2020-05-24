@@ -33,6 +33,7 @@
         android:id="@+id/layout_paint_board"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/backgroundClean"
         android:layout_above="@+id/chatSection" />
 
     <RelativeLayout

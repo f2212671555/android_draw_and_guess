@@ -15,12 +15,9 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
-import com.ntouandroid.drawandguess.bean.UserBean
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
-import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
 import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
-import kotlinx.android.synthetic.main.colorpicker.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -69,7 +66,9 @@ class PaintActivity : AppCompatActivity() {
         userName = intent.getStringExtra("userName")
 
         val paintB: PaintBoard = findViewById(R.id.layout_paint_board)
-        paintB.initDrawRoom(roomid, userid)
+        paintB.post(Runnable {
+            paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
+        })
         initChatRoom()
 
         btnSendMessage.setOnClickListener { sendMessage() }
@@ -213,7 +212,7 @@ class PaintActivity : AppCompatActivity() {
         sizeNumPrint.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 println(s.toString())
-                sizeNum.progress = Integer.parseInt(s.toString(),10)
+                sizeNum.progress = Integer.parseInt(s.toString(), 10)
                 // --- fix----
             }
 

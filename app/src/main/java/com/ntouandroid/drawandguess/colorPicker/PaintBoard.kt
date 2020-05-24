@@ -1,9 +1,7 @@
 package com.ntouandroid.drawandguess.colorPicker
 
 
-import android.app.PendingIntent.getActivity
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -26,24 +24,31 @@ import java.lang.ref.WeakReference
 
 @RequiresApi(Build.VERSION_CODES.O)
 class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    private var paint: Paint
-    private var bitmap: Bitmap
-    private var mCanvas: Canvas
+    private var paint: Paint? = null
+    private var bitmap: Bitmap? = null
+    private var mCanvas: Canvas? = null
 
     private var startX: Float = 0f
     private var startY: Float = 0f
+    private var r: Int = 0
+    private var g: Int = 0
+    private var b: Int = 0
+    private var size: Float = 0f
     private var myDrawWebSocketListener: DrawWebSocketListener? = null
+    private var mWidth = 0
+    private var mHeight = 0
 
-    init {
+
+    fun init(width: Int, height: Int): PaintBoard {
 
         // bitmap
-        val width = Resources.getSystem().displayMetrics.widthPixels
-        val height = Resources.getSystem().displayMetrics.heightPixels
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        mWidth = width
+        mHeight = height
+        bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
 
         // Canvas                   畫布
-        mCanvas = Canvas(bitmap)
-        mCanvas.drawColor(Color.argb(255, 0, 0, 0))
+        mCanvas = Canvas(bitmap!!)
+        mCanvas!!.drawColor(Color.argb(255, 0, 0, 0))
 
         // Paint                     畫筆
         //paint.setAntiAlias(true);//抗锯齿功能
@@ -51,21 +56,19 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         //paint.setStrokeWidth(30);//设置画笔宽度
         //paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
 
-        var r: Int = PaintActivity.colorpaint.r
-        var g: Int = PaintActivity.colorpaint.g
-        var b: Int = PaintActivity.colorpaint.b
+        r = PaintActivity.colorpaint.r
+        g = PaintActivity.colorpaint.g
+        b = PaintActivity.colorpaint.b
 
         paint = Paint()
-        paint
-        paint.color = Color.rgb(r, g, b)
-        paint.strokeWidth = 10f
+        paint!!.color = Color.rgb(r, g, b)
+        paint!!.strokeWidth = 10f
 
-
-
+        return this
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun initDrawRoom(roomId:String,userId:String) {
+    fun initDrawRoom(roomId: String, userId: String) {
         myDrawWebSocketListener = DrawWebSocketListener()
         val outerClass = WeakReference(this)
         val myHandler = PaintBoard.MyHandler(outerClass)
@@ -78,23 +81,26 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun changeColor() {
-        var r: Int = PaintActivity.colorpaint.r
-        var g: Int = PaintActivity.colorpaint.g
-        var b: Int = PaintActivity.colorpaint.b
+        r = PaintActivity.colorpaint.r
+        g = PaintActivity.colorpaint.g
+        b = PaintActivity.colorpaint.b
 
-        paint.color = Color.rgb(r, g, b)
+        paint?.color = Color.rgb(r, g, b)
     }
 
     fun sizeChange() {
-        var size: Float = PaintActivity.colorpaint.size
+        size = PaintActivity.colorpaint.size
 
-        paint.strokeWidth = size.toFloat();//设置画笔宽度
+        paint?.strokeWidth = size
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        canvas!!.drawBitmap(bitmap, 0f, 0f, paint)
+        if (canvas != null && bitmap != null && paint != null) {
+            canvas.drawBitmap(bitmap!!, 0f, 0f, paint)
+        }
+
     }
 
     private fun sendDrawToServer(paintBoardDraw: PaintBoardDraw) {
@@ -121,17 +127,31 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 val stopX = event.x
                 val stopY = event.y
 
+                if (paint != null && mCanvas != null) {
+                    mCanvas?.drawLine(startX, startY, stopX, stopY, paint!!)
+                    // dp to px
+                    val paintBoardDraw = PaintBoardDraw(
+                        "drawLine",
+                        startX / mWidth,
+                        startY / mHeight,
+                        stopX / mWidth,
+                        stopY / mHeight,
+                        r,
+                        g,
+                        b,
+                        size
+                    )
+                    startX = event.x
+                    startY = event.y
 
 
-                mCanvas.drawLine(startX, startY, stopX, stopY, paint)
-                startX = event.x
-                startY = event.y
+                    sendDrawToServer(paintBoardDraw)
 
-                val paintBoardDraw = PaintBoardDraw("",startX,startY,stopX,stopY)
-                sendDrawToServer(paintBoardDraw)
+                    // call onDraw
+//                draw(paintBoardDraw)
+                    invalidate()
+                }
 
-                // call onDraw
-                invalidate()
             }
         }
 
@@ -139,18 +159,40 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun clean() {
-        mCanvas.drawColor(Color.argb(255, 0, 0, 0))
+        mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
     }
 
     fun saveBitmap(stream: OutputStream) {
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
     }
 
+    // for other player draw
+    private fun setColorAndSize(paintBDBean: PaintBoardDraw) {
+        r = paintBDBean.r
+        g = paintBDBean.g
+        b = paintBDBean.b
+
+        paint?.color = Color.rgb(r, g, b)
+
+        size = paintBDBean.size
+
+        paint?.strokeWidth = size
+    }
+
+    // for other player draw
     fun draw(paintBDBean: PaintBoardDraw) {
-        changeColor()
-        sizeChange()
-        mCanvas.drawLine(paintBDBean.startX, paintBDBean.startY, paintBDBean.stopX, paintBDBean.stopY, paint)
-        invalidate()
+        setColorAndSize(paintBDBean)
+        if (mCanvas != null && paint != null) {
+            mCanvas?.drawLine(
+                paintBDBean.startX * mWidth,
+                paintBDBean.startY * mHeight,
+                paintBDBean.stopX * mWidth,
+                paintBDBean.stopY * mHeight,
+                paint!!
+            )
+            invalidate()
+        }
+
     }
 
     // Declare the Handler as a static class.

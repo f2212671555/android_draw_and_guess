@@ -12,5 +12,13 @@ data class PaintBoardDraw(
     @SerializedName("stopX")
     var stopX: Float = 0f,
     @SerializedName("stopY")
-    var stopY: Float = 0f
+    var stopY: Float = 0f,
+    @SerializedName("r")
+    var r: Int = 0,
+    @SerializedName("g")
+    var g: Int = 0,
+    @SerializedName("b")
+    var b: Int = 0,
+    @SerializedName("size")
+    var size: Float = 0f
 )
