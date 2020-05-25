@@ -2,7 +2,7 @@ package com.ntouandroid.drawandguess.bean
 
 import com.google.gson.annotations.SerializedName
 
-data class UserJoinRoomBean(
+data class UserActionRoomBean(
     @SerializedName("roomId")
     var roomId: String?,
     @SerializedName("userId")

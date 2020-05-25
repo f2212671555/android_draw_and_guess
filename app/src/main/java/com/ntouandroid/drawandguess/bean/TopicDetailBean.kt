@@ -8,5 +8,7 @@ data class TopicDetailBean(
     @SerializedName("topic")
     var topic: String?,
     @SerializedName("userId")
-    var userId: String?
+    var userId: String?,
+    @SerializedName("result")
+    var result: String?
 )

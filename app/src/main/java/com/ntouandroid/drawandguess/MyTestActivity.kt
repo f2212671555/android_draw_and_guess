@@ -38,7 +38,7 @@ class MyTestActivity : AppCompatActivity() {
         tvTestRoomList.movementMethod = ScrollingMovementMethod()
         btnTestPaint.setOnClickListener { goTestPaintBtn() }
         btnJoinRoom.setOnClickListener { joinRoom() }
-//        loadingRoomList()
+        loadingRoomList()
 
     }
 
@@ -62,7 +62,6 @@ class MyTestActivity : AppCompatActivity() {
 
     private fun loadingRoomList() {
 
-        val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
             val roomList = myRepository.getRoomList()
             runOnUiThread {
@@ -79,7 +78,7 @@ class MyTestActivity : AppCompatActivity() {
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
-            val roomBean = RoomBean("", "a好好玩s")
+            val roomBean = RoomBean("", "a好好玩s",null,null)
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
             val respUserJoinRoomBean = myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(),"",userName))
