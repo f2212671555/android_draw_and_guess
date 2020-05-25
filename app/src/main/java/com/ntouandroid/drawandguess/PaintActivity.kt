@@ -315,7 +315,9 @@ class PaintActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             val respUserActionRoomBean = myRepository.quitRoom(userid, roomid)
             println(respUserActionRoomBean)
-            if(respUserActionRoomBean.result!!){
+            if(respUserActionRoomBean.result!!){ // quit game success
+            } else{// quit game failure
+
             }
         }
 //        ArchLifecycleApp.userStatus = ArchLifecycleApp.QUIT_ROOM
