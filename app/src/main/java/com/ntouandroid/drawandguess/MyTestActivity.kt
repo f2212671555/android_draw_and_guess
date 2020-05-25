@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.bean.RoomBean
 import com.ntouandroid.drawandguess.bean.UserBean
+import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
 import com.ntouandroid.drawandguess.repository.MyRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -52,11 +53,13 @@ class MyTestActivity : AppCompatActivity() {
             val respUserJoinRoomBean = myRepository.joinRoom(userBean)
             println(respUserJoinRoomBean)
             userId = respUserJoinRoomBean.userId.toString()
-
-            intent.putExtra("roomid", roomId)
-            intent.putExtra("userid", userId)
-            intent.putExtra("userName", userName)
-            startActivity(intent)
+            if(respUserJoinRoomBean.result!!){
+                ArchLifecycleApp.userStatus = ArchLifecycleApp.JOIN_ROOM
+                intent.putExtra("roomid", roomId)
+                intent.putExtra("userid", userId)
+                intent.putExtra("userName", userName)
+                startActivity(intent)
+            }
         }
     }
 

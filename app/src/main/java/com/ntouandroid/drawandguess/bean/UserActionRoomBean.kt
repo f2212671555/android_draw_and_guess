@@ -10,5 +10,5 @@ data class UserActionRoomBean(
     @SerializedName("userName")
     var userName: String?,
     @SerializedName("result")
-    var result: String?
+    var result: Boolean?
 )

@@ -10,5 +10,5 @@ data class TopicDetailBean(
     @SerializedName("userId")
     var userId: String?,
     @SerializedName("result")
-    var result: String?
+    var result: Boolean?
 )

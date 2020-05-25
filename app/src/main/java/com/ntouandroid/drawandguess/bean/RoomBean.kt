@@ -10,5 +10,5 @@ data class RoomBean(
     @SerializedName("users")
     var usersList: List<UserBean>?,
     @SerializedName("result")
-    var result: String?
+    var result: Boolean?
 )

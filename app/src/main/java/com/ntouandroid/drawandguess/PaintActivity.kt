@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.drawtest.ColorPaint
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
+import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
 import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
 import kotlinx.coroutines.Dispatchers
@@ -299,6 +300,25 @@ class PaintActivity : AppCompatActivity() {
         var b = Integer.toHexString(((255 * colorB.progress) / colorB.max))
         if (b.length == 1) b = "0" + b
         return "#" + r + g + b
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println("onResume")
+//        ArchLifecycleApp.userStatus = ArchLifecycleApp.JOIN_ROOM
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println("onPause")
+        val myRepository: MyRepository = MyRepository()
+        GlobalScope.launch(Dispatchers.IO) {
+            val respUserActionRoomBean = myRepository.quitRoom(userid, roomid)
+            println(respUserActionRoomBean)
+            if(respUserActionRoomBean.result!!){
+            }
+        }
+//        ArchLifecycleApp.userStatus = ArchLifecycleApp.QUIT_ROOM
     }
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
