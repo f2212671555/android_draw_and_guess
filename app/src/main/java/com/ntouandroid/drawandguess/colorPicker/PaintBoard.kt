@@ -2,7 +2,10 @@ package com.ntouandroid.drawandguess.colorPicker
 
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Build
 import android.os.Handler
 import android.os.Message
@@ -78,15 +81,28 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         myDrawWebSocketListener!!.setHandler(myHandler)
     }
 
-    fun cleanBackground(){
+    fun cleanBackground() {
+        val paintBoardDraw = PaintBoardDraw(
+            "clean",
+            "",
+            0f,
+            0f,
+            0f,
+            0f,
+            0,
+            0,
+            0,
+            0f
+        )
+        sendDrawToServer(paintBoardDraw)
         bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
         mCanvas = Canvas(bitmap!!)
         mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
         invalidate()
     }
 
-    fun erase(isErase: Boolean){
-        PaintActivity.colorpaint = ColorPaint(0, 0, 0, 30.0f)
+    fun erase(isErase: Boolean) {
+        PaintActivity.colorpaint = ColorPaint(0, 0, 0, 50.0f)
 //        if(isErase){
 //            paint?.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 //        }else{
@@ -145,6 +161,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                     mCanvas?.drawLine(startX, startY, stopX, stopY, paint!!)
                     // dp to px
                     val paintBoardDraw = PaintBoardDraw(
+                        "draw",
                         "drawLine",
                         startX / mWidth,
                         startY / mHeight,
@@ -189,6 +206,13 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         paint?.strokeWidth = size
     }
 
+    fun paintBoardDrawBeanActionDispatcher(paintBDBean: PaintBoardDraw) {
+        when (paintBDBean.action) {
+            "draw" -> draw(paintBDBean)
+            "clean" -> cleanBackground()
+        }
+    }
+
     // for other player draw
     fun draw(paintBDBean: PaintBoardDraw) {
         setColorAndSize(paintBDBean)
@@ -210,7 +234,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         override fun handleMessage(msg: Message) {
             val text = msg?.obj.toString()
             val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDraw::class.java)
-            outerClass.get()?.draw(paintBoardDrawBean)
+            outerClass.get()?.paintBoardDrawBeanActionDispatcher(paintBoardDrawBean)
         }
 
     }

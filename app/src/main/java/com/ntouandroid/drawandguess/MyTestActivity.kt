@@ -23,6 +23,7 @@ class MyTestActivity : AppCompatActivity() {
     lateinit var btnJoinRoom: Button
     lateinit var etJoinRoom: EditText
     var myRepository: MyRepository = MyRepository()
+    lateinit var btnTestNav: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +35,19 @@ class MyTestActivity : AppCompatActivity() {
         tvTestRoomList = findViewById(R.id.tv_testRoomList)
         btnJoinRoom = findViewById(R.id.btn_joinRoom)
         etJoinRoom = findViewById(R.id.et_joinRoom)
-
+        btnTestNav = findViewById(R.id.btn_testNav)
 
         tvTestRoomList.movementMethod = ScrollingMovementMethod()
         btnTestPaint.setOnClickListener { goTestPaintBtn() }
         btnJoinRoom.setOnClickListener { joinRoom() }
+        btnTestNav.setOnClickListener { goNavActivity() }
         loadingRoomList()
 
+    }
+
+    private fun goNavActivity() {
+        val intent = Intent(this, Main2Activity::class.java)
+        startActivity(intent)
     }
 
     private fun joinRoom() {
@@ -53,7 +60,7 @@ class MyTestActivity : AppCompatActivity() {
             val respUserJoinRoomBean = myRepository.joinRoom(userBean)
             println(respUserJoinRoomBean)
             userId = respUserJoinRoomBean.userId.toString()
-            if(respUserJoinRoomBean.result!!){
+            if (respUserJoinRoomBean.result!!) {
                 ArchLifecycleApp.userStatus = ArchLifecycleApp.JOIN_ROOM
                 intent.putExtra("roomid", roomId)
                 intent.putExtra("userid", userId)
@@ -81,10 +88,11 @@ class MyTestActivity : AppCompatActivity() {
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
-            val roomBean = RoomBean("", "a好好玩s",null,null)
+            val roomBean = RoomBean("", "a好好玩s", null, null)
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
-            val respUserJoinRoomBean = myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(),"",userName))
+            val respUserJoinRoomBean =
+                myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(), "", userName))
             println(respUserJoinRoomBean)
             val userId = respUserJoinRoomBean.userId.toString()
             intent.putExtra("roomid", resultRoomBean.roomId.toString())

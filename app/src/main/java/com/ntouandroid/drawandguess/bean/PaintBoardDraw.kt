@@ -3,6 +3,8 @@ package com.ntouandroid.drawandguess.bean
 import com.google.gson.annotations.SerializedName
 
 data class PaintBoardDraw(
+    @SerializedName("action")
+    var action: String?,
     @SerializedName("drawShape")
     var drawShape: String?,
     @SerializedName("startX")

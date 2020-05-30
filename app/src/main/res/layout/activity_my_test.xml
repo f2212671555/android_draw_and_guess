@@ -11,10 +11,16 @@
         android:text="測試區" />
 
     <Button
-        android:id="@+id/btn_testPaint"
+        android:id="@+id/btn_testNav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="畫圖測 試爆區" />
+        android:text="nav test" />
+
+    <Button
+    android:id="@+id/btn_testPaint"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="畫圖測 試爆區" />
 
     <LinearLayout
         android:layout_width="wrap_content"
