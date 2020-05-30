@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.bean.RoomBean
 import com.ntouandroid.drawandguess.bean.UserBean
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
 import com.ntouandroid.drawandguess.repository.MyRepository
+import com.ntouandroid.drawandguess.utils.GameTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 class MyTestActivity : AppCompatActivity() {
 
@@ -22,8 +25,11 @@ class MyTestActivity : AppCompatActivity() {
     lateinit var btnTestPaint: Button
     lateinit var btnJoinRoom: Button
     lateinit var etJoinRoom: EditText
+
+    lateinit var progressBar: ProgressBar
+    var isAnimatingUpdatingDelayed: Boolean = false
+    lateinit var mTimer:GameTimer
     var myRepository: MyRepository = MyRepository()
-    lateinit var btnTestNav: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,20 +41,41 @@ class MyTestActivity : AppCompatActivity() {
         tvTestRoomList = findViewById(R.id.tv_testRoomList)
         btnJoinRoom = findViewById(R.id.btn_joinRoom)
         etJoinRoom = findViewById(R.id.et_joinRoom)
-        btnTestNav = findViewById(R.id.btn_testNav)
+        progressBar = findViewById(R.id.pb_timer)
 
         tvTestRoomList.movementMethod = ScrollingMovementMethod()
         btnTestPaint.setOnClickListener { goTestPaintBtn() }
+
         btnJoinRoom.setOnClickListener { joinRoom() }
-        btnTestNav.setOnClickListener { goNavActivity() }
-        loadingRoomList()
+        //loadingRoomList()
 
+
+        val timeSec = 5f //time設定幾秒
+
+        mTimer = GameTimer(object : GameTimer.TimerBarController {
+            override fun timerOnUpdate() {
+                println(mTimer.secondsCount*100)
+                println("計時器進度條跳一次")
+                update(-1,(mTimer.secondsCount*100).toInt())
+            }
+
+            override fun timesUp() {
+                println("計時器進度條停止")
+            }
+
+        })
+        mTimer.secondsCount = timeSec
+        mTimer.maxTimeInSeconds = timeSec
+        progressBar.max = (timeSec * 100).toInt()
+        progressBar.progress = (timeSec * 100).toInt()
+        mTimer.startTimer()
     }
 
-    private fun goNavActivity() {
-        val intent = Intent(this, Main2Activity::class.java)
-        startActivity(intent)
+    fun update(progressIncrement: Int, trueProgress: Int) {
+        if (isAnimatingUpdatingDelayed) progressBar.incrementProgressBy(progressIncrement)
+        else progressBar.progress = trueProgress
     }
+
 
     private fun joinRoom() {
         val intent = Intent(this, PaintActivity::class.java)
@@ -85,6 +112,7 @@ class MyTestActivity : AppCompatActivity() {
     }
 
     private fun goTestPaintBtn() {
+        println("create rooooom")
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
