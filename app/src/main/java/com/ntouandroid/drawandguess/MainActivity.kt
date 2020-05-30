@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     fun nextpagecheck(){
         var intent = Intent(this@MainActivity, StartActivity::class.java);
         startActivity(intent);
