@@ -2,10 +2,7 @@ package com.ntouandroid.drawandguess.colorPicker
 
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.os.Build
 import android.os.Handler
 import android.os.Message
@@ -13,6 +10,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.RequiresApi
+import com.example.drawtest.ColorPaint
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.PaintActivity
 import com.ntouandroid.drawandguess.bean.PaintBoardDraw
@@ -40,7 +38,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
 
     fun init(width: Int, height: Int): PaintBoard {
-
+        println("HI INIT")
         // bitmap
         mWidth = width
         mHeight = height
@@ -48,22 +46,22 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         // Canvas                   畫布
         mCanvas = Canvas(bitmap!!)
-        mCanvas!!.drawColor(Color.argb(255, 0, 0, 0))
+        mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
 
         // Paint                     畫筆
-        //paint.setAntiAlias(true);//抗锯齿功能
-        //paint.setStyle(Style.FILL);//设置填充样式，Style.STOKE 为空心
-        //paint.setStrokeWidth(30);//设置画笔宽度
-        //paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
 
         r = PaintActivity.colorpaint.r
         g = PaintActivity.colorpaint.g
         b = PaintActivity.colorpaint.b
-
         paint = Paint()
-        paint!!.color = Color.rgb(r, g, b)
-        paint!!.strokeWidth = 10f
+        paint?.color = Color.rgb(r, g, b)
+        paint?.strokeWidth = 10f
 
+//        paint?.isAntiAlias = true;//抗锯齿功能
+//        paint?.style = Paint.Style.FILL;//设置填充样式，Style.STOKE 为空心
+        //paint.setStrokeWidth(30);//设置画笔宽度
+        //paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
+        invalidate()
         return this
     }
 
@@ -78,6 +76,23 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
             userId
         )
         myDrawWebSocketListener!!.setHandler(myHandler)
+    }
+
+    fun cleanBackground(){
+        bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
+        mCanvas = Canvas(bitmap!!)
+        mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
+        invalidate()
+    }
+
+    fun erase(isErase: Boolean){
+        PaintActivity.colorpaint = ColorPaint(0, 0, 0, 30.0f)
+//        if(isErase){
+//            paint?.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+//        }else{
+//            paint?.xfermode = null
+//        }
+
     }
 
     fun changeColor() {
@@ -96,9 +111,8 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-
-        if (canvas != null && bitmap != null && paint != null) {
-            canvas.drawBitmap(bitmap!!, 0f, 0f, paint)
+        if (bitmap != null && paint != null) {
+            canvas?.drawBitmap(bitmap!!, 0f, 0f, paint)
         }
 
     }
@@ -109,7 +123,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
+        println("HI onTouchEvent")
 //        if(PaintActivity.userid!= PaintActivity.nextid){
 //            return true
 //        }
@@ -156,10 +170,6 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }
 
         return true
-    }
-
-    fun clean() {
-        mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
     }
 
     fun saveBitmap(stream: OutputStream) {

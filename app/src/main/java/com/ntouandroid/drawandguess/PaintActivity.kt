@@ -42,11 +42,19 @@ class PaintActivity : AppCompatActivity() {
     lateinit var tvMessage: TextView
     lateinit var btnSendMessage: Button
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
+    lateinit var paintB: PaintBoard
+    var eraserMode = false
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
+
+        paintB = findViewById(R.id.layout_paint_board)
+        paintB.post(Runnable {
+            paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
+        })
 
         lateinit var btnColorPreview: Button
         eraser = findViewById(R.id.eraser)
@@ -67,10 +75,7 @@ class PaintActivity : AppCompatActivity() {
         userid = intent.getStringExtra("userid")
         userName = intent.getStringExtra("userName")
 
-        val paintB: PaintBoard = findViewById(R.id.layout_paint_board)
-        paintB.post(Runnable {
-            paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
-        })
+
         initChatRoom()
 
         btnSendMessage.setOnClickListener { sendMessage() }
@@ -266,8 +271,11 @@ class PaintActivity : AppCompatActivity() {
         var userName: String = ""
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun eraserFun() {
-        colorpaint = ColorPaint(0, 0, 0, 30.0f)
+
+        eraserMode = !eraserMode
+        paintB.erase(eraserMode)
     }
 
     fun sizeChange() {
@@ -288,8 +296,9 @@ class PaintActivity : AppCompatActivity() {
         )
     }
 
-    fun backgroundClean() {
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun backgroundClean() {
+        paintB.cleanBackground()
     }
 
     fun getColorString(): String {
@@ -315,8 +324,8 @@ class PaintActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             val respUserActionRoomBean = myRepository.quitRoom(userid, roomid)
             println(respUserActionRoomBean)
-            if(respUserActionRoomBean.result!!){ // quit game success
-            } else{// quit game failure
+            if (respUserActionRoomBean.result!!) { // quit game success
+            } else {// quit game failure
 
             }
         }
