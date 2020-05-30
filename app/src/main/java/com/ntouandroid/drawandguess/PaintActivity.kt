@@ -32,6 +32,7 @@ class PaintActivity : AppCompatActivity() {
     var sizeNumGet: Float = 10.0f
     lateinit var clean: Button
     lateinit var btnColorSelected: Button
+    lateinit var backgroundClean:Button
 
     lateinit var colorR: SeekBar
     lateinit var colorG: SeekBar
@@ -57,6 +58,7 @@ class PaintActivity : AppCompatActivity() {
 
         clean = findViewById(R.id.backgroundClean)
         btnColorSelected = findViewById(R.id.btnColorSelected)
+        backgroundClean = findViewById(R.id.backgroundClean)
 
         initColorPickerDialog()
         eraser.setOnClickListener { eraserFun() }
