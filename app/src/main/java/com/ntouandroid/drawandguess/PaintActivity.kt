@@ -66,7 +66,6 @@ class PaintActivity : AppCompatActivity() {
 
         clean = findViewById(R.id.backgroundClean)
         btnColorSelected = findViewById(R.id.btnColorSelected)
-        backgroundClean = findViewById(R.id.backgroundClean)
 
         initColorPickerDialog()
         eraser.setOnClickListener { eraserFun() }
