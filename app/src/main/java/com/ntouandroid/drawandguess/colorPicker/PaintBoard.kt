@@ -82,6 +82,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun cleanBackground() {
+        println("cleanBackground")
         val paintBoardDraw = PaintBoardDraw(
             "clean",
             "",
@@ -208,8 +209,15 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun paintBoardDrawBeanActionDispatcher(paintBDBean: PaintBoardDraw) {
         when (paintBDBean.action) {
-            "draw" -> draw(paintBDBean)
-            "clean" -> cleanBackground()
+            "draw" -> {
+                draw(paintBDBean)
+            }
+            "clean" -> {
+                cleanBackground()
+            }
+            else -> {
+                println("action not exist")
+            }
         }
     }
 
