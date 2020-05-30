@@ -19,6 +19,7 @@ import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
 import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
+import com.ntouandroid.drawandguess.utils.GameTimer
 import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,6 +46,7 @@ class PaintActivity : AppCompatActivity() {
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
     lateinit var paintB: PaintBoard
     var eraserMode = false
+    lateinit var mTimer: GameTimer
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -80,6 +82,29 @@ class PaintActivity : AppCompatActivity() {
         initChatRoom()
 
         btnSendMessage.setOnClickListener { sendMessage() }
+
+
+        val timeSec = 5f
+
+
+        mTimer = GameTimer(object : GameTimer.TimerBarController {
+            override fun timerOnUpdate() {
+                println("計時器進度條跳一次")
+            }
+
+            override fun timesUp() {
+                println("計時器進度條停止")
+            }
+
+        })
+        mTimer.secondsCount = timeSec
+        mTimer.maxTimeInSeconds = timeSec
+
+        mTimer.startTimer()
+
+
+
+
 
 
     }
@@ -338,5 +363,17 @@ class PaintActivity : AppCompatActivity() {
             outerClass.get()?.tvMessage?.append(msg?.obj.toString())
         }
 
+    }
+
+    fun gamestart(){
+        if(userid == nextid){
+            //lock chat
+            etMessage.setEnabled(false)
+        }
+        else{
+            etMessage.setEnabled(true)
+        }
+
+        //mTimer.startTimer()
     }
 }
