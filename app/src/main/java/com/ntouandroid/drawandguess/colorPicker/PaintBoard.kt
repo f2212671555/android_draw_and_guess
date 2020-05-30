@@ -153,7 +153,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                         r,
                         g,
                         b,
-                        size
+                        size / (mHeight * mWidth)
                     )
                     startX = event.x
                     startY = event.y
@@ -184,7 +184,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         paint?.color = Color.rgb(r, g, b)
 
-        size = paintBDBean.size
+        size = paintBDBean.size * mWidth * mHeight
 
         paint?.strokeWidth = size
     }
