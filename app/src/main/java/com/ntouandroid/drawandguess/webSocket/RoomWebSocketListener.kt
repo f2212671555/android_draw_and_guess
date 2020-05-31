@@ -49,7 +49,6 @@ class RoomWebSocketListener : WebSocketListener() {
         Log.d("onOpen", "RoomWebSocketListener onOpen")
         this.isConnected = true
         this.webSocket = webSocket
-
     }
 
     private fun close() {

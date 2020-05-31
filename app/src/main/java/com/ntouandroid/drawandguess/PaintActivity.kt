@@ -154,7 +154,9 @@ class PaintActivity : AppCompatActivity() {
 
             MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
 
-            myRoomWebSocketListener!!.setHandler(myHandler)
+            myRoomWebSocketListener?.setHandler(myHandler)
+            // send message to server tell everyone i am coming
+            myRoomWebSocketListener?.sendMessage(MessageBean("join", userid, roomid, "", false))
         }
 
     }
@@ -380,6 +382,16 @@ class PaintActivity : AppCompatActivity() {
             val respUserActionRoomBean = myRepository.quitRoom(userid, roomid)
             println(respUserActionRoomBean)
             if (respUserActionRoomBean.result!!) { // quit game success
+                // send message to server tell everyone i quit
+                myRoomWebSocketListener?.sendMessage(
+                    MessageBean(
+                        "quit",
+                        respUserActionRoomBean.userId,
+                        respUserActionRoomBean.roomId,
+                        "",
+                        false
+                    )
+                )
             } else {// quit game failure
 
             }
@@ -396,6 +408,14 @@ class PaintActivity : AppCompatActivity() {
                 }
                 "answer" -> {
                     outerClass.get()?.tvMessage?.append(messageBean.message)
+                }
+                "join" -> {
+                    //某某人加入房間
+                    outerClass.get()?.refreshUserList()
+                }
+                "quit" -> {
+                    //某某人離開房間
+                    outerClass.get()?.refreshUserList()
                 }
                 else -> {
                     println("handleMessage missing type!!")
@@ -451,9 +471,14 @@ class PaintActivity : AppCompatActivity() {
             drawLayout.openDrawer(rightDrawerView)
         }
 
-        val menu = leftDrawerView.menu
-        val subMenu = menu.addSubMenu("參賽者")
+        refreshUserList()
+    }
 
+    private fun refreshUserList() {
+        val leftDrawerView: NavigationView = findViewById(R.id.nav_view_left)
+        val menu = leftDrawerView.menu
+        menu.clear()
+        val subMenu = menu.addSubMenu("參賽者")
         val myRepository = MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             println(roomid)
