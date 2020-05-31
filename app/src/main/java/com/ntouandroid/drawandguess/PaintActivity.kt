@@ -8,15 +8,16 @@ import android.os.Handler
 import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.drawtest.ColorPaint
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
-import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
 import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
 import com.ntouandroid.drawandguess.utils.GameTimer
@@ -33,7 +34,7 @@ class PaintActivity : AppCompatActivity() {
     var sizeNumGet: Float = 10.0f
     lateinit var clean: Button
     lateinit var btnColorSelected: Button
-    lateinit var backgroundClean:Button
+    lateinit var backgroundClean: Button
 
     lateinit var colorR: SeekBar
     lateinit var colorG: SeekBar
@@ -48,12 +49,12 @@ class PaintActivity : AppCompatActivity() {
     var eraserMode = false
     lateinit var mTimer: GameTimer
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
 
+        initDrawers()
         paintB = findViewById(R.id.layout_paint_board)
         paintB.post(Runnable {
             paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
@@ -101,10 +102,6 @@ class PaintActivity : AppCompatActivity() {
         mTimer.maxTimeInSeconds = timeSec
 
         mTimer.startTimer()
-
-
-
-
 
 
     }
@@ -365,15 +362,51 @@ class PaintActivity : AppCompatActivity() {
 
     }
 
-    fun gamestart(){
-        if(userid == nextid){
+    fun gamestart() {
+        if (userid == nextid) {
             //lock chat
             etMessage.setEnabled(false)
-        }
-        else{
+        } else {
             etMessage.setEnabled(true)
         }
 
         //mTimer.startTimer()
+    }
+
+    private fun initDrawers() {
+
+        val drawLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        drawLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {
+            }
+
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            }
+
+        })
+
+        // left drawer
+        val btnLeftNav: Button = findViewById(R.id.btnLeftNav)
+        val leftDrawerView: View = findViewById(R.id.nav_view_left)
+        btnLeftNav.setOnClickListener {
+            drawLayout.openDrawer(leftDrawerView)
+        }
+
+        // right drawer
+
+        val btnRightNav: Button = findViewById(R.id.btnRightNav)
+        val rightDrawerView: View = findViewById(R.id.nav_view_right)
+        btnRightNav.setOnClickListener {
+            drawLayout.openDrawer(rightDrawerView)
+        }
     }
 }

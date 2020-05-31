@@ -28,7 +28,7 @@ class MyTestActivity : AppCompatActivity() {
 
     lateinit var progressBar: ProgressBar
     var isAnimatingUpdatingDelayed: Boolean = false
-    lateinit var mTimer:GameTimer
+    lateinit var mTimer: GameTimer
     var myRepository: MyRepository = MyRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +54,9 @@ class MyTestActivity : AppCompatActivity() {
 
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-                println(mTimer.secondsCount*100)
+                println(mTimer.secondsCount * 100)
                 println("計時器進度條跳一次")
-                update(-1,(mTimer.secondsCount*100).toInt())
+                update(-1, (mTimer.secondsCount * 100).toInt())
             }
 
             override fun timesUp() {
