@@ -54,13 +54,13 @@ class MyTestActivity : AppCompatActivity() {
 
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-                println(mTimer.secondsCount * 100)
-                println("計時器進度條跳一次")
+//                println(mTimer.secondsCount * 100)
+//                println("計時器進度條跳一次")
                 update(-1, (mTimer.secondsCount * 100).toInt())
             }
 
             override fun timesUp() {
-                println("計時器進度條停止")
+//                println("計時器進度條停止")
             }
 
         })

@@ -15,7 +15,7 @@ interface MyServiceInterface {
     suspend fun getRoomList(): List<RoomBean>
 
     @GET(Config.ROOM_USERS)
-    suspend fun getRoomUsers(@Query(Config.ROOM_ID_KEY) roomId: String): List<UserBean>
+    suspend fun getRoomUsers(@Query(Config.ROOM_ID_KEY) roomId: String): RoomBean
 
     @POST(Config.CREATE_ROOM)
     suspend fun createRoom(@Body roomBean: RoomBean): RoomBean

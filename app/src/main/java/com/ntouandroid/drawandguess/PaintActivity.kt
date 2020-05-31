@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -17,6 +18,9 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.drawtest.ColorPaint
+import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.ntouandroid.drawandguess.bean.MessageBean
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
@@ -26,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+
 
 class PaintActivity : AppCompatActivity() {
 
@@ -42,8 +47,11 @@ class PaintActivity : AppCompatActivity() {
     lateinit var strColor: EditText
 
     lateinit var etMessage: EditText
+    lateinit var etChat: EditText
     lateinit var tvMessage: TextView
+    lateinit var tvChat: TextView
     lateinit var btnSendMessage: Button
+    lateinit var btnChat: Button
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
     lateinit var paintB: PaintBoard
     var eraserMode = false
@@ -54,7 +62,13 @@ class PaintActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
 
+        roomid = intent.getStringExtra("roomid")
+        userid = intent.getStringExtra("userid")
+        userName = intent.getStringExtra("userName")
+
+        initChatRoom()
         initDrawers()
+
         paintB = findViewById(R.id.layout_paint_board)
         paintB.post(Runnable {
             paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
@@ -64,6 +78,16 @@ class PaintActivity : AppCompatActivity() {
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
         etMessage = findViewById(R.id.message_et)
+        val rightNavView: NavigationView = findViewById(R.id.nav_view_right)
+        val rightNavViewHeader = rightNavView.getHeaderView(0)
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        rightNavViewHeader.layoutParams.height = height
+        etChat = rightNavViewHeader.findViewById(R.id.et_chat)
+        tvChat = rightNavViewHeader.findViewById(R.id.tv_chat)
+        btnChat = rightNavViewHeader.findViewById(R.id.btn_chat)
+
         tvMessage = findViewById(R.id.tv_recieve)
         btnSendMessage = findViewById(R.id.send_message_btn)
 
@@ -75,26 +99,20 @@ class PaintActivity : AppCompatActivity() {
         initSizeChangeDialog()
         clean.setOnClickListener { backgroundClean() }
 
-        roomid = intent.getStringExtra("roomid")
-        userid = intent.getStringExtra("userid")
-        userName = intent.getStringExtra("userName")
 
-
-        initChatRoom()
-
-        btnSendMessage.setOnClickListener { sendMessage() }
-
+        btnSendMessage.setOnClickListener { sendMessage("answer") }
+        btnChat.setOnClickListener { sendMessage("chat") }
 
         val timeSec = 5f
 
 
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-                println("計時器進度條跳一次")
+//                println("計時器進度條跳一次")
             }
 
             override fun timesUp() {
-                println("計時器進度條停止")
+//                println("計時器進度條停止")
             }
 
         })
@@ -106,9 +124,23 @@ class PaintActivity : AppCompatActivity() {
 
     }
 
-    private fun sendMessage() {
+    private fun sendMessage(type: String) {
         if (myRoomWebSocketListener != null) {
-            myRoomWebSocketListener!!.getWebSocket()?.send(etMessage.text.toString())
+            when (type) {
+                "chat" -> {
+                    val messageBean =
+                        MessageBean(type, userid, roomid, etChat.text.toString(), false)
+                    myRoomWebSocketListener!!.sendMessage(messageBean)
+                }
+                "answer" -> {
+                    val messageBean =
+                        MessageBean(type, userid, roomid, etMessage.text.toString(), false)
+                    myRoomWebSocketListener!!.sendMessage(messageBean)
+                }
+                else -> {
+                    println("sendMessage missing type")
+                }
+            }
         }
     }
 
@@ -357,9 +389,19 @@ class PaintActivity : AppCompatActivity() {
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
         override fun handleMessage(msg: Message) {
-            outerClass.get()?.tvMessage?.append(msg?.obj.toString())
+            val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
+            when (messageBean.type) {
+                "chat" -> {
+                    outerClass.get()?.tvChat?.append(messageBean.message)
+                }
+                "answer" -> {
+                    outerClass.get()?.tvMessage?.append(messageBean.message)
+                }
+                else -> {
+                    println("handleMessage missing type!!")
+                }
+            }
         }
-
     }
 
     fun gamestart() {
@@ -396,7 +438,7 @@ class PaintActivity : AppCompatActivity() {
 
         // left drawer
         val btnLeftNav: Button = findViewById(R.id.btnLeftNav)
-        val leftDrawerView: View = findViewById(R.id.nav_view_left)
+        val leftDrawerView: NavigationView = findViewById(R.id.nav_view_left)
         btnLeftNav.setOnClickListener {
             drawLayout.openDrawer(leftDrawerView)
         }
@@ -404,9 +446,24 @@ class PaintActivity : AppCompatActivity() {
         // right drawer
 
         val btnRightNav: Button = findViewById(R.id.btnRightNav)
-        val rightDrawerView: View = findViewById(R.id.nav_view_right)
+        val rightDrawerView: NavigationView = findViewById(R.id.nav_view_right)
         btnRightNav.setOnClickListener {
             drawLayout.openDrawer(rightDrawerView)
+        }
+
+        val menu = leftDrawerView.menu
+        val subMenu = menu.addSubMenu("參賽者")
+
+        val myRepository = MyRepository()
+        GlobalScope.launch(Dispatchers.IO) {
+            println(roomid)
+            val roomList = myRepository.getRoomUsers(roomid)
+            runOnUiThread {
+                roomList.usersList?.forEach { user ->
+                    println(user)
+                    subMenu.add(user.userName)
+                }
+            }
         }
     }
 }
