@@ -81,6 +81,10 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         myDrawWebSocketListener!!.setHandler(myHandler)
     }
 
+    fun closeWebSocket(){
+        myDrawWebSocketListener?.close()
+    }
+
     fun cleanBackground() {
         println("cleanBackground")
         val paintBoardDraw = PaintBoardDraw(

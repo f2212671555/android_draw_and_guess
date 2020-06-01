@@ -1,6 +1,7 @@
 package com.ntouandroid.drawandguess
 
 import android.app.Dialog
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,19 +9,19 @@ import android.os.Handler
 import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.DisplayMetrics
+import android.view.Gravity
+import android.view.SubMenu
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.drawtest.ColorPaint
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.bean.MessageBean
+import com.ntouandroid.drawandguess.bean.RoomBean
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
@@ -49,13 +50,15 @@ class PaintActivity : AppCompatActivity() {
     lateinit var etMessage: EditText
     lateinit var etChat: EditText
     lateinit var tvMessage: TextView
-    lateinit var tvChat: TextView
     lateinit var btnSendMessage: Button
     lateinit var btnChat: Button
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
     lateinit var paintB: PaintBoard
     var eraserMode = false
     lateinit var mTimer: GameTimer
+
+    val Int.dp: Int
+        get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,15 +81,14 @@ class PaintActivity : AppCompatActivity() {
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
         etMessage = findViewById(R.id.message_et)
-        val rightNavView: NavigationView = findViewById(R.id.nav_view_right)
-        val rightNavViewHeader = rightNavView.getHeaderView(0)
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        rightNavViewHeader.layoutParams.height = height
-        etChat = rightNavViewHeader.findViewById(R.id.et_chat)
-        tvChat = rightNavViewHeader.findViewById(R.id.tv_chat)
-        btnChat = rightNavViewHeader.findViewById(R.id.btn_chat)
+//        val rightNavView: NavigationView = findViewById(R.id.nav_view_right)
+//        val rightNavViewHeader = rightNavView.getHeaderView(0)
+//        val displayMetrics = DisplayMetrics()
+//        windowManager.defaultDisplay.getMetrics(displayMetrics)
+//        val height = displayMetrics.heightPixels
+//        rightNavViewHeader.layoutParams.height = height
+        etChat = findViewById(R.id.et_chat)
+        btnChat = findViewById(R.id.btn_chat)
 
         tvMessage = findViewById(R.id.tv_recieve)
         btnSendMessage = findViewById(R.id.send_message_btn)
@@ -129,12 +131,19 @@ class PaintActivity : AppCompatActivity() {
             when (type) {
                 "chat" -> {
                     val messageBean =
-                        MessageBean(type, userid, roomid, etChat.text.toString(), false)
+                        MessageBean(type, userid, userName, roomid, etChat.text.toString(), false)
                     myRoomWebSocketListener!!.sendMessage(messageBean)
                 }
                 "answer" -> {
                     val messageBean =
-                        MessageBean(type, userid, roomid, etMessage.text.toString(), false)
+                        MessageBean(
+                            type,
+                            userid,
+                            userName,
+                            roomid,
+                            etMessage.text.toString(),
+                            false
+                        )
                     myRoomWebSocketListener!!.sendMessage(messageBean)
                 }
                 else -> {
@@ -156,7 +165,16 @@ class PaintActivity : AppCompatActivity() {
 
             myRoomWebSocketListener?.setHandler(myHandler)
             // send message to server tell everyone i am coming
-            myRoomWebSocketListener?.sendMessage(MessageBean("join", userid, roomid, "", false))
+            myRoomWebSocketListener?.sendMessage(
+                MessageBean(
+                    "join",
+                    userid,
+                    userName,
+                    roomid,
+                    "",
+                    false
+                )
+            )
         }
 
     }
@@ -374,29 +392,45 @@ class PaintActivity : AppCompatActivity() {
 //        ArchLifecycleApp.userStatus = ArchLifecycleApp.JOIN_ROOM
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
         println("onPause")
-        val myRepository: MyRepository = MyRepository()
-        GlobalScope.launch(Dispatchers.IO) {
-            val respUserActionRoomBean = myRepository.quitRoom(userid, roomid)
-            println(respUserActionRoomBean)
-            if (respUserActionRoomBean.result!!) { // quit game success
-                // send message to server tell everyone i quit
-                myRoomWebSocketListener?.sendMessage(
-                    MessageBean(
-                        "quit",
-                        respUserActionRoomBean.userId,
-                        respUserActionRoomBean.roomId,
-                        "",
-                        false
-                    )
-                )
-            } else {// quit game failure
+        // 倒數 後 退出房間
+        // close webSocket 觸發 退出房間
+        paintB.closeWebSocket()
+        myRoomWebSocketListener?.close()
+    }
 
+    fun addChatCardView(messageBean: MessageBean) {
+        val llChat: LinearLayout = findViewById(R.id.ll_chat)
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        var text = ""
+        if (messageBean.userId == userid) { // 自己
+            params.apply {
+                gravity = Gravity.END
+                topMargin = 10.dp
+                leftMargin = 20.dp
             }
+            text = "你 : ${messageBean.message}"
+        } else {
+            params.apply {
+                gravity = Gravity.START
+                topMargin = 10.dp
+                rightMargin = 20.dp
+            }
+            text = "${messageBean.userName} : ${messageBean.message}"
         }
-//        ArchLifecycleApp.userStatus = ArchLifecycleApp.QUIT_ROOM
+        val cardView = CardView(this)
+        cardView.radius = 10.dp.toFloat()
+        cardView.layoutParams = params
+        val t = TextView(this)
+        t.text = text
+        cardView.addView(t)
+        llChat.addView(cardView)
     }
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
@@ -404,18 +438,18 @@ class PaintActivity : AppCompatActivity() {
             val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
             when (messageBean.type) {
                 "chat" -> {
-                    outerClass.get()?.tvChat?.append(messageBean.message)
+                    outerClass.get()?.addChatCardView(messageBean)
                 }
                 "answer" -> {
                     outerClass.get()?.tvMessage?.append(messageBean.message)
                 }
                 "join" -> {
                     //某某人加入房間
-                    outerClass.get()?.refreshUserList()
+                    outerClass.get()?.modifyUserList(messageBean)
                 }
                 "quit" -> {
                     //某某人離開房間
-                    outerClass.get()?.refreshUserList()
+                    outerClass.get()?.modifyUserList(messageBean)
                 }
                 else -> {
                     println("handleMessage missing type!!")
@@ -471,24 +505,49 @@ class PaintActivity : AppCompatActivity() {
             drawLayout.openDrawer(rightDrawerView)
         }
 
-        refreshUserList()
+        initUserList()
     }
 
-    private fun refreshUserList() {
+    private lateinit var subMenu: SubMenu
+    private var roomBean: RoomBean? = null
+    private fun initUserList() {
         val leftDrawerView: NavigationView = findViewById(R.id.nav_view_left)
         val menu = leftDrawerView.menu
-        menu.clear()
-        val subMenu = menu.addSubMenu("參賽者")
+        subMenu = menu.addSubMenu("參賽者")
         val myRepository = MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             println(roomid)
-            val roomList = myRepository.getRoomUsers(roomid)
+            roomBean = myRepository.getRoomUsers(roomid)
+
             runOnUiThread {
-                roomList.usersList?.forEach { user ->
+                roomBean!!.usersList?.forEach { user ->
                     println(user)
                     subMenu.add(user.userName)
                 }
             }
+        }
+    }
+
+    private fun modifyUserList(messageBean: MessageBean) {
+
+        if (messageBean.type == "join") {
+            roomBean!!.usersList?.forEach { user ->
+                if (user.userId == messageBean.userId) {
+                    return
+                }
+            }
+                subMenu.add(messageBean.userName)
+        } else if (messageBean.type == "quit") {
+            val iterator = roomBean!!.usersList?.iterator()
+            if (iterator != null) {
+                while (iterator.hasNext()) {
+                    val user = iterator.next()
+                    if (user.userId == messageBean.userId) {
+                        iterator.remove()
+                    }
+                }
+            }
+//                subMenu.removeItem()
         }
     }
 }

@@ -51,7 +51,7 @@ class RoomWebSocketListener : WebSocketListener() {
         this.webSocket = webSocket
     }
 
-    private fun close() {
+    fun close() {
         webSocket?.close(1000, "RoomWebSocketListener Connection closed")
     }
 

@@ -51,7 +51,7 @@ class DrawWebSocketListener : WebSocketListener() {
 
     }
 
-    private fun close() {
+    fun close() {
         webSocket?.close(1000, "DrawWebSocketListener Connection closed")
     }
 

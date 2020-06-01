@@ -23,11 +23,11 @@ interface MyServiceInterface {
     @POST(Config.JOIN_ROOM)
     suspend fun joinRoom(@Body userBean: UserBean): UserActionRoomBean
 
-    @GET(Config.QUIT_ROOM)
-    suspend fun quitRoom(
-        @Query(Config.USER_ID_KEY) userId: String,
-        @Query(Config.ROOM_ID_KEY) roomId: String
-    ): UserActionRoomBean
+//    @GET(Config.QUIT_ROOM)
+//    suspend fun quitRoom(
+//        @Query(Config.USER_ID_KEY) userId: String,
+//        @Query(Config.ROOM_ID_KEY) roomId: String
+//    ): UserActionRoomBean
 
     @GET(Config.START_DRAW)
     suspend fun startDraw(@Query(Config.ROOM_ID_KEY) roomId: String): TopicDetailBean

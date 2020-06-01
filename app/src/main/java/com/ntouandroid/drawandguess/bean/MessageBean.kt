@@ -7,6 +7,8 @@ data class MessageBean(
     var type: String?,
     @SerializedName("userId")
     var userId: String?,
+    @SerializedName("userName")
+    var userName: String?,
     @SerializedName("roomId")
     var roomId: String?,
     @SerializedName("message")

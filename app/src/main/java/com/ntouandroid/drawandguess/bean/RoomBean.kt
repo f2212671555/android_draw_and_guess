@@ -8,7 +8,7 @@ data class RoomBean(
     @SerializedName("roomName")
     var roomName: String?,
     @SerializedName("users")
-    var usersList: List<UserBean>?,
+    var usersList: MutableList<UserBean>?,
     @SerializedName("result")
     var result: Boolean?
 )
