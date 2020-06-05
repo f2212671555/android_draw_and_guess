@@ -116,7 +116,8 @@ class MyTestActivity : AppCompatActivity() {
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
-            val roomBean = RoomBean("", "a好好玩s", null, null)
+            val roomBean = RoomBean
+            ("", "a好好玩s", null, null)
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
             val respUserJoinRoomBean =
