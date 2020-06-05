@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ntouandroid.drawandguess.R
-import com.ntouandroid.drawandguess.model1.bean.MessageBean
-import com.ntouandroid.drawandguess.model1.bean.UserBean
+import com.ntouandroid.drawandguess.model.bean.MessageBean
+import com.ntouandroid.drawandguess.model.bean.UserBean
 
 class UserListAdapter(val context: Context, private var userList: MutableList<UserBean>) :
     RecyclerView.Adapter<UserListAdapter.ViewHolder>() {
