@@ -112,7 +112,6 @@ class MyTestActivity : AppCompatActivity() {
     }
 
     private fun goTestPaintBtn() {
-        println("create rooooom")
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {

@@ -12,6 +12,7 @@ class Config {
         const val JOIN_ROOM = "/room/join"
         const val QUIT_ROOM = "/room/quit"
         const val START_DRAW = "/room/startDraw"
+        const val ROOM_TOPIC = "/room/topic"
         const val WS_ROOM = "/ws/room/"
         const val WS_DRAW = "/ws/draw/"
         const val USER_ID_KEY = "userId"

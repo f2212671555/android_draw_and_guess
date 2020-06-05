@@ -15,4 +15,5 @@ class MyRepository {
     suspend fun createRoom(roomBean: RoomBean) = service.createRoom(roomBean)
     suspend fun joinRoom(userBean: UserBean) = service.joinRoom(userBean)
     suspend fun startDraw(roomId: String) = service.startDraw(roomId)
+    suspend fun getRoomTopic(roomId: String) = service.getRoomTopic(roomId)
 }

@@ -460,6 +460,14 @@ class PaintActivity : AppCompatActivity() {
         //mTimer.startTimer()
     }
 
+    private fun getDrawTopic(){
+        val myRepository = MyRepository()
+        GlobalScope.launch(Dispatchers.IO){
+            val topicDetailBean = myRepository.startDraw(roomid)
+            println(topicDetailBean)
+        }
+    }
+
     private fun initDrawers() {
 
         val drawLayout: DrawerLayout = findViewById(R.id.drawer_layout)

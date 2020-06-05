@@ -29,17 +29,6 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         Log.d("onClosing", "RoomWebSocketListener closing!!")
 
-        // send message to server tell everyone i quit
-        this.sendMessage(
-            MessageBean(
-                "quit",
-                userBean.userId,
-                userBean.userName,
-                userBean.roomId,
-                "",
-                false
-            )
-        )
 
         webSocket.close(1000, null)
         Log.d("onClosing", "Code: $code, Reason: $reason")
@@ -64,17 +53,6 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
         this.isConnected = true
         this.webSocket = webSocket
 
-        // send message to server tell everyone i am coming
-        this.sendMessage(
-            MessageBean(
-                "join",
-                userBean.userId,
-                userBean.userName,
-                userBean.roomId,
-                "",
-                false
-            )
-        )
     }
 
     fun close() {
@@ -96,4 +74,6 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
     fun sendMessage(message: MessageBean) {
         this.webSocket?.send(Gson().toJson(message))
     }
+
+
 }

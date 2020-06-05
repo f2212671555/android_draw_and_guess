@@ -7,8 +7,10 @@ data class TopicDetailBean(
     var category: String?,
     @SerializedName("topic")
     var topic: String?,
-    @SerializedName("userId")
-    var userId: String?,
+    @SerializedName("currentDrawUserId")
+    var currentDrawUserId: String?,
+    @SerializedName("nextDrawUserId")
+    var nextDrawUserId: String?,
     @SerializedName("result")
     var result: Boolean?
 )
