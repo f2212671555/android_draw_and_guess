@@ -6,7 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 
 
-class InternetJudge(val context:Context) {
+class InternetJudge {
     companion object {
         fun isInternetAvailable(context: Context): Boolean {
             var result = false

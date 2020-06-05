@@ -29,6 +29,7 @@ import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.utils.GameTimer
 import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
+import com.ntouandroid.drawandguess.utils.InternetJudge
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
