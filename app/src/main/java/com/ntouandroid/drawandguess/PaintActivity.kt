@@ -22,13 +22,13 @@ import com.example.drawtest.ColorPaint
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.adapter.UserListAdapter
-import com.ntouandroid.drawandguess.bean.MessageBean
-import com.ntouandroid.drawandguess.bean.UserBean
+import com.ntouandroid.drawandguess.model.bean.MessageBean
+import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
-import com.ntouandroid.drawandguess.repository.MyRepository
-import com.ntouandroid.drawandguess.service.MyWebSocket
+import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.utils.GameTimer
-import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
+import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -385,6 +385,13 @@ class PaintActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         println("onPause")
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onDestroy() {
+        super.onDestroy()
+        println("onDestroy")
         // 倒數 後 退出房間
         // close webSocket 觸發 退出房間
         paintB.closeWebSocket()

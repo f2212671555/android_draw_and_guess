@@ -16,9 +16,9 @@ import androidx.annotation.RequiresApi
 import com.example.drawtest.ColorPaint
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.PaintActivity
-import com.ntouandroid.drawandguess.bean.PaintBoardDraw
-import com.ntouandroid.drawandguess.service.MyWebSocket
-import com.ntouandroid.drawandguess.webSocket.DrawWebSocketListener
+import com.ntouandroid.drawandguess.model.bean.PaintBoardDrawBean
+import com.ntouandroid.drawandguess.model.service.MyWebSocket
+import com.ntouandroid.drawandguess.model.webSocket.DrawWebSocketListener
 import java.io.OutputStream
 import java.lang.ref.WeakReference
 
@@ -87,7 +87,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun cleanBackground() {
         println("cleanBackground")
-        val paintBoardDraw = PaintBoardDraw(
+        val paintBoardDraw = PaintBoardDrawBean(
             "clean",
             "",
             0f,
@@ -138,7 +138,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     }
 
-    private fun sendDrawToServer(paintBoardDraw: PaintBoardDraw) {
+    private fun sendDrawToServer(paintBoardDraw: PaintBoardDrawBean) {
         val jsonStr = Gson().toJson(paintBoardDraw)
         myDrawWebSocketListener?.getWebSocket()?.send(jsonStr)
     }
@@ -165,7 +165,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 if (paint != null && mCanvas != null) {
                     mCanvas?.drawLine(startX, startY, stopX, stopY, paint!!)
                     // dp to px
-                    val paintBoardDraw = PaintBoardDraw(
+                    val paintBoardDraw = PaintBoardDrawBean(
                         "draw",
                         "drawLine",
                         startX / mWidth,
@@ -199,7 +199,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     // for other player draw
-    private fun setColorAndSize(paintBDBean: PaintBoardDraw) {
+    private fun setColorAndSize(paintBDBean: PaintBoardDrawBean) {
         r = paintBDBean.r
         g = paintBDBean.g
         b = paintBDBean.b
@@ -211,7 +211,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         paint?.strokeWidth = size
     }
 
-    fun paintBoardDrawBeanActionDispatcher(paintBDBean: PaintBoardDraw) {
+    fun paintBoardDrawBeanActionDispatcher(paintBDBean: PaintBoardDrawBean) {
         when (paintBDBean.action) {
             "draw" -> {
                 draw(paintBDBean)
@@ -226,7 +226,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     // for other player draw
-    fun draw(paintBDBean: PaintBoardDraw) {
+    fun draw(paintBDBean: PaintBoardDrawBean) {
         setColorAndSize(paintBDBean)
         if (mCanvas != null && paint != null) {
             mCanvas?.drawLine(
@@ -245,7 +245,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     class MyHandler(private val outerClass: WeakReference<PaintBoard>) : Handler() {
         override fun handleMessage(msg: Message) {
             val text = msg?.obj.toString()
-            val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDraw::class.java)
+            val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDrawBean::class.java)
             outerClass.get()?.paintBoardDrawBeanActionDispatcher(paintBoardDrawBean)
         }
 
