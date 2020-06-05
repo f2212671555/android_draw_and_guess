@@ -16,9 +16,9 @@ import androidx.annotation.RequiresApi
 import com.example.drawtest.ColorPaint
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.PaintActivity
-import com.ntouandroid.drawandguess.model.bean.PaintBoardDrawBean
-import com.ntouandroid.drawandguess.model.service.MyWebSocket
-import com.ntouandroid.drawandguess.model.webSocket.DrawWebSocketListener
+import com.ntouandroid.drawandguess.model1.bean.PaintBoardDrawBean
+import com.ntouandroid.drawandguess.model1.service.MyWebSocket
+import com.ntouandroid.drawandguess.model1.webSocket.DrawWebSocketListener
 import java.io.OutputStream
 import java.lang.ref.WeakReference
 

@@ -8,10 +8,10 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.ntouandroid.drawandguess.model.bean.RoomBean
-import com.ntouandroid.drawandguess.model.bean.UserBean
+import com.ntouandroid.drawandguess.model1.bean.RoomBean
+import com.ntouandroid.drawandguess.model1.bean.UserBean
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
-import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.model1.repository.MyRepository
 import com.ntouandroid.drawandguess.utils.GameTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
