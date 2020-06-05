@@ -6,12 +6,13 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.bean.MessageBean
+import com.ntouandroid.drawandguess.bean.UserBean
 import okhttp3.HttpUrl
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
 
-class RoomWebSocketListener : WebSocketListener() {
+class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
     private var handler: Handler? = null
     private var url: HttpUrl? = null
     private var isConnected: Boolean = false
@@ -27,6 +28,19 @@ class RoomWebSocketListener : WebSocketListener() {
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         Log.d("onClosing", "RoomWebSocketListener closing!!")
+
+        // send message to server tell everyone i quit
+        this.sendMessage(
+            MessageBean(
+                "quit",
+                userBean.userId,
+                userBean.userName,
+                userBean.roomId,
+                "",
+                false
+            )
+        )
+
         webSocket.close(1000, null)
         Log.d("onClosing", "Code: $code, Reason: $reason")
 //        this.isConnected = false
@@ -49,6 +63,18 @@ class RoomWebSocketListener : WebSocketListener() {
         Log.d("onOpen", "RoomWebSocketListener onOpen")
         this.isConnected = true
         this.webSocket = webSocket
+
+        // send message to server tell everyone i am coming
+        this.sendMessage(
+            MessageBean(
+                "join",
+                userBean.userId,
+                userBean.userName,
+                userBean.roomId,
+                "",
+                false
+            )
+        )
     }
 
     fun close() {

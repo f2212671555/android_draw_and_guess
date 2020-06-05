@@ -10,18 +10,20 @@ import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.Gravity
-import android.view.SubMenu
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.drawtest.ColorPaint
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
+import com.ntouandroid.drawandguess.adapter.UserListAdapter
 import com.ntouandroid.drawandguess.bean.MessageBean
-import com.ntouandroid.drawandguess.bean.RoomBean
+import com.ntouandroid.drawandguess.bean.UserBean
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.repository.MyRepository
 import com.ntouandroid.drawandguess.service.MyWebSocket
@@ -69,8 +71,9 @@ class PaintActivity : AppCompatActivity() {
         userid = intent.getStringExtra("userid")
         userName = intent.getStringExtra("userName")
 
-        initChatRoom()
         initDrawers()
+        initChatRoom()
+
 
         paintB = findViewById(R.id.layout_paint_board)
         paintB.post(Runnable {
@@ -156,27 +159,13 @@ class PaintActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initChatRoom() {
 
-        myRoomWebSocketListener = RoomWebSocketListener()
+        myRoomWebSocketListener = RoomWebSocketListener(UserBean(roomid, userid, userName))
         val outerClass = WeakReference(this)
         val myHandler = MyHandler(outerClass)
-        GlobalScope.launch(Dispatchers.IO) {
 
-            MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
+        MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
 
-            myRoomWebSocketListener?.setHandler(myHandler)
-            // send message to server tell everyone i am coming
-            myRoomWebSocketListener?.sendMessage(
-                MessageBean(
-                    "join",
-                    userid,
-                    userName,
-                    roomid,
-                    "",
-                    false
-                )
-            )
-        }
-
+        myRoomWebSocketListener?.setHandler(myHandler)
     }
 
     private fun initColorPickerDialog() {
@@ -438,9 +427,11 @@ class PaintActivity : AppCompatActivity() {
             val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
             when (messageBean.type) {
                 "chat" -> {
+                    //某某人聊天
                     outerClass.get()?.addChatCardView(messageBean)
                 }
                 "answer" -> {
+                    //某某人猜答案
                     outerClass.get()?.tvMessage?.append(messageBean.message)
                 }
                 "join" -> {
@@ -508,22 +499,24 @@ class PaintActivity : AppCompatActivity() {
         initUserList()
     }
 
-    private lateinit var subMenu: SubMenu
-    private var roomBean: RoomBean? = null
+    //    private var usersList: MutableList<UserBean> = ArrayList()
+    private lateinit var userListAdapter: UserListAdapter
     private fun initUserList() {
-        val leftDrawerView: NavigationView = findViewById(R.id.nav_view_left)
-        val menu = leftDrawerView.menu
-        subMenu = menu.addSubMenu("參賽者")
+        var usersList: MutableList<UserBean> = ArrayList()
+        // must set up in main thread --start
+        val userListView: RecyclerView = findViewById(R.id.view_user_list)
+        userListAdapter = UserListAdapter(this, usersList)
+        userListView.adapter = userListAdapter
+        userListView.layoutManager = LinearLayoutManager(this)
+        // must set up in main thread -- end
+
         val myRepository = MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             println(roomid)
-            roomBean = myRepository.getRoomUsers(roomid)
-
+            val roomBean = myRepository.getRoomUsers(roomid)
+            usersList = roomBean.usersList!!
             runOnUiThread {
-                roomBean!!.usersList?.forEach { user ->
-                    println(user)
-                    subMenu.add(user.userName)
-                }
+                userListAdapter.updateAll(usersList)
             }
         }
     }
@@ -531,23 +524,11 @@ class PaintActivity : AppCompatActivity() {
     private fun modifyUserList(messageBean: MessageBean) {
 
         if (messageBean.type == "join") {
-            roomBean!!.usersList?.forEach { user ->
-                if (user.userId == messageBean.userId) {
-                    return
-                }
+            if (messageBean.userId != userid) {
+                userListAdapter.add(messageBean)
             }
-                subMenu.add(messageBean.userName)
         } else if (messageBean.type == "quit") {
-            val iterator = roomBean!!.usersList?.iterator()
-            if (iterator != null) {
-                while (iterator.hasNext()) {
-                    val user = iterator.next()
-                    if (user.userId == messageBean.userId) {
-                        iterator.remove()
-                    }
-                }
-            }
-//                subMenu.removeItem()
+            userListAdapter.remove(messageBean.userId!!)
         }
     }
 }
