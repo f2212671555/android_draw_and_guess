@@ -1,6 +1,7 @@
 package com.ntouandroid.drawandguess
 
 import android.app.Dialog
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -8,23 +9,31 @@ import android.os.Handler
 import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.Button
-import android.widget.EditText
-import android.widget.SeekBar
-import android.widget.TextView
+import android.view.Gravity
+import android.view.View
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.drawtest.ColorPaint
+import com.google.android.material.navigation.NavigationView
+import com.google.gson.Gson
+import com.ntouandroid.drawandguess.adapter.UserListAdapter
+import com.ntouandroid.drawandguess.model.bean.MessageBean
+import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
-import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
-import com.ntouandroid.drawandguess.repository.MyRepository
-import com.ntouandroid.drawandguess.service.MyWebSocket
+import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.utils.GameTimer
-import com.ntouandroid.drawandguess.webSocket.RoomWebSocketListener
+import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+
 
 class PaintActivity : AppCompatActivity() {
 
@@ -33,7 +42,7 @@ class PaintActivity : AppCompatActivity() {
     var sizeNumGet: Float = 10.0f
     lateinit var clean: Button
     lateinit var btnColorSelected: Button
-    lateinit var backgroundClean:Button
+    lateinit var backgroundClean: Button
 
     lateinit var colorR: SeekBar
     lateinit var colorG: SeekBar
@@ -41,18 +50,30 @@ class PaintActivity : AppCompatActivity() {
     lateinit var strColor: EditText
 
     lateinit var etMessage: EditText
+    lateinit var etChat: EditText
     lateinit var tvMessage: TextView
     lateinit var btnSendMessage: Button
+    lateinit var btnChat: Button
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
     lateinit var paintB: PaintBoard
     var eraserMode = false
     lateinit var mTimer: GameTimer
 
+    val Int.dp: Int
+        get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
+
+        roomid = intent.getStringExtra("roomid")
+        userid = intent.getStringExtra("userid")
+        userName = intent.getStringExtra("userName")
+
+        initDrawers()
+        initChatRoom()
+
 
         paintB = findViewById(R.id.layout_paint_board)
         paintB.post(Runnable {
@@ -63,6 +84,15 @@ class PaintActivity : AppCompatActivity() {
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
         etMessage = findViewById(R.id.message_et)
+//        val rightNavView: NavigationView = findViewById(R.id.nav_view_right)
+//        val rightNavViewHeader = rightNavView.getHeaderView(0)
+//        val displayMetrics = DisplayMetrics()
+//        windowManager.defaultDisplay.getMetrics(displayMetrics)
+//        val height = displayMetrics.heightPixels
+//        rightNavViewHeader.layoutParams.height = height
+        etChat = findViewById(R.id.et_chat)
+        btnChat = findViewById(R.id.btn_chat)
+
         tvMessage = findViewById(R.id.tv_recieve)
         btnSendMessage = findViewById(R.id.send_message_btn)
 
@@ -74,26 +104,20 @@ class PaintActivity : AppCompatActivity() {
         initSizeChangeDialog()
         clean.setOnClickListener { backgroundClean() }
 
-        roomid = intent.getStringExtra("roomid")
-        userid = intent.getStringExtra("userid")
-        userName = intent.getStringExtra("userName")
 
-
-        initChatRoom()
-
-        btnSendMessage.setOnClickListener { sendMessage() }
-
+        btnSendMessage.setOnClickListener { sendMessage("answer") }
+        btnChat.setOnClickListener { sendMessage("chat") }
 
         val timeSec = 5f
 
 
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-                println("計時器進度條跳一次")
+//                println("計時器進度條跳一次")
             }
 
             override fun timesUp() {
-                println("計時器進度條停止")
+//                println("計時器進度條停止")
             }
 
         })
@@ -103,31 +127,45 @@ class PaintActivity : AppCompatActivity() {
         mTimer.startTimer()
 
 
-
-
-
-
     }
 
-    private fun sendMessage() {
+    private fun sendMessage(type: String) {
         if (myRoomWebSocketListener != null) {
-            myRoomWebSocketListener!!.getWebSocket()?.send(etMessage.text.toString())
+            when (type) {
+                "chat" -> {
+                    val messageBean =
+                        MessageBean(type, userid, userName, roomid, etChat.text.toString(), false)
+                    myRoomWebSocketListener!!.sendMessage(messageBean)
+                }
+                "answer" -> {
+                    val messageBean =
+                        MessageBean(
+                            type,
+                            userid,
+                            userName,
+                            roomid,
+                            etMessage.text.toString(),
+                            false
+                        )
+                    myRoomWebSocketListener!!.sendMessage(messageBean)
+                }
+                else -> {
+                    println("sendMessage missing type")
+                }
+            }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initChatRoom() {
 
-        myRoomWebSocketListener = RoomWebSocketListener()
+        myRoomWebSocketListener = RoomWebSocketListener(UserBean(roomid, userid, userName))
         val outerClass = WeakReference(this)
         val myHandler = MyHandler(outerClass)
-        GlobalScope.launch(Dispatchers.IO) {
 
-            MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
+        MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
 
-            myRoomWebSocketListener!!.setHandler(myHandler)
-        }
-
+        myRoomWebSocketListener?.setHandler(myHandler)
     }
 
     private fun initColorPickerDialog() {
@@ -343,37 +381,169 @@ class PaintActivity : AppCompatActivity() {
 //        ArchLifecycleApp.userStatus = ArchLifecycleApp.JOIN_ROOM
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
         println("onPause")
-        val myRepository: MyRepository = MyRepository()
-        GlobalScope.launch(Dispatchers.IO) {
-            val respUserActionRoomBean = myRepository.quitRoom(userid, roomid)
-            println(respUserActionRoomBean)
-            if (respUserActionRoomBean.result!!) { // quit game success
-            } else {// quit game failure
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onDestroy() {
+        super.onDestroy()
+        println("onDestroy")
+        // 倒數 後 退出房間
+        // close webSocket 觸發 退出房間
+        paintB.closeWebSocket()
+        myRoomWebSocketListener?.close()
+    }
+
+    fun addChatCardView(messageBean: MessageBean) {
+        val llChat: LinearLayout = findViewById(R.id.ll_chat)
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        var text = ""
+        if (messageBean.userId == userid) { // 自己
+            params.apply {
+                gravity = Gravity.END
+                topMargin = 10.dp
+                leftMargin = 20.dp
             }
+            text = "你 : ${messageBean.message}"
+        } else {
+            params.apply {
+                gravity = Gravity.START
+                topMargin = 10.dp
+                rightMargin = 20.dp
+            }
+            text = "${messageBean.userName} : ${messageBean.message}"
         }
-//        ArchLifecycleApp.userStatus = ArchLifecycleApp.QUIT_ROOM
+        val cardView = CardView(this)
+        cardView.radius = 10.dp.toFloat()
+        cardView.layoutParams = params
+        val t = TextView(this)
+        t.text = text
+        cardView.addView(t)
+        llChat.addView(cardView)
     }
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
         override fun handleMessage(msg: Message) {
-            outerClass.get()?.tvMessage?.append(msg?.obj.toString())
+            val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
+            when (messageBean.type) {
+                "chat" -> {
+                    //某某人聊天
+                    outerClass.get()?.addChatCardView(messageBean)
+                }
+                "answer" -> {
+                    //某某人猜答案
+                    outerClass.get()?.tvMessage?.append(messageBean.message)
+                }
+                "join" -> {
+                    //某某人加入房間
+                    outerClass.get()?.modifyUserList(messageBean)
+                }
+                "quit" -> {
+                    //某某人離開房間
+                    outerClass.get()?.modifyUserList(messageBean)
+                }
+                else -> {
+                    println("handleMessage missing type!!")
+                }
+            }
         }
-
     }
 
-    fun gamestart(){
-        if(userid == nextid){
+    fun gamestart() {
+        if (userid == nextid) {
             //lock chat
             etMessage.setEnabled(false)
-        }
-        else{
+        } else {
             etMessage.setEnabled(true)
         }
 
         //mTimer.startTimer()
+    }
+
+    private fun getDrawTopic(){
+        val myRepository = MyRepository()
+        GlobalScope.launch(Dispatchers.IO){
+            val topicDetailBean = myRepository.startDraw(roomid)
+            println(topicDetailBean)
+        }
+    }
+
+    private fun initDrawers() {
+
+        val drawLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        drawLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {
+            }
+
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            }
+
+        })
+
+        // left drawer
+        val btnLeftNav: Button = findViewById(R.id.btnLeftNav)
+        val leftDrawerView: NavigationView = findViewById(R.id.nav_view_left)
+        btnLeftNav.setOnClickListener {
+            drawLayout.openDrawer(leftDrawerView)
+        }
+
+        // right drawer
+
+        val btnRightNav: Button = findViewById(R.id.btnRightNav)
+        val rightDrawerView: NavigationView = findViewById(R.id.nav_view_right)
+        btnRightNav.setOnClickListener {
+            drawLayout.openDrawer(rightDrawerView)
+        }
+
+        initUserList()
+    }
+
+    //    private var usersList: MutableList<UserBean> = ArrayList()
+    private lateinit var userListAdapter: UserListAdapter
+    private fun initUserList() {
+        var usersList: MutableList<UserBean> = ArrayList()
+        // must set up in main thread --start
+        val userListView: RecyclerView = findViewById(R.id.view_user_list)
+        userListAdapter = UserListAdapter(this, usersList)
+        userListView.adapter = userListAdapter
+        userListView.layoutManager = LinearLayoutManager(this)
+        // must set up in main thread -- end
+
+        val myRepository = MyRepository()
+        GlobalScope.launch(Dispatchers.IO) {
+            println(roomid)
+            val roomBean = myRepository.getRoomUsers(roomid)
+            usersList = roomBean.usersList!!
+            runOnUiThread {
+                userListAdapter.updateAll(usersList)
+            }
+        }
+    }
+
+    private fun modifyUserList(messageBean: MessageBean) {
+
+        if (messageBean.type == "join") {
+            if (messageBean.userId != userid) {
+                userListAdapter.add(messageBean)
+            }
+        } else if (messageBean.type == "quit") {
+            userListAdapter.remove(messageBean.userId!!)
+        }
     }
 }

@@ -1,69 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <Button
-        android:id="@+id/btnColorSelected"
-        android:layout_width="50sp"
-        android:layout_height="50sp" />
-
-    <Button
-        android:id="@+id/eraser"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
-        android:layout_toRightOf="@+id/btnColorSelected"
-        android:text="eraser" />
-
-    <Button
-        android:id="@+id/size"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
-        android:layout_toRightOf="@+id/eraser"
-        android:text="size" />
-
-    <Button
-        android:id="@+id/backgroundClean"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
-        android:layout_toRightOf="@+id/size"
-        android:text="clean" />
-
-    <com.ntouandroid.drawandguess.colorPicker.PaintBoard
-        android:id="@+id/layout_paint_board"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/backgroundClean"
-        android:layout_above="@+id/chatSection" />
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
     <RelativeLayout
-        android:id="@+id/chatSection"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentBottom="true">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_recieve"
+        <LinearLayout
+            android:id="@+id/ll_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnLeftNav"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:text="房間" />
+
+            <Button
+                android:id="@+id/btnColorSelected"
+                android:layout_width="50sp"
+                android:layout_height="50sp" />
+
+            <Button
+                android:id="@+id/eraser"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:text="eraser" />
+
+            <Button
+                android:id="@+id/size"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:text="size" />
+
+            <Button
+                android:id="@+id/backgroundClean"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:text="clean" />
+
+            <Button
+                android:id="@+id/btnRightNav"
+                android:layout_width="50sp"
+                android:layout_height="50sp"
+                android:text="聊天室" />
+        </LinearLayout>
+
+        <com.ntouandroid.drawandguess.colorPicker.PaintBoard
+            android:id="@+id/layout_paint_board"
             android:layout_width="match_parent"
-            android:layout_height="160dp" />
+            android:layout_height="match_parent"
+            android:layout_above="@+id/chatSection"
+            android:layout_below="@+id/ll_nav" />
 
-        <EditText
-            android:id="@+id/message_et"
+        <RelativeLayout
+            android:id="@+id/chatSection"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_below="@+id/tv_recieve"
-            android:layout_toStartOf="@+id/send_message_btn"
-            android:layout_toLeftOf="@+id/send_message_btn" />
+            android:layout_height="200dp"
+            android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/send_message_btn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_below="@+id/tv_recieve"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/send_message_btn" />
+            <TextView
+                android:id="@+id/tv_recieve"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:scrollbars="vertical" />
+
+            <EditText
+                android:id="@+id/message_et"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_below="@+id/tv_recieve"
+                android:layout_toStartOf="@+id/send_message_btn"
+                android:layout_toLeftOf="@+id/send_message_btn" />
+
+            <Button
+                android:id="@+id/send_message_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/tv_recieve"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/send_message_btn" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
-</RelativeLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/view_user_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+
+    </com.google.android.material.navigation.NavigationView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true">
+
+        <RelativeLayout
+            android:id="@+id/rl_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/side_nav_bar"
+            android:paddingTop="20dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/et_chat">
+
+                <LinearLayout
+                    android:id="@+id/ll_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+
+
+            <EditText
+                android:id="@+id/et_chat"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:autofillHints="message" />
+
+            <Button
+                android:id="@+id/btn_chat"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:text="@string/send_message_btn" />
+
+        </RelativeLayout>
+    </com.google.android.material.navigation.NavigationView>
+
+</androidx.drawerlayout.widget.DrawerLayout>

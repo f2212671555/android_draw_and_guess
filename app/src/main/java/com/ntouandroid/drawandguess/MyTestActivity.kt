@@ -8,10 +8,10 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.ntouandroid.drawandguess.bean.RoomBean
-import com.ntouandroid.drawandguess.bean.UserBean
+import com.ntouandroid.drawandguess.model.bean.RoomBean
+import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
-import com.ntouandroid.drawandguess.repository.MyRepository
+import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.utils.GameTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -28,7 +28,7 @@ class MyTestActivity : AppCompatActivity() {
 
     lateinit var progressBar: ProgressBar
     var isAnimatingUpdatingDelayed: Boolean = false
-    lateinit var mTimer:GameTimer
+    lateinit var mTimer: GameTimer
     var myRepository: MyRepository = MyRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,13 +54,13 @@ class MyTestActivity : AppCompatActivity() {
 
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-                println(mTimer.secondsCount*100)
-                println("計時器進度條跳一次")
-                update(-1,(mTimer.secondsCount*100).toInt())
+//                println(mTimer.secondsCount * 100)
+//                println("計時器進度條跳一次")
+                update(-1, (mTimer.secondsCount * 100).toInt())
             }
 
             override fun timesUp() {
-                println("計時器進度條停止")
+//                println("計時器進度條停止")
             }
 
         })
@@ -112,7 +112,6 @@ class MyTestActivity : AppCompatActivity() {
     }
 
     private fun goTestPaintBtn() {
-        println("create rooooom")
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
