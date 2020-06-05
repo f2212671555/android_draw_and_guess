@@ -337,7 +337,6 @@ class PaintActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun eraserFun() {
-
         eraserMode = !eraserMode
         paintB.erase(eraserMode)
     }
