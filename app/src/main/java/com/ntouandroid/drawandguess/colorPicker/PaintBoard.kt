@@ -70,7 +70,8 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun initDrawRoom(roomId: String, userId: String) {
-        myDrawWebSocketListener = DrawWebSocketListener()
+        myDrawWebSocketListener =
+            DrawWebSocketListener()
         val outerClass = WeakReference(this)
         val myHandler = PaintBoard.MyHandler(outerClass)
         MyWebSocket.createDrawWebSocket(
@@ -87,18 +88,19 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun cleanBackground() {
         println("cleanBackground")
-        val paintBoardDraw = PaintBoardDrawBean(
-            "clean",
-            "",
-            0f,
-            0f,
-            0f,
-            0f,
-            0,
-            0,
-            0,
-            0f
-        )
+        val paintBoardDraw =
+            PaintBoardDrawBean(
+                "clean",
+                "",
+                0f,
+                0f,
+                0f,
+                0f,
+                0,
+                0,
+                0,
+                0f
+            )
         sendDrawToServer(paintBoardDraw)
         bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
         mCanvas = Canvas(bitmap!!)
@@ -165,18 +167,19 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 if (paint != null && mCanvas != null) {
                     mCanvas?.drawLine(startX, startY, stopX, stopY, paint!!)
                     // dp to px
-                    val paintBoardDraw = PaintBoardDrawBean(
-                        "draw",
-                        "drawLine",
-                        startX / mWidth,
-                        startY / mHeight,
-                        stopX / mWidth,
-                        stopY / mHeight,
-                        r,
-                        g,
-                        b,
-                        size / (mHeight * mWidth)
-                    )
+                    val paintBoardDraw =
+                        PaintBoardDrawBean(
+                            "draw",
+                            "drawLine",
+                            startX / mWidth,
+                            startY / mHeight,
+                            stopX / mWidth,
+                            stopY / mHeight,
+                            r,
+                            g,
+                            b,
+                            size / (mHeight * mWidth)
+                        )
                     startX = event.x
                     startY = event.y
 

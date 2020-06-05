@@ -134,7 +134,14 @@ class PaintActivity : AppCompatActivity() {
             when (type) {
                 "chat" -> {
                     val messageBean =
-                        MessageBean(type, userid, userName, roomid, etChat.text.toString(), false)
+                        MessageBean(
+                            type,
+                            userid,
+                            userName,
+                            roomid,
+                            etChat.text.toString(),
+                            false
+                        )
                     myRoomWebSocketListener!!.sendMessage(messageBean)
                 }
                 "answer" -> {
@@ -159,7 +166,14 @@ class PaintActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initChatRoom() {
 
-        myRoomWebSocketListener = RoomWebSocketListener(UserBean(roomid, userid, userName))
+        myRoomWebSocketListener =
+            RoomWebSocketListener(
+                UserBean(
+                    roomid,
+                    userid,
+                    userName
+                )
+            )
         val outerClass = WeakReference(this)
         val myHandler = MyHandler(outerClass)
 
@@ -467,7 +481,8 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun getDrawTopic(){
-        val myRepository = MyRepository()
+        val myRepository =
+            MyRepository()
         GlobalScope.launch(Dispatchers.IO){
             val topicDetailBean = myRepository.startDraw(roomid)
             println(topicDetailBean)
@@ -524,7 +539,8 @@ class PaintActivity : AppCompatActivity() {
         userListView.layoutManager = LinearLayoutManager(this)
         // must set up in main thread -- end
 
-        val myRepository = MyRepository()
+        val myRepository =
+            MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             println(roomid)
             val roomBean = myRepository.getRoomUsers(roomid)

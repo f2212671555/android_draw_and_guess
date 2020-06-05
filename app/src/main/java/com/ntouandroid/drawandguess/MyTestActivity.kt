@@ -30,7 +30,8 @@ class MyTestActivity : AppCompatActivity() {
     lateinit var progressBar: ProgressBar
     var isAnimatingUpdatingDelayed: Boolean = false
     lateinit var mTimer: GameTimer
-    var myRepository: MyRepository = MyRepository()
+    var myRepository: MyRepository =
+        MyRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +84,11 @@ class MyTestActivity : AppCompatActivity() {
         var userId = ""
         val userName = "USERNAME"
         val roomId = etJoinRoom.text.toString()
-        val userBean = UserBean(roomId, userId, userName)
+        val userBean = UserBean(
+            roomId,
+            userId,
+            userName
+        )
         GlobalScope.launch(Dispatchers.IO) {
             val respUserJoinRoomBean = myRepository.joinRoom(userBean)
             println(respUserJoinRoomBean)
@@ -116,12 +121,22 @@ class MyTestActivity : AppCompatActivity() {
         val intent = Intent(this, PaintActivity::class.java)
         val userName = "BOB"
         GlobalScope.launch(Dispatchers.IO) {
-            val roomBean = RoomBean
-            ("", "a好好玩s", null, null)
+            val roomBean = RoomBean(
+                "",
+                "a好好玩s",
+                null,
+                null
+            )
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
             val respUserJoinRoomBean =
-                myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(), "", userName))
+                myRepository.joinRoom(
+                    UserBean(
+                        resultRoomBean.roomId.toString(),
+                        "",
+                        userName
+                    )
+                )
             println(respUserJoinRoomBean)
             val userId = respUserJoinRoomBean.userId.toString()
             intent.putExtra("roomid", resultRoomBean.roomId.toString())
