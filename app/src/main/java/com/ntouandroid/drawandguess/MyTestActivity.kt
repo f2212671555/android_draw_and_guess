@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 
 class MyTestActivity : AppCompatActivity() {
 
+    lateinit var test_git:Button
     lateinit var tv_test: TextView
     lateinit var tvTestRoomList: TextView
     lateinit var btnTestPaint: Button
