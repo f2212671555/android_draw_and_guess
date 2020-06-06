@@ -9,15 +9,16 @@ import android.widget.Button
 class JoinRoomActivity : AppCompatActivity() {
 
 
-    lateinit var Bt_SET: Button;
+    lateinit var Bt_join: Button;
+    lateinit var Bt_refresh: Button;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join_room)
 
-        Bt_SET = findViewById(R.id.btn_SET);
+        Bt_join = findViewById(R.id.bt_join);
 
-        Bt_SET.setOnClickListener{nextpagecheck()};
+        Bt_join.setOnClickListener{nextpagecheck()};
     }
 
 

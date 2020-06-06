@@ -1,33 +1,81 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:paddingLeft="10dp" android:paddingRight="10dp" android:paddingTop="10dp"
+    android:background="#FFBF00">
 
-    <EditText
-        android:id="@+id/et_input"
-        android:layout_width="201dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:clickable="false"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_SET"
-        android:layout_width="154dp"
-        android:layout_height="wrap_content"
-        android:text="SET" />
 
     <TextView
+        android:id="@+id/tv_RoomList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="JOIN"
-        android:textSize="20sp" />
+
+        android:text="房間列表"
+        android:textSize="30dp"
+        />
 
 
-</LinearLayout>
+    <ScrollView
+        android:id="@+id/sv_RoomList"
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:layout_bottom="@+id/tv_RoomList"
+        android:layout_marginTop="50dp"
+        android:layout_above="@+id/bt_join"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/et_color"
+        >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+    <Button
+        android:id="@+id/bt_join"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+
+        android:background="@drawable/bt_main"
+        android:textColor="@android:color/white"
+        android:text="Join"
+        android:textSize="40dp"
+
+        android:layout_alignParentBottom ="true"
+        android:layout_marginBottom="10dp"
+
+        />
+
+    <ImageButton
+        android:id="@+id/button_refresh"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/refresh"
+        android:background="@drawable/bt_main"
+
+        android:layout_alignParentBottom ="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+
+
+        />
+
+
+
+    <!--    <Button-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="Button 3"-->
+    <!--        android:layout_alignParentRight="true"/>-->
+
+
+</RelativeLayout>

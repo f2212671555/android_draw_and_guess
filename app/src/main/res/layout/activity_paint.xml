@@ -52,13 +52,6 @@
                 android:text="聊天室" />
         </LinearLayout>
 
-        <com.ntouandroid.drawandguess.colorPicker.PaintBoard
-            android:id="@+id/layout_paint_board"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/chatSection"
-            android:layout_below="@+id/ll_nav" />
-
         <RelativeLayout
             android:id="@+id/chatSection"
             android:layout_width="match_parent"
@@ -101,7 +94,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/view_user_list"
                 android:layout_width="match_parent"
@@ -109,6 +103,11 @@
                 android:paddingTop="20dp">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <com.ntouandroid.drawandguess.colorPicker.PaintBoard
+                android:id="@+id/layout_paint_board"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
     </com.google.android.material.navigation.NavigationView>

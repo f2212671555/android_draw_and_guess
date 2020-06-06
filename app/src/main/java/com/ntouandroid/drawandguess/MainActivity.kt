@@ -14,11 +14,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Bt_Start = findViewById(R.id.btn_Start);
-        bt_Test = findViewById(R.id.btn_Test)
+        Bt_Start = findViewById(R.id.button_start);
 
         Bt_Start.setOnClickListener{nextpagecheck()};
-        bt_Test.setOnClickListener{btn_test_click()}
 
     }
 

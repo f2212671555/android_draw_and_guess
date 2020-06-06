@@ -19,8 +19,8 @@ class StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
-        Bt_Create = findViewById(R.id.btn_CREATE)
-        Bt_Join = findViewById(R.id.btn_JOIN);
+        Bt_Create = findViewById(R.id.button_create)
+        Bt_Join = findViewById(R.id.button_join);
 
         Bt_Create.setOnClickListener{CreatPage()};
         Bt_Join.setOnClickListener{JoinPage()};
