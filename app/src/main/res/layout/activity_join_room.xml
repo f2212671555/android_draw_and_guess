@@ -17,26 +17,25 @@
         />
 
 
-    <ScrollView
-        android:id="@+id/sv_RoomList"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:layout_bottom="@+id/tv_RoomList"
-        android:layout_marginTop="50dp"
-        android:layout_above="@+id/bt_join"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/et_color"
-        >
-
-        <LinearLayout
-            android:orientation="vertical"
+        <ListView
+            android:layout_height="fill_parent"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:id="@+id/Lv_Roomlist"
 
+            android:layout_below="@+id/tv_RoomList"
+            android:layout_marginTop="10dp"
+            android:layout_above="@+id/bt_join"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/et_color"
+            />
 
+<!--        <TextView-->
+<!--            android:id="@+id/tv_testRoomList"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:scrollbars="vertical"-->
+<!--            android:text="loading rooms..." />-->
 
-        </LinearLayout>
-    </ScrollView>
 
 
 
