@@ -43,7 +43,7 @@ class JoinRoomActivity : AppCompatActivity() {
             runOnUiThread {
                 listAdapter = ArrayAdapter(
                     applicationContext,
-                    R.layout.simple_list_item_1,
+                    android.R.layout.simple_list_item_1,
                     roomList
                     )
                 Lv_RoomList.setAdapter(listAdapter)
