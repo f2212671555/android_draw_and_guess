@@ -562,4 +562,5 @@ class PaintActivity : AppCompatActivity() {
             userListAdapter.remove(messageBean.userId!!)
         }
     }
+
 }

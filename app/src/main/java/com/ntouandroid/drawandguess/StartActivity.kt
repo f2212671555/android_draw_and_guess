@@ -39,45 +39,15 @@ class StartActivity : AppCompatActivity() {
 
 
     fun CreatPage(){
-        var intent = Intent(this@StartActivity, CreateRoomActivity::class.java);
+        val intent = Intent(this@StartActivity, CreateRoomActivity::class.java);
+        intent.putExtra("userName",userName)
         startActivity(intent);
-//        goTestPaintBtn();
     }
 
     fun JoinPage(){
-        var intent = Intent(this@StartActivity, JoinRoomActivity::class.java);
-
+        val intent = Intent(this@StartActivity, JoinRoomActivity::class.java);
         startActivity(intent);
     }
-
-    private fun goTestPaintBtn() {
-        val intent = Intent(this, PaintActivity::class.java)
-        GlobalScope.launch(Dispatchers.IO) {
-            val roomBean = RoomBean(
-                "",
-                "a好好玩s",
-                null,
-                null
-            )
-            val resultRoomBean = myRepository.createRoom(roomBean)
-            println(resultRoomBean)
-            val respUserJoinRoomBean =
-                myRepository.joinRoom(
-                    UserBean(
-                        resultRoomBean.roomId.toString(),
-                        "",
-                        userName
-                    )
-                )
-            println(respUserJoinRoomBean)
-            val userId = respUserJoinRoomBean.userId.toString()
-            intent.putExtra("roomid", resultRoomBean.roomId.toString())
-            intent.putExtra("userid", userId)
-            intent.putExtra("userName", userName)
-            startActivity(intent)
-        }
-    }
-
 
     companion object {
         var roomid: String = ""

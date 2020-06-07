@@ -27,8 +27,6 @@ class JoinRoomActivity : AppCompatActivity() {
         Bt_join = findViewById(R.id.bt_join);
         Lv_RoomList = findViewById(R.id.Lv_Roomlist);
 
-
-
         loadingRoomList();
 
         Bt_join.setOnClickListener{nextpagecheck()};
@@ -46,7 +44,7 @@ class JoinRoomActivity : AppCompatActivity() {
                     android.R.layout.simple_list_item_1,
                     roomList
                     )
-                Lv_RoomList.setAdapter(listAdapter)
+                Lv_RoomList.adapter = listAdapter
             }
         }
     }

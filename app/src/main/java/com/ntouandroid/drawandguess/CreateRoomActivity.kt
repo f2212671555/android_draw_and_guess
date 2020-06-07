@@ -16,10 +16,9 @@ import kotlinx.coroutines.launch
 
 class CreateRoomActivity : AppCompatActivity() {
 
-    lateinit var Et_RoomName : EditText;
+    lateinit var Et_RoomName: EditText;
     lateinit var bt_CreateRoom: Button;
-    lateinit var Tv_userName : TextView;
-
+    lateinit var Tv_userName: TextView;
 
 
     var myRepository: MyRepository = MyRepository();
@@ -32,29 +31,27 @@ class CreateRoomActivity : AppCompatActivity() {
         bt_CreateRoom = findViewById(R.id.bt_CreateRoom);
         Tv_userName = findViewById(R.id.Tv_userName);
 
+        userName = intent.getStringExtra("userName");
+
+        Tv_userName.text = userName;
+
+
+
+        bt_CreateRoom.setOnClickListener { CreatPage() };
+
+    }
+
+
+    private fun CreatPage() {
+        val intent = Intent(this, PaintActivity::class.java);
         roomName = Et_RoomName.text.toString();
-        userName =  intent.getStringExtra("userName");
-
-        Tv_userName.text =  userName;
-
-
-
-        bt_CreateRoom.setOnClickListener{CreatPage()};
-
-    }
-
-    fun CreatPage(){
-        var intent = Intent(this@CreateRoomActivity, PaintActivity::class.java);
-        goTestPaintBtn();
-    }
-
-
-    private fun goTestPaintBtn() {
-        val intent = Intent(this, PaintActivity::class.java)
+        if (roomName.isEmpty()) {
+            return
+        }
         GlobalScope.launch(Dispatchers.IO) {
             val roomBean = RoomBean(
                 "",
-                "a好好玩s",
+                roomName,
                 null,
                 null
             )
@@ -77,7 +74,6 @@ class CreateRoomActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
 
 
     companion object {
