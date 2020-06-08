@@ -1,9 +1,12 @@
 package com.ntouandroid.drawandguess
 
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -11,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.utils.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,10 +24,11 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join_room_by_app_link)
+        UIHandler.setStatusBarColor(this)
 
         val userNameET: EditText = findViewById(R.id.et_user_name_app_link)
         val roomNameTV: TextView = findViewById(R.id.tv_room_name_app_link)
-        val joinBtn: Button = findViewById(R.id.bt_join)
+        val joinBtn: Button = findViewById(R.id.btn_join_app_link)
 
         var roomId = ""
         var userName = ""
@@ -52,6 +57,17 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
         }
     }
 
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            if (currentFocus != null && currentFocus!!.windowToken != null) {
+                val imm: InputMethodManager =
+                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+            }
+        }
+        return super.onTouchEvent(event)
+    }
+
     private fun joinRoom(userName: String, roomId: String) {
         val myRepository = MyRepository()
         val dialog = ProgressDialog.show(this, "", "進入房間中...", true)
@@ -70,6 +86,10 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
                 intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())
                 intent.putExtra("userName", userName)
                 startActivity(intent)
+            } else {
+                runOnUiThread {
+                    Toast.makeText(this@JoinRoomByAppLinkActivity, "不存在此房間!!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
