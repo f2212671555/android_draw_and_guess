@@ -1,7 +1,10 @@
 package com.ntouandroid.drawandguess.utils
 
 import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Context
 import android.os.Build
+import android.os.Message
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
@@ -22,5 +25,6 @@ class UIHandler {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
         }
+
     }
 }

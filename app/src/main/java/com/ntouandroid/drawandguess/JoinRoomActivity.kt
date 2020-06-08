@@ -1,5 +1,6 @@
 package com.ntouandroid.drawandguess
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
@@ -49,7 +50,7 @@ class JoinRoomActivity : AppCompatActivity() {
     }
 
     private fun loadingRoomList() {
-
+        val dialog = ProgressDialog.show(this,"", "載入房間列表中...", true)
         GlobalScope.launch(Dispatchers.IO) {
             roomList = myRepository.getRoomList()
             if (roomList != null) {
@@ -67,10 +68,13 @@ class JoinRoomActivity : AppCompatActivity() {
                     roomListLV.adapter = listAdapter
                 }
             }
+            dialog.dismiss()
         }
+
     }
 
     private fun joinRoom(userName: String, roomId: String) {
+        val dialog = ProgressDialog.show(this,"", "進入房間中...", true)
         val intent = Intent(this, PaintActivity::class.java)
 
         val userBean = UserBean(
@@ -80,6 +84,7 @@ class JoinRoomActivity : AppCompatActivity() {
         )
         GlobalScope.launch(Dispatchers.IO) {
             val resultUserJoinRoomBean = myRepository.joinRoom(userBean)
+            dialog.dismiss()
             if (resultUserJoinRoomBean.result!!) {
                 intent.putExtra("roomid", roomId)
                 intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())

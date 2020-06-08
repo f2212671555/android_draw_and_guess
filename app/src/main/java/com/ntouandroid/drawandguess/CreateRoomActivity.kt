@@ -1,5 +1,6 @@
 package com.ntouandroid.drawandguess
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -34,7 +35,7 @@ class CreateRoomActivity : AppCompatActivity() {
         bt_CreateRoom = findViewById(R.id.bt_CreateRoom);
         Tv_userName = findViewById(R.id.Tv_userName);
 
-        userName =  intent.getStringExtra("userName");
+        userName = intent.getStringExtra("userName");
 
         Tv_userName.text = userName;
 
@@ -52,7 +53,9 @@ class CreateRoomActivity : AppCompatActivity() {
             Toast.makeText(this, "請入房名", Toast.LENGTH_LONG).show()
             return
         }
+        val dialog = ProgressDialog.show(this@CreateRoomActivity, "", "創建房間中...", true)
         GlobalScope.launch(Dispatchers.IO) {
+
             val roomBean = RoomBean(
                 "",
                 roomName,
@@ -70,6 +73,7 @@ class CreateRoomActivity : AppCompatActivity() {
                     )
                 )
             println(resultUserJoinRoomBean)
+            dialog.dismiss()
             intent.putExtra("roomid", resultRoomBean.roomId.toString())
             intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())
             intent.putExtra("roomName", roomName)
@@ -88,5 +92,3 @@ class CreateRoomActivity : AppCompatActivity() {
     // will be deleted
 
 }
-
-//test
