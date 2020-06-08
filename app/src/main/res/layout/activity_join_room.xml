@@ -1,10 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="10dp" android:paddingRight="10dp" android:paddingTop="10dp"
-    android:background="#FFBF00">
-
+    android:background="#FFBF00"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp">
 
 
     <TextView
@@ -13,68 +13,54 @@
         android:layout_height="wrap_content"
 
         android:text="房間列表"
-        android:textSize="30dp"
-        />
+        android:textSize="30dp" />
 
+    <LinearLayout
+        android:id="@+id/ll_room_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bt_join"
+        android:layout_below="@+id/tv_RoomList"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/room_list_background_selector">
 
         <ListView
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:id="@+id/Lv_Roomlist"
+            android:id="@+id/lv_room_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:drawSelectorOnTop="true"
+            android:listSelector="@drawable/room_list_btn_selector" />
 
-            android:layout_below="@+id/tv_RoomList"
-            android:layout_marginTop="10dp"
-            android:layout_above="@+id/bt_join"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/et_color"
-            />
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_testRoomList"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:scrollbars="vertical"-->
-<!--            android:text="loading rooms..." />-->
-
-
-
+    </LinearLayout>
 
     <Button
         android:id="@+id/bt_join"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-
-        android:background="@drawable/bt_main"
-        android:textColor="@android:color/white"
-        android:text="Join"
-        android:textSize="40dp"
-
-        android:layout_alignParentBottom ="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/bt_main"
+        android:text="Join"
+
+        android:textColor="@android:color/white"
+        android:textSize="40dp"
 
         />
 
     <ImageButton
-        android:id="@+id/button_refresh"
+        android:id="@+id/btn_refresh"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/refresh"
-        android:background="@drawable/bt_main"
-
-        android:layout_alignParentBottom ="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
+        android:background="@drawable/bt_main"
+        android:src="@drawable/refresh"
 
 
         />
-
-
-
-    <!--    <Button-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:text="Button 3"-->
-    <!--        android:layout_alignParentRight="true"/>-->
 
 
 </RelativeLayout>

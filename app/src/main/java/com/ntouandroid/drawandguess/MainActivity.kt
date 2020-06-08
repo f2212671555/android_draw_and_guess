@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputFilter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import com.ntouandroid.drawandguess.filter.UserNameInputFilter
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,14 +22,20 @@ class MainActivity : AppCompatActivity() {
 
         Bt_Start = findViewById(R.id.button_start);
         Et_Name = findViewById(R.id.Et_Name)
+        Et_Name.filters = arrayOf(UserNameInputFilter())
         Bt_Start.setOnClickListener{nextpagecheck()};
         app_context = applicationContext;
     }
 
 
     fun nextpagecheck(){
-        var intent = Intent(this@MainActivity, StartActivity::class.java);
-        intent.putExtra("userName", Et_Name.text.toString())
+        val name = Et_Name.text.toString().trim()
+        if(name.isEmpty()){
+            Toast.makeText(this,"請入名字",Toast.LENGTH_LONG).show()
+            return
+        }
+        val intent = Intent(this@MainActivity, StartActivity::class.java)
+        intent.putExtra("userName",name )
         startActivity(intent);
     }
 

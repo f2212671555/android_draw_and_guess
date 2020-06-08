@@ -45,7 +45,8 @@ class StartActivity : AppCompatActivity() {
     }
 
     fun JoinPage(){
-        val intent = Intent(this@StartActivity, JoinRoomActivity::class.java);
+        val intent = Intent(this@StartActivity, JoinRoomActivity::class.java)
+        intent.putExtra("userName",userName)
         startActivity(intent);
     }
 
