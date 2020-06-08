@@ -39,7 +39,6 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mWidth = 0
     private var mHeight = 0
 
-
     fun init(width: Int, height: Int): PaintBoard {
         println("HI INIT")
         // bitmap

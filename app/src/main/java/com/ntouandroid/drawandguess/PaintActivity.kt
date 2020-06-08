@@ -9,10 +9,12 @@ import android.os.Handler
 import android.os.Message
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.drawerlayout.widget.DrawerLayout
@@ -22,14 +24,13 @@ import com.example.drawtest.ColorPaint
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.adapter.UserListAdapter
+import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.model.bean.MessageBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
-import com.ntouandroid.drawandguess.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
-import com.ntouandroid.drawandguess.utils.GameTimer
 import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
-import com.ntouandroid.drawandguess.utils.InternetJudge
+import com.ntouandroid.drawandguess.utils.GameTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -72,13 +73,20 @@ class PaintActivity : AppCompatActivity() {
         userid = intent.getStringExtra("userid")
         userName = intent.getStringExtra("userName")
 
+        paintB = findViewById(R.id.layout_paint_board)
+
         initDrawers()
         initChatRoom()
 
-
-        paintB = findViewById(R.id.layout_paint_board)
         paintB.post(Runnable {
-            paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
+            try {
+                paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
+
+            } catch (e: IllegalArgumentException) {
+                Log.d("paintB init", "IllegalArgumentException")
+            } finally {
+                finish()
+            }
         })
 
         lateinit var btnColorPreview: Button
@@ -389,17 +397,38 @@ class PaintActivity : AppCompatActivity() {
         return "#" + r + g + b
     }
 
+    override fun onBackPressed() {
+        println("onBackPressed")
+        showDialog("確定要離開房間嗎？", "0.0")
+    }
+
+    private fun showDialog(title: String, message: String) {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("確認") { dialog, whichButton ->
+            finish()
+        }
+
+        builder.setNegativeButton("取消") { dialog, whichButton ->
+            dialog.dismiss()
+        }
+
+        // create dialog and show it
+        val dialog = builder.create()
+        dialog.show()
+    }
+
     override fun onResume() {
         super.onResume()
         println("onResume")
-//        ArchLifecycleApp.userStatus = ArchLifecycleApp.JOIN_ROOM
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
         println("onPause")
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -410,6 +439,9 @@ class PaintActivity : AppCompatActivity() {
         // close webSocket 觸發 退出房間
         paintB.closeWebSocket()
         myRoomWebSocketListener?.close()
+        // 避免webSocket connect 在 onDestroy() 之後，導致沒關閉webSocket
+        myRoomWebSocketListener?.setFlag(RoomWebSocketListener.QUIT_FLAG)
+
     }
 
     fun addChatCardView(messageBean: MessageBean) {
@@ -481,10 +513,10 @@ class PaintActivity : AppCompatActivity() {
         //mTimer.startTimer()
     }
 
-    private fun getDrawTopic(){
+    private fun getDrawTopic() {
         val myRepository =
             MyRepository()
-        GlobalScope.launch(Dispatchers.IO){
+        GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.startDraw(roomid)
             println(topicDetailBean)
         }

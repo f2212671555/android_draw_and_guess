@@ -17,6 +17,11 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
     private var url: HttpUrl? = null
     private var isConnected: Boolean = false
     private var webSocket: WebSocket? = null
+    private var flag: String = ""
+
+    companion object {
+        const val QUIT_FLAG = "QUIT_FLAG"
+    }
 
     fun getWebSocket(): WebSocket? {
         return webSocket
@@ -50,8 +55,12 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.d("onOpen", "RoomWebSocketListener onOpen")
-        this.isConnected = true
         this.webSocket = webSocket
+        if (flag == QUIT_FLAG) {
+            this.close()
+        } else {
+            this.isConnected = true
+        }
     }
 
     fun close() {
@@ -60,6 +69,10 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
 
     fun setUrl(url: HttpUrl) {
         this.url = url
+    }
+
+    fun setFlag(flag: String) {
+        this.flag = flag
     }
 
     fun setHandler(handler: Handler) {
