@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.utils.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ class JoinRoomActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join_room)
+        UIHandler.setStatusBarColor(this)
 
         joinBtn = findViewById(R.id.bt_join);
         roomListLV = findViewById(R.id.lv_room_list);
@@ -38,9 +40,9 @@ class JoinRoomActivity : AppCompatActivity() {
             val pos = roomListLV.checkedItemPosition
             if (roomListLV.isItemChecked(pos)) {
                 val roomBean = roomList?.get(pos)
-                println(userName)
-                println(roomBean)
                 joinRoom(userName!!, roomBean?.roomId!!)
+            } else {
+                Toast.makeText(this, "請入選擇房間", Toast.LENGTH_LONG).show()
             }
         }
         refreshBtn.setOnClickListener { loadingRoomList() }

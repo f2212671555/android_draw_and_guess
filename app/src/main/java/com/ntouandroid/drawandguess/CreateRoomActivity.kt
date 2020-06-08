@@ -11,6 +11,7 @@ import com.ntouandroid.drawandguess.filter.NameInputFilter
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.utils.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ class CreateRoomActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_room)
+        UIHandler.setStatusBarColor(this)
 
         Et_RoomName = findViewById(R.id.Et_RoomName);
         bt_CreateRoom = findViewById(R.id.bt_CreateRoom);

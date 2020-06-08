@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.utils.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,6 +26,7 @@ class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
+        UIHandler.setStatusBarColor(this)
 
         userName = intent.getStringExtra("userName")
 
