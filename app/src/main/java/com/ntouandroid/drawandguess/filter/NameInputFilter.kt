@@ -13,7 +13,7 @@ class NameInputFilter : InputFilter {
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        val speChat =  "[`~!@#$%^&*()+=|{}':;’,\\[\\].<>/?～！＠＃￥％…＆＊（）—＿＋｜『』【】‘；：”“。，、？\n]"
+        val speChat =  "[`~!@#$%^&*()+=|{}':;’,\\[\\].<>/?～！＠＃￥％…＆＊（）—＿＋｜『』【】‘；：”“。，、？\n包]"
         val pattern = Pattern.compile(speChat);
         val matcher = pattern.matcher(source.toString())
         return if (matcher.find()) "";

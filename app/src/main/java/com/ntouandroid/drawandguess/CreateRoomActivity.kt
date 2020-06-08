@@ -32,7 +32,7 @@ class CreateRoomActivity : AppCompatActivity() {
         bt_CreateRoom = findViewById(R.id.bt_CreateRoom);
         Tv_userName = findViewById(R.id.Tv_userName);
 
-        userName = intent.getStringExtra("userName");
+        userName =  intent.getStringExtra("userName");
 
         Tv_userName.text = userName;
 
