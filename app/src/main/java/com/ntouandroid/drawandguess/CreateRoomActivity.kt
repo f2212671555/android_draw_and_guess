@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.filter.NameInputFilter
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
@@ -35,7 +36,7 @@ class CreateRoomActivity : AppCompatActivity() {
 
         Tv_userName.text = userName;
 
-
+        Et_RoomName.filters = arrayOf(NameInputFilter())
 
         bt_CreateRoom.setOnClickListener { CreatPage() };
 

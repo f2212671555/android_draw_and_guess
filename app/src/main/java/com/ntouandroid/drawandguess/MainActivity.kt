@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.InputFilter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.ntouandroid.drawandguess.filter.UserNameInputFilter
+import com.ntouandroid.drawandguess.filter.NameInputFilter
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         Bt_Start = findViewById(R.id.button_start);
         Et_Name = findViewById(R.id.Et_Name)
-        Et_Name.filters = arrayOf(UserNameInputFilter())
+        Et_Name.filters = arrayOf(NameInputFilter())
         Bt_Start.setOnClickListener{nextpagecheck()};
         app_context = applicationContext;
     }
