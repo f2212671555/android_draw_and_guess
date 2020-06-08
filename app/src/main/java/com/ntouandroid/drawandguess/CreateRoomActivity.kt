@@ -60,8 +60,8 @@ class CreateRoomActivity : AppCompatActivity() {
         return super.onTouchEvent(event)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onPause() {
+        super.onPause()
         Et_RoomName.setText("")
     }
 
@@ -69,7 +69,7 @@ class CreateRoomActivity : AppCompatActivity() {
         val intent = Intent(this, PaintActivity::class.java);
         roomName = Et_RoomName.text.toString().trim()
         if (roomName.isEmpty()) {
-            Toast.makeText(this, "請入房名", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "請輸入房名", Toast.LENGTH_SHORT).show()
             return
         }
         val dialog = ProgressDialog.show(this@CreateRoomActivity, "", "創建房間中...", true)
