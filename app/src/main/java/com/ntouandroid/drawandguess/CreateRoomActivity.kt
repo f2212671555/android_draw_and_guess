@@ -56,6 +56,11 @@ class CreateRoomActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart(){
+        super.onStart()
+        Et_RoomName.setText("")
+    }
+
     private fun CreatPage() {
         val intent = Intent(this, PaintActivity::class.java);
         roomName = Et_RoomName.text.toString().trim()
