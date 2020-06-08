@@ -1,12 +1,12 @@
 package com.ntouandroid.drawandguess
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
@@ -44,8 +44,9 @@ class CreateRoomActivity : AppCompatActivity() {
 
     private fun CreatPage() {
         val intent = Intent(this, PaintActivity::class.java);
-        roomName = Et_RoomName.text.toString();
+        roomName = Et_RoomName.text.toString().trim()
         if (roomName.isEmpty()) {
+            Toast.makeText(this, "請入房名", Toast.LENGTH_LONG).show()
             return
         }
         GlobalScope.launch(Dispatchers.IO) {
@@ -57,7 +58,7 @@ class CreateRoomActivity : AppCompatActivity() {
             )
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
-            val respUserJoinRoomBean =
+            val resultUserJoinRoomBean =
                 myRepository.joinRoom(
                     UserBean(
                         resultRoomBean.roomId.toString(),
@@ -65,23 +66,23 @@ class CreateRoomActivity : AppCompatActivity() {
                         StartActivity.userName
                     )
                 )
-            println(respUserJoinRoomBean)
-            val userId = respUserJoinRoomBean.userId.toString()
+            println(resultUserJoinRoomBean)
             intent.putExtra("roomid", resultRoomBean.roomId.toString())
-            intent.putExtra("userid", userId)
+            intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())
             intent.putExtra("roomName", roomName)
             intent.putExtra("userName", userName)
             startActivity(intent)
         }
     }
 
-
+    // will be deleted
     companion object {
         var roomid: String = ""
         var userid: String = ""
         var userName: String = ""
         var roomName: String = ""
     }
+    // will be deleted
 
 }
 
