@@ -34,12 +34,11 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
         var userName = ""
 
         // app link start
-        val appLinkAction: String? = intent.action
+//        val appLinkAction: String? = intent.action
         val appLinkData: Uri? = intent.data
         if (appLinkData != null) {
-            //https://draw-and-guess-ntou.herokuapp.com/appLink?roomId=&roomName=
-            roomId = appLinkData.getQueryParameter("roomId").toString()
-            val roomName = appLinkData.getQueryParameter("roomName").toString()
+            roomId = appLinkData.getQueryParameter(MainActivity.ROOM_ID).toString()
+            val roomName = appLinkData.getQueryParameter(MainActivity.ROOM_NAME).toString()
             if (roomName.isNotEmpty() && roomId.isNotEmpty()) {
                 roomNameTV.text = roomName
             }
@@ -82,14 +81,15 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
             val resultUserJoinRoomBean = myRepository.joinRoom(userBean)
             dialog.dismiss()
             if (resultUserJoinRoomBean.result!!) {
-                intent.putExtra("roomid", roomId)
-                intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())
-                intent.putExtra("userName", userName)
+                intent.putExtra(MainActivity.ROOM_ID, roomId)
+                intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
+                intent.putExtra(MainActivity.USER_NAME, userName)
                 startActivity(intent)
             } else {
                 runOnUiThread {
                     Toast.makeText(this@JoinRoomByAppLinkActivity, "不存在此房間!!", Toast.LENGTH_SHORT)
                         .show()
+                    onBackPressed()
                 }
             }
         }
@@ -98,5 +98,6 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
     override fun onBackPressed() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

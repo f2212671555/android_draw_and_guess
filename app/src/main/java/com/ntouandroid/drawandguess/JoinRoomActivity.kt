@@ -43,7 +43,7 @@ class JoinRoomActivity : AppCompatActivity() {
                 val roomBean = roomList?.get(pos)
                 joinRoom(userName!!, roomBean?.roomId!!)
             } else {
-                Toast.makeText(this, "請入選擇房間", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "請選擇房間", Toast.LENGTH_LONG).show()
             }
         }
         refreshBtn.setOnClickListener { loadingRoomList() }

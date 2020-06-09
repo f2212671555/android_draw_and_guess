@@ -1,6 +1,7 @@
 package com.ntouandroid.drawandguess
 
 import android.app.Dialog
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
@@ -11,7 +12,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -67,6 +70,10 @@ class PaintActivity : AppCompatActivity() {
     private var nextId: String = ""
     private var userName: String = ""
 
+    companion object {
+        var colorpaint = ColorPaint(0, 0, 0, 30.0f)
+    }
+
     val Int.dp: Int
         get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
@@ -100,12 +107,7 @@ class PaintActivity : AppCompatActivity() {
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
         etMessage = findViewById(R.id.message_et)
-//        val rightNavView: NavigationView = findViewById(R.id.nav_view_right)
-//        val rightNavViewHeader = rightNavView.getHeaderView(0)
-//        val displayMetrics = DisplayMetrics()
-//        windowManager.defaultDisplay.getMetrics(displayMetrics)
-//        val height = displayMetrics.heightPixels
-//        rightNavViewHeader.layoutParams.height = height
+
         etChat = findViewById(R.id.et_chat)
         btnChat = findViewById(R.id.btn_chat)
 
@@ -313,9 +315,7 @@ class PaintActivity : AppCompatActivity() {
 
         sizeNumPrint.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                println(s.toString())
                 sizeNum.progress = Integer.parseInt(s.toString(), 10)
-                // --- fix----
             }
 
             override fun beforeTextChanged(
@@ -357,10 +357,6 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        var colorpaint = ColorPaint(0, 0, 0, 30.0f)
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun eraserFun() {
         eraserMode = !eraserMode
@@ -398,6 +394,17 @@ class PaintActivity : AppCompatActivity() {
         var b = Integer.toHexString(((255 * colorB.progress) / colorB.max))
         if (b.length == 1) b = "0" + b
         return "#" + r + g + b
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            if (currentFocus != null && currentFocus!!.windowToken != null) {
+                val imm: InputMethodManager =
+                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+            }
+        }
+        return super.onTouchEvent(event)
     }
 
     override fun onBackPressed() {
