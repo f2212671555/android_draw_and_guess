@@ -88,7 +88,8 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
                 startActivity(intent)
             } else {
                 runOnUiThread {
-                    Toast.makeText(this@JoinRoomByAppLinkActivity, "不存在此房間!!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@JoinRoomByAppLinkActivity, "不存在此房間!!", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }

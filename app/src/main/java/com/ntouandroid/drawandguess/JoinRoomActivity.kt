@@ -35,7 +35,7 @@ class JoinRoomActivity : AppCompatActivity() {
         refreshBtn = findViewById(R.id.btn_refresh)
 
         loadingRoomList();
-        val userName = intent.getStringExtra("userName")
+        val userName = intent.getStringExtra(MainActivity.USER_NAME)
 
         joinBtn.setOnClickListener {
             val pos = roomListLV.checkedItemPosition
@@ -50,7 +50,7 @@ class JoinRoomActivity : AppCompatActivity() {
     }
 
     private fun loadingRoomList() {
-        val dialog = ProgressDialog.show(this,"", "載入房間列表中...", true)
+        val dialog = ProgressDialog.show(this, "", "載入房間列表中...", true)
         GlobalScope.launch(Dispatchers.IO) {
             roomList = myRepository.getRoomList()
             if (roomList != null) {
@@ -74,7 +74,7 @@ class JoinRoomActivity : AppCompatActivity() {
     }
 
     private fun joinRoom(userName: String, roomId: String) {
-        val dialog = ProgressDialog.show(this,"", "進入房間中...", true)
+        val dialog = ProgressDialog.show(this, "", "進入房間中...", true)
         val intent = Intent(this, PaintActivity::class.java)
 
         val userBean = UserBean(
@@ -86,9 +86,9 @@ class JoinRoomActivity : AppCompatActivity() {
             val resultUserJoinRoomBean = myRepository.joinRoom(userBean)
             dialog.dismiss()
             if (resultUserJoinRoomBean.result!!) {
-                intent.putExtra("roomid", roomId)
-                intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())
-                intent.putExtra("userName", userName)
+                intent.putExtra(MainActivity.ROOM_ID, roomId)
+                intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
+                intent.putExtra(MainActivity.USER_NAME, userName)
                 startActivity(intent)
             }
         }

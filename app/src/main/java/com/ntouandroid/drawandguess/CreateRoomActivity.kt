@@ -25,7 +25,8 @@ class CreateRoomActivity : AppCompatActivity() {
     lateinit var Et_RoomName: EditText;
     lateinit var bt_CreateRoom: Button;
     lateinit var Tv_userName: TextView;
-
+    private var userName: String? = null
+    private var roomName: String? = null
 
     var myRepository: MyRepository = MyRepository();
 
@@ -38,7 +39,7 @@ class CreateRoomActivity : AppCompatActivity() {
         bt_CreateRoom = findViewById(R.id.bt_CreateRoom);
         Tv_userName = findViewById(R.id.Tv_userName);
 
-        userName = intent.getStringExtra("userName");
+        userName = intent.getStringExtra(MainActivity.USER_NAME);
 
         Tv_userName.text = userName;
 
@@ -68,7 +69,7 @@ class CreateRoomActivity : AppCompatActivity() {
     private fun CreatPage() {
         val intent = Intent(this, PaintActivity::class.java);
         roomName = Et_RoomName.text.toString().trim()
-        if (roomName.isEmpty()) {
+        if (roomName!!.isEmpty()) {
             Toast.makeText(this, "請輸入房名", Toast.LENGTH_SHORT).show()
             return
         }
@@ -88,26 +89,17 @@ class CreateRoomActivity : AppCompatActivity() {
                     UserBean(
                         resultRoomBean.roomId.toString(),
                         "",
-                        StartActivity.userName
+                        userName
                     )
                 )
             println(resultUserJoinRoomBean)
             dialog.dismiss()
-            intent.putExtra("roomid", resultRoomBean.roomId.toString())
-            intent.putExtra("userid", resultUserJoinRoomBean.userId.toString())
-            intent.putExtra("roomName", roomName)
-            intent.putExtra("userName", userName)
+            intent.putExtra(MainActivity.ROOM_ID, resultRoomBean.roomId.toString())
+            intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
+            intent.putExtra(MainActivity.ROOM_NAME, roomName)
+            intent.putExtra(MainActivity.USER_NAME, userName)
             startActivity(intent)
         }
     }
-
-    // will be deleted
-    companion object {
-        var roomid: String = ""
-        var userid: String = ""
-        var userName: String = ""
-        var roomName: String = ""
-    }
-    // will be deleted
 
 }

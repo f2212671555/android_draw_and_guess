@@ -31,6 +31,7 @@ import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
 import com.ntouandroid.drawandguess.utils.GameTimer
+import com.ntouandroid.drawandguess.utils.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -61,6 +62,11 @@ class PaintActivity : AppCompatActivity() {
     var eraserMode = false
     lateinit var mTimer: GameTimer
 
+    private var roomId: String = ""
+    private var userId: String = ""
+    private var nextId: String = ""
+    private var userName: String = ""
+
     val Int.dp: Int
         get() = (this * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
 
@@ -68,10 +74,11 @@ class PaintActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_paint)
+        UIHandler.setStatusBarColor(this)
 
-        roomid = intent.getStringExtra("roomid")
-        userid = intent.getStringExtra("userid")
-        userName = intent.getStringExtra("userName")
+        roomId = intent.getStringExtra(MainActivity.ROOM_ID)
+        userId = intent.getStringExtra(MainActivity.USER_ID)
+        userName = intent.getStringExtra(MainActivity.USER_NAME)
 
         paintB = findViewById(R.id.layout_paint_board)
 
@@ -80,7 +87,7 @@ class PaintActivity : AppCompatActivity() {
 
         paintB.post(Runnable {
             try {
-                paintB.init(paintB.width, paintB.height).initDrawRoom(roomid, userid)
+                paintB.init(paintB.width, paintB.height).initDrawRoom(roomId, userId)
 
             } catch (e: IllegalArgumentException) {
                 Log.d("paintB init", "IllegalArgumentException")
@@ -145,9 +152,9 @@ class PaintActivity : AppCompatActivity() {
                     val messageBean =
                         MessageBean(
                             type,
-                            userid,
+                            userId,
                             userName,
-                            roomid,
+                            roomId,
                             etChat.text.toString(),
                             false
                         )
@@ -157,9 +164,9 @@ class PaintActivity : AppCompatActivity() {
                     val messageBean =
                         MessageBean(
                             type,
-                            userid,
+                            userId,
                             userName,
-                            roomid,
+                            roomId,
                             etMessage.text.toString(),
                             false
                         )
@@ -178,15 +185,15 @@ class PaintActivity : AppCompatActivity() {
         myRoomWebSocketListener =
             RoomWebSocketListener(
                 UserBean(
-                    roomid,
-                    userid,
+                    roomId,
+                    userId,
                     userName
                 )
             )
         val outerClass = WeakReference(this)
         val myHandler = MyHandler(outerClass)
 
-        MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomid, userid)
+        MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomId, userId)
 
         myRoomWebSocketListener?.setHandler(myHandler)
     }
@@ -352,10 +359,6 @@ class PaintActivity : AppCompatActivity() {
 
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
-        var roomid: String = ""
-        var userid: String = ""
-        var nextid: String = ""
-        var userName: String = ""
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -399,7 +402,7 @@ class PaintActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         println("onBackPressed")
-        showDialog("確定要離開房間嗎？", "0.0")
+        showDialog("確定要離開房間嗎?", "")
     }
 
     private fun showDialog(title: String, message: String) {
@@ -451,7 +454,7 @@ class PaintActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         var text = ""
-        if (messageBean.userId == userid) { // 自己
+        if (messageBean.userId == userId) { // 自己
             params.apply {
                 gravity = Gravity.END
                 topMargin = 10.dp
@@ -503,7 +506,7 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun gamestart() {
-        if (userid == nextid) {
+        if (userId == nextId) {
             //lock chat
             etMessage.setEnabled(false)
         } else {
@@ -517,7 +520,7 @@ class PaintActivity : AppCompatActivity() {
         val myRepository =
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
-            val topicDetailBean = myRepository.startDraw(roomid)
+            val topicDetailBean = myRepository.startDraw(roomId)
             println(topicDetailBean)
         }
     }
@@ -575,8 +578,8 @@ class PaintActivity : AppCompatActivity() {
         val myRepository =
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
-            println(roomid)
-            val roomBean = myRepository.getRoomUsers(roomid)
+            println(roomId)
+            val roomBean = myRepository.getRoomUsers(roomId)
             usersList = roomBean.usersList!!
             runOnUiThread {
                 userListAdapter.updateAll(usersList)
@@ -587,7 +590,7 @@ class PaintActivity : AppCompatActivity() {
     private fun modifyUserList(messageBean: MessageBean) {
 
         if (messageBean.type == "join") {
-            if (messageBean.userId != userid) {
+            if (messageBean.userId != userId) {
                 userListAdapter.add(messageBean)
             }
         } else if (messageBean.type == "quit") {

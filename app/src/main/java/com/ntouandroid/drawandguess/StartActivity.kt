@@ -22,40 +22,36 @@ class StartActivity : AppCompatActivity() {
     lateinit var Bt_Create: Button;
     lateinit var Bt_Join: Button;
     var myRepository: MyRepository = MyRepository();
+    private var userName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
         UIHandler.setStatusBarColor(this)
 
-        userName = intent.getStringExtra("userName")
+        userName = intent.getStringExtra(MainActivity.USER_NAME)
 
         Bt_Create = findViewById(R.id.button_create)
         Bt_Join = findViewById(R.id.button_join);
 
-        Bt_Create.setOnClickListener{CreatPage()};
-        Bt_Join.setOnClickListener{JoinPage()};
+        Bt_Create.setOnClickListener { CreatPage() };
+        Bt_Join.setOnClickListener { JoinPage() };
     }
 
 
-
-
-    fun CreatPage(){
-        val intent = Intent(this@StartActivity, CreateRoomActivity::class.java);
-        intent.putExtra("userName",userName)
-        startActivity(intent);
+    fun CreatPage() {
+        val intent = Intent(this@StartActivity, CreateRoomActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        intent.putExtra(MainActivity.USER_NAME, userName)
+        startActivity(intent)
     }
 
-    fun JoinPage(){
+    fun JoinPage() {
         val intent = Intent(this@StartActivity, JoinRoomActivity::class.java)
-        intent.putExtra("userName",userName)
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+        intent.putExtra(MainActivity.USER_NAME, userName)
+        startActivity(intent)
     }
 
-    companion object {
-        var roomid: String = ""
-        var userid: String = ""
-        var userName: String = ""
-    }
 
 }
