@@ -67,9 +67,9 @@ class PaintActivity : AppCompatActivity() {
 
     private var roomId: String = ""
     private var userId: String = ""
-    private var nextId: String = ""
     private var userName: String = ""
     private lateinit var userListAdapter: UserListAdapter
+
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
     }
@@ -98,7 +98,7 @@ class PaintActivity : AppCompatActivity() {
 
             } catch (e: IllegalArgumentException) {
                 Log.d("paintB init failed!!", "IllegalArgumentException")
-                Toast.makeText(this,"paintB init failed!!",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "paintB init failed!!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         })
@@ -489,6 +489,7 @@ class PaintActivity : AppCompatActivity() {
         override fun handleMessage(msg: Message) {
             val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
             when (messageBean.type) {
+                "startDraw" ->{}
                 "chat" -> {
                     //某某人聊天
                     outerClass.get()?.addChatCardView(messageBean)
@@ -513,32 +514,49 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    fun gamestart() {
-        if (userId == nextId) {
+    private fun gameStartUIControl(currentDrawUserId: String) {
+        if (userId == currentDrawUserId) {
             //lock chat
             etMessage.setEnabled(false)
         } else {
             etMessage.setEnabled(true)
         }
 
-        //mTimer.startTimer()
+
     }
 
+    // 室長的開始按鈕
     private fun startDrawAndDispatch() {
-        // 會告訴伺服器遊戲開始
-        // 伺服器會制派一個人畫畫
-        // 回傳題目 目前畫畫 下個人是誰
+        /* 會告訴伺服器遊戲開始
+           伺服器會制派 "第一個人" 畫畫
+           回傳題目 目前畫畫 下個人是誰
+           */
         val myRepository =
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.startDraw(roomId)
             println(topicDetailBean)
+            if (topicDetailBean.result!!) {
+                // 控制/鎖住 UI
+                gameStartUIControl(topicDetailBean.nextDrawUserId!!)
+
+                // 呈現題目...給畫畫的人
+                // 呈現現在誰畫
+                // 呈現下次誰畫
+                // 開始倒數計時
+//                mTimer.startTimer()
+                // 倒數完後 -start
+                // 控制/鎖住 UI
+                // 公佈答案
+                // 倒數完後 -end
+            }
         }
     }
 
     private fun getDrawTopicDetail() {
-        // 跟 myRepository.startDraw(roomId)的差別 在於 不會指派 畫畫
-        // 一樣會回傳題目 目前畫畫 下個畫畫的人
+        /* 跟 myRepository.startDraw(roomId)的差別 在於 不會指派 畫畫
+         一樣會回傳題目 目前畫畫 下個畫畫的人
+         */
         val myRepository =
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
