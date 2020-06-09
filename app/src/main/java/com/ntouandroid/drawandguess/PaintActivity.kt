@@ -69,7 +69,7 @@ class PaintActivity : AppCompatActivity() {
     private var userId: String = ""
     private var nextId: String = ""
     private var userName: String = ""
-
+    private lateinit var userListAdapter: UserListAdapter
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
     }
@@ -97,8 +97,8 @@ class PaintActivity : AppCompatActivity() {
                 paintB.init(paintB.width, paintB.height).initDrawRoom(roomId, userId)
 
             } catch (e: IllegalArgumentException) {
-                Log.d("paintB init", "IllegalArgumentException")
-            } finally {
+                Log.d("paintB init failed!!", "IllegalArgumentException")
+                Toast.makeText(this,"paintB init failed!!",Toast.LENGTH_SHORT).show()
                 finish()
             }
         })
@@ -586,8 +586,6 @@ class PaintActivity : AppCompatActivity() {
         initUserList()
     }
 
-    //    private var usersList: MutableList<UserBean> = ArrayList()
-    private lateinit var userListAdapter: UserListAdapter
     private fun initUserList() {
         var usersList: MutableList<UserBean> = ArrayList()
         // must set up in main thread --start
