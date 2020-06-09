@@ -503,6 +503,7 @@ class PaintActivity : AppCompatActivity() {
                 }
                 "quit" -> {
                     //某某人離開房間
+                    outerClass.get()?.getDrawTopicDetail()
                     outerClass.get()?.modifyUserList(messageBean)
                 }
                 else -> {
@@ -523,11 +524,25 @@ class PaintActivity : AppCompatActivity() {
         //mTimer.startTimer()
     }
 
-    private fun getDrawTopic() {
+    private fun startDrawAndDispatch() {
+        // 會告訴伺服器遊戲開始
+        // 伺服器會制派一個人畫畫
+        // 回傳題目 目前畫畫 下個人是誰
         val myRepository =
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.startDraw(roomId)
+            println(topicDetailBean)
+        }
+    }
+
+    private fun getDrawTopicDetail() {
+        // 跟 myRepository.startDraw(roomId)的差別 在於 不會指派 畫畫
+        // 一樣會回傳題目 目前畫畫 下個畫畫的人
+        val myRepository =
+            MyRepository()
+        GlobalScope.launch(Dispatchers.IO) {
+            val topicDetailBean = myRepository.getRoomTopic(roomId)
             println(topicDetailBean)
         }
     }

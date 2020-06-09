@@ -9,7 +9,8 @@ import com.ntouandroid.drawandguess.model.service.RetrofitClient
 class MyRepository {
     private val service: MyServiceInterface =
         RetrofitClient.getService(
-            MyServiceInterface::class.java, Config.HTTP_SCHEME + Config.HOST)
+            MyServiceInterface::class.java, Config.HTTP_SCHEME + Config.HOST
+        )
 
     suspend fun getRoomList() = service.getRoomList()
     suspend fun getRoomUsers(roomId: String) = service.getRoomUsers(roomId)
