@@ -1,5 +1,6 @@
 package com.ntouandroid.drawandguess
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.filter.NameInputFilter
+import com.ntouandroid.drawandguess.utils.InternetJudge
 import com.ntouandroid.drawandguess.utils.UIHandler
 
 
@@ -32,14 +34,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         UIHandler.setStatusBarColor(this)
+
         Bt_Start = findViewById(R.id.button_start)
         Et_Name = findViewById(R.id.Et_Name)
 
         Et_Name.filters = arrayOf(NameInputFilter())
-        Bt_Start.setOnClickListener { nextpagecheck() }
-
+        Bt_Start.setOnClickListener {
+            if (InternetJudge.isInternetAvailable(this)) {
+                nextpagecheck()
+            } else {
+                showDialog("網路連接異常", "請檢查是否有連接網路！！")
+            }
+        }
         app_context = applicationContext
-
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -60,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        showDialog("確定要離開APP嗎？", "")
+        showQuitAppDialog("確定要離開APP嗎？", "")
     }
 
     private fun quitApp() {
@@ -73,13 +80,31 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun showDialog(title: String, message: String) {
+    private fun showQuitAppDialog(title: String, message: String) {
 
         val builder = AlertDialog.Builder(this)
         builder.setTitle(title)
         builder.setMessage(message)
         builder.setPositiveButton("確認") { _, _ ->
             quitApp()
+        }
+
+        builder.setNegativeButton("取消") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        // create dialog and show it
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showDialog(title: String, message: String) {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("確認") { dialog, _ ->
+            dialog.dismiss()
         }
 
         builder.setNegativeButton("取消") { dialog, _ ->
