@@ -1,6 +1,5 @@
 package com.ntouandroid.drawandguess
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -28,6 +27,9 @@ class MainActivity : AppCompatActivity() {
         const val USER_NAME = "USER_NAME"
         const val ROOM_ID = "ROOM_ID"
         const val ROOM_NAME = "ROOM_NAME"
+        const val ROOM_ROLE = "ROOM_ROLE"
+        const val ROOM_ROLE_MANAGER = "ROOM_ROLE_MANAGER"
+        const val ROOM_ROLE_GENERAL_MEMBER = "ROOM_ROLE_GENERAL_MEMBER"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

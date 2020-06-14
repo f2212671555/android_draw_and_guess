@@ -76,7 +76,8 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
         val userBean = UserBean(
             roomId,
             "",
-            userName
+            userName,
+            MainActivity.ROOM_ROLE_GENERAL_MEMBER
         )
         GlobalScope.launch(Dispatchers.IO) {
             val resultUserJoinRoomBean = myRepository.joinRoom(userBean)

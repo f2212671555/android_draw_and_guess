@@ -84,11 +84,13 @@ class CreateRoomActivity : AppCompatActivity() {
                     UserBean(
                         resultRoomBean.roomId.toString(),
                         "",
-                        userName
+                        userName,
+                        MainActivity.ROOM_ROLE_MANAGER
                     )
                 )
             println(resultUserJoinRoomBean)
             dialog.dismiss()
+            intent.putExtra(MainActivity.ROOM_ROLE, MainActivity.ROOM_ROLE_MANAGER)
             intent.putExtra(MainActivity.ROOM_ID, resultRoomBean.roomId.toString())
             intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
             intent.putExtra(MainActivity.ROOM_NAME, roomName)

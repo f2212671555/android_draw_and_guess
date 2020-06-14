@@ -68,6 +68,8 @@ class PaintActivity : AppCompatActivity() {
     private var roomId: String = ""
     private var userId: String = ""
     private var userName: String = ""
+    private var userRole: String = ""
+
     private lateinit var userListAdapter: UserListAdapter
 
     companion object {
@@ -84,6 +86,7 @@ class PaintActivity : AppCompatActivity() {
         UIHandler.setStatusBarColor(this)
 
         roomId = intent.getStringExtra(MainActivity.ROOM_ID)
+        userRole = intent.getStringExtra(MainActivity.ROOM_ROLE)
         userId = intent.getStringExtra(MainActivity.USER_ID)
         userName = intent.getStringExtra(MainActivity.USER_NAME)
 
@@ -191,7 +194,8 @@ class PaintActivity : AppCompatActivity() {
                 UserBean(
                     roomId,
                     userId,
-                    userName
+                    userName,
+                    userRole
                 )
             )
         val outerClass = WeakReference(this)

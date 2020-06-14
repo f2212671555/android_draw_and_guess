@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.ntouandroid.drawandguess.MainActivity
 import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.model.bean.MessageBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
@@ -31,7 +32,12 @@ class UserListAdapter(val context: Context, private var userList: MutableList<Us
         private val userNameTv: TextView = itemView.findViewById(R.id.tv_user)
 
         fun bind(userBean: UserBean) {
-            userNameTv.text = userBean.userName
+            var text = userBean.userName
+            if (userBean.role.equals(MainActivity.ROOM_ROLE_MANAGER)) {
+                text += " M"
+            }
+            userNameTv.text = text
+
         }
     }
 
@@ -54,7 +60,8 @@ class UserListAdapter(val context: Context, private var userList: MutableList<Us
                 UserBean(
                     messageBean.roomId,
                     messageBean.userId,
-                    messageBean.userName
+                    messageBean.userName,
+                    MainActivity.ROOM_ROLE_GENERAL_MEMBER
                 )
             )
             this.notifyItemInserted(index)

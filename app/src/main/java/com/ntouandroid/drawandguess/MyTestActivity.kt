@@ -87,7 +87,8 @@ class MyTestActivity : AppCompatActivity() {
         val userBean = UserBean(
             roomId,
             userId,
-            userName
+            userName,
+            MainActivity.ROOM_ROLE_GENERAL_MEMBER
         )
         GlobalScope.launch(Dispatchers.IO) {
             val respUserJoinRoomBean = myRepository.joinRoom(userBean)
@@ -134,7 +135,8 @@ class MyTestActivity : AppCompatActivity() {
                     UserBean(
                         resultRoomBean.roomId.toString(),
                         "",
-                        userName
+                        userName,
+                        MainActivity.ROOM_ROLE_MANAGER
                     )
                 )
             println(respUserJoinRoomBean)

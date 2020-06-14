@@ -8,5 +8,7 @@ data class UserBean(
     @SerializedName("userId")
     var userId: String?,
     @SerializedName("userName")
-    var userName: String?
+    var userName: String?,
+    @SerializedName("role")
+    var role: String?
 )
