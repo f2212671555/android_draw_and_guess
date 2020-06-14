@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.utils.UIHandler
@@ -37,8 +38,8 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
 //        val appLinkAction: String? = intent.action
         val appLinkData: Uri? = intent.data
         if (appLinkData != null) {
-            roomId = appLinkData.getQueryParameter(MainActivity.ROOM_ID).toString()
-            val roomName = appLinkData.getQueryParameter(MainActivity.ROOM_NAME).toString()
+            roomId = appLinkData.getQueryParameter(Config.ROOM_ID_KEY).toString()
+            val roomName = appLinkData.getQueryParameter(Config.ROOM_NAME_KEY).toString()
             if (roomName.isNotEmpty() && roomId.isNotEmpty()) {
                 roomNameTV.text = roomName
             }

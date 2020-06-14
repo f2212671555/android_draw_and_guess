@@ -17,6 +17,7 @@ class Config {
         const val WS_DRAW = "/ws/draw/"
         const val USER_ID_KEY = "userId"
         const val ROOM_ID_KEY = "roomId"
+        const val ROOM_NAME_KEY = "roomName"
         const val USER_NAME_KEY = "userName"
     }
 

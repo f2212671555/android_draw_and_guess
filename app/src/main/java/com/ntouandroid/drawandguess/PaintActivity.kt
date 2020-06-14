@@ -160,6 +160,7 @@ class PaintActivity : AppCompatActivity() {
                             etChat.text.toString(),
                             false
                         )
+                    etChat.setText("")
                     myRoomWebSocketListener!!.sendMessage(messageBean)
                 }
                 "answer" -> {
@@ -172,6 +173,7 @@ class PaintActivity : AppCompatActivity() {
                             etMessage.text.toString(),
                             false
                         )
+                    etMessage.setText("")
                     myRoomWebSocketListener!!.sendMessage(messageBean)
                 }
                 else -> {
