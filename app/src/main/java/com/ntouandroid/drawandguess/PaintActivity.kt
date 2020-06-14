@@ -43,12 +43,12 @@ import java.lang.ref.WeakReference
 
 class PaintActivity : AppCompatActivity() {
 
-    lateinit var eraser: Button
-    lateinit var size: Button
+    lateinit var eraser: ImageButton
+    lateinit var size: ImageButton
     var sizeNumGet: Float = 10.0f
-    lateinit var clean: Button
-    lateinit var btnColorSelected: Button
-    lateinit var backgroundClean: Button
+    lateinit var clean: ImageButton
+    lateinit var btnColorSelected: ImageButton
+    lateinit var backgroundClean: ImageButton
 
     lateinit var colorR: SeekBar
     lateinit var colorG: SeekBar
@@ -58,8 +58,8 @@ class PaintActivity : AppCompatActivity() {
     lateinit var etMessage: EditText
     lateinit var etChat: EditText
     lateinit var tvMessage: TextView
-    lateinit var btnSendMessage: Button
-    lateinit var btnChat: Button
+    lateinit var btnSendMessage: ImageButton
+    lateinit var btnChat: ImageButton
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
     lateinit var paintB: PaintBoard
     var eraserMode = false
@@ -587,7 +587,7 @@ class PaintActivity : AppCompatActivity() {
         })
 
         // left drawer
-        val btnLeftNav: Button = findViewById(R.id.btnLeftNav)
+        val btnLeftNav: ImageButton = findViewById(R.id.btnLeftNav)
         val leftDrawerView: NavigationView = findViewById(R.id.nav_view_left)
         btnLeftNav.setOnClickListener {
             drawLayout.openDrawer(leftDrawerView)
@@ -595,7 +595,7 @@ class PaintActivity : AppCompatActivity() {
 
         // right drawer
 
-        val btnRightNav: Button = findViewById(R.id.btnRightNav)
+        val btnRightNav: ImageButton = findViewById(R.id.btnRightNav)
         val rightDrawerView: NavigationView = findViewById(R.id.nav_view_right)
         btnRightNav.setOnClickListener {
             drawLayout.openDrawer(rightDrawerView)
