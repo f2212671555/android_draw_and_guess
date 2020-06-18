@@ -72,6 +72,7 @@ class PaintActivity : AppCompatActivity() {
 
     private lateinit var userListAdapter: UserListAdapter
     private lateinit var progressBar: ProgressBar
+    private lateinit var llDrawTopic: LinearLayout
 
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
@@ -93,6 +94,7 @@ class PaintActivity : AppCompatActivity() {
 
         paintB = findViewById(R.id.layout_paint_board)
 
+        initTopicSection()
         initDrawers()
         initChatRoom()
 
@@ -131,7 +133,6 @@ class PaintActivity : AppCompatActivity() {
         btnSendMessage.setOnClickListener { sendMessage("answer") }
         btnChat.setOnClickListener { sendMessage("chat") }
 
-        initTopicSection()
 
         progressBar = findViewById(R.id.pb_timer)
 
@@ -156,46 +157,48 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun initTopicSection() {
-
+        llDrawTopic = findViewById(R.id.ll_draw_topic)
+        val btnDrawTopic: Button = findViewById(R.id.btn_draw_topic)
+        btnDrawTopic.setOnClickListener {
+            llDrawTopic.visibility = View.GONE
+            myRoomWebSocketListener!!.sendMessage(
+                MessageBean(
+                    "startGame",
+                    userId,
+                    userName,
+                    roomId,
+                    "",
+                    false
+                )
+            )
+        }
         if (userRole == MainActivity.ROOM_ROLE_MANAGER) {
             val llStartGame: LinearLayout = findViewById(R.id.ll_game_start)
             llStartGame.visibility = View.VISIBLE
             val btnStartGame: Button = findViewById(R.id.btn_game_start)
-            val llDrawTopic: LinearLayout = findViewById(R.id.ll_draw_topic)
-            val btnDrawTopic: Button = findViewById(R.id.btn_draw_topic)
             btnStartGame.setOnClickListener {
                 llStartGame.visibility = View.GONE
                 llDrawTopic.visibility = View.VISIBLE
-                val myRepository =
-                    MyRepository()
-                GlobalScope.launch(Dispatchers.IO) {
-                    val topicDetailBean = myRepository.startDraw(roomId)
-                    println(topicDetailBean)
-                    if (topicDetailBean.result!!) {
-                        runOnUiThread {
-                            val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
-                            tvDrawTopic.text = topicDetailBean.topic
-                        }
-                    }
-                }
-            }
-            btnDrawTopic.setOnClickListener {
-                llDrawTopic.visibility = View.GONE
-                myRoomWebSocketListener!!.sendMessage(
-                    MessageBean(
-                        "startGame",
-                        userId,
-                        userName,
-                        roomId,
-                        "",
-                        false
-                    )
-                )
+                getDrawTopic()
             }
         } else {
         }
     }
 
+    private fun getDrawTopic() {
+        val myRepository =
+            MyRepository()
+        GlobalScope.launch(Dispatchers.IO) {
+            val topicDetailBean = myRepository.startDraw(roomId)
+            println(topicDetailBean)
+            if (topicDetailBean.result!!) {
+                runOnUiThread {
+                    val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
+                    tvDrawTopic.text = topicDetailBean.topic
+                }
+            }
+        }
+    }
 
     private fun sendMessage(type: String) {
         if (myRoomWebSocketListener != null) {
@@ -561,6 +564,13 @@ class PaintActivity : AppCompatActivity() {
                     // 當畫畫的人按下開始畫畫按鈕
                     // todo("在這邊實作倒數計時")
                 }
+                "nextDraw" -> {
+                    // 當大家都倒數完之後，會發請求(ready)
+                    // 當大家伺服器的狀態都是ready
+                    // 發請求開始下一題
+                    outerClass.get()?.llDrawTopic?.visibility = View.VISIBLE
+                    outerClass.get()?.getDrawTopic()
+                }
                 "chat" -> {
                     //某某人聊天
                     outerClass.get()?.addChatCardView(messageBean)
@@ -596,32 +606,29 @@ class PaintActivity : AppCompatActivity() {
 
     }
 
-    // 室長的開始按鈕
-    private fun startDrawAndDispatch() {
-        /* 會告訴伺服器遊戲開始
-           伺服器會制派 "第一個人" 畫畫
-           回傳題目 目前畫畫 下個人是誰
-           */
-        val myRepository =
-            MyRepository()
-        GlobalScope.launch(Dispatchers.IO) {
-            val topicDetailBean = myRepository.startDraw(roomId)
-            println(topicDetailBean)
-            if (topicDetailBean.result!!) {
-                // 控制/鎖住 UI
-                gameStartUIControl(topicDetailBean.nextDrawUserId!!)
+    private fun startDraw() {
+        // 開始倒數計時
+        // 控制/鎖住 UI
 
-                // 呈現題目...給畫畫的人
-                // 呈現現在誰畫
-                // 呈現下次誰畫
-                // 開始倒數計時
-//                mTimer.startTimer()
-                // 倒數完後 -start
-                // 控制/鎖住 UI
-                // 公佈答案
-                // 倒數完後 -end
-            }
-        }
+        // 呈現題目...給畫畫的人
+        // 呈現現在誰畫
+        // 呈現下次誰畫
+
+        // 倒數完後 -start
+        // 控制/鎖住 UI
+        // 公佈答案
+        // 倒數完後 -end
+        myRoomWebSocketListener.sendMessage(
+            MessageBean(
+                "ready",
+                userId,
+                userName,
+                roomId,
+                "",
+                false
+            )
+        )
+
     }
 
     private fun getDrawTopicDetail() {
