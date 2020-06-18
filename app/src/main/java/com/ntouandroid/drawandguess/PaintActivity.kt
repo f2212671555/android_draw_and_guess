@@ -75,6 +75,7 @@ class PaintActivity : AppCompatActivity() {
     private var isAnimatingUpdatingDelayed: Boolean = false
 
     private lateinit var llDrawTopic: LinearLayout
+    private lateinit var llDrawTopicAnswer: LinearLayout
 
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
@@ -140,6 +141,7 @@ class PaintActivity : AppCompatActivity() {
 
     private fun initTopicSection() {
         llDrawTopic = findViewById(R.id.ll_draw_topic)
+        llDrawTopicAnswer = findViewById(R.id.ll_draw_topic_answer)
         val btnDrawTopic: Button = findViewById(R.id.btn_draw_topic)
         btnDrawTopic.setOnClickListener {
             llDrawTopic.visibility = View.GONE
@@ -576,14 +578,35 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    private fun gameStartUIControl(currentDrawUserId: String) {
+    /*
+    在畫畫開始前，就控制UI
+    鎖大家的畫布、和答題EditView
+     */
+    private fun initUIControl() {
+        //todo 在畫畫開始前，就控制UI
+    }
+
+    /*
+    在畫畫開始時，控制UI
+    開啟要畫畫的人的畫布，鎖不用畫畫的人的畫布
+    開啟不用畫畫的人的答題EditView，鎖要畫畫的人的答題EditView
+     */
+    private fun drawStartUIControl(currentDrawUserId: String) {
+        //todo 在畫畫開始時，控制UI
         if (userId == currentDrawUserId) {
             //lock chat
             etMessage.setEnabled(false)
         } else {
             etMessage.setEnabled(true)
         }
+    }
 
+    /*
+    答對題目時，控制UI
+    關閉答題EditView，並在答題EditView呈現出你答對了
+     */
+    private fun answerCurrentUIControl() {
+        //todo 答對題目時，控制UI
 
     }
 
@@ -591,17 +614,6 @@ class PaintActivity : AppCompatActivity() {
         // 開始倒數計時
         startTimer(10.toFloat())
         // 控制/鎖住 UI
-
-        // 呈現題目...給畫畫的人
-        // 呈現現在誰畫
-        // 呈現下次誰畫
-
-        // 倒數完後 -start
-        // 控制/鎖住 UI
-        // 公佈答案
-        // 倒數完後 -end
-
-
     }
 
     private fun getDrawTopicDetail() {
@@ -687,7 +699,7 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    private fun startTimer(timeSec:Float){
+    private fun startTimer(timeSec: Float) {
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
 //                println(mTimer.secondsCount * 100)
@@ -709,6 +721,8 @@ class PaintActivity : AppCompatActivity() {
                     )
                 )
             }
+            // 控制/鎖住 UI
+            // 公佈答案
 
         })
         mTimer.secondsCount = timeSec
