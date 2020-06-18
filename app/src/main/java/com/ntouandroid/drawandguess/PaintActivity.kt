@@ -177,7 +177,6 @@ class PaintActivity : AppCompatActivity() {
             val topicDetailBean = myRepository.startDraw(roomId)
             println(topicDetailBean)
             if (topicDetailBean.result!!) {
-                answer = topicDetailBean.topic.toString()
                 runOnUiThread {
                     val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
                     tvDrawTopic.text = topicDetailBean.topic
@@ -542,12 +541,11 @@ class PaintActivity : AppCompatActivity() {
         override fun handleMessage(msg: Message) {
             val messageBean = Gson().fromJson(msg.obj.toString(), MessageBean::class.java)
             when (messageBean.type) {
-                "startGame" -> {
-                    // 當室長按下開始遊戲按鈕
-                }
                 "startDraw" -> {
                     // 當畫畫的人按下開始畫畫按鈕
                     outerClass.get()?.startDraw()
+                    // 拿答案
+                    outerClass.get()?.getDrawTopicDetail()
                 }
                 "nextDraw" -> {
                     // 當大家都倒數完之後，會發請求(ready)
@@ -569,7 +567,6 @@ class PaintActivity : AppCompatActivity() {
                 }
                 "quit" -> {
                     //某某人離開房間
-                    outerClass.get()?.getDrawTopicDetail()
                     outerClass.get()?.modifyUserList(messageBean)
                 }
                 else -> {
@@ -585,12 +582,12 @@ class PaintActivity : AppCompatActivity() {
             // 答案正確
             if (messageBean.userId == userId) {
                 // 自己的答案正確
-                text = "恭喜你答對了喔！！"
+                text = "恭喜你答對了喔！！\n"
 //                answerCurrentUIControl()
             }
         } else {
             // 答案不正確
-            text = messageBean.userName + " : " + messageBean.message
+            text = messageBean.userName + " : " + messageBean.message + "\n"
         }
         tvMessage.append(text)
     }
@@ -644,6 +641,7 @@ class PaintActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.getRoomTopic(roomId)
             println(topicDetailBean)
+            answer = topicDetailBean.topic.toString()
         }
     }
 
@@ -728,13 +726,11 @@ class PaintActivity : AppCompatActivity() {
 
             override fun timesUp() {
 //                println("計時器進度條停止")
+                // 控制/鎖住 UI
+//            drawStartUIControl()
                 // show answer
                 showAnswer(10.toFloat())
             }
-            // 控制/鎖住 UI
-//            initUIControl()
-            // 公佈答案
-
         })
         mTimer.secondsCount = timeSec
         mTimer.maxTimeInSeconds = timeSec

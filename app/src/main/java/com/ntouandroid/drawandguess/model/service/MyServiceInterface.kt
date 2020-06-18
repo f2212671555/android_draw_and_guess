@@ -27,5 +27,5 @@ interface MyServiceInterface {
     suspend fun startDraw(@Query(Config.ROOM_ID_KEY) roomId: String): TopicDetailBean
 
     @GET(Config.ROOM_TOPIC)
-    suspend fun getRoomTopic(roomId: String): TopicDetailBean
+    suspend fun getRoomTopic(@Query(Config.ROOM_ID_KEY) roomId: String): TopicDetailBean
 }
