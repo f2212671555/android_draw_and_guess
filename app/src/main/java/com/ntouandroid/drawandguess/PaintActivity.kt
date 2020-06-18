@@ -72,6 +72,8 @@ class PaintActivity : AppCompatActivity() {
 
     private lateinit var userListAdapter: UserListAdapter
     private lateinit var progressBar: ProgressBar
+    private var isAnimatingUpdatingDelayed: Boolean = false
+
 
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
@@ -707,4 +709,28 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
+    private  fun startTimer(timeSec:Float){
+        mTimer = GameTimer(object : GameTimer.TimerBarController {
+            override fun timerOnUpdate() {
+//                println(mTimer.secondsCount * 100)
+//                println("計時器進度條跳一次")
+                update(-1, (mTimer.secondsCount * 100).toInt())
+            }
+
+            override fun timesUp() {
+//                println("計時器進度條停止")
+            }
+
+        })
+        mTimer.secondsCount = timeSec
+        mTimer.maxTimeInSeconds = timeSec
+        progressBar.max = (timeSec * 100).toInt()
+        progressBar.progress = (timeSec * 100).toInt()
+        mTimer.startTimer()
+    }
+
+    private fun update(progressIncrement: Int, trueProgress: Int) {
+        if (isAnimatingUpdatingDelayed) progressBar.incrementProgressBy(progressIncrement)
+        else progressBar.progress = trueProgress
+    }
 }
