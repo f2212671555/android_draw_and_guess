@@ -83,7 +83,7 @@ class MyTestActivity : AppCompatActivity() {
         var userId = ""
         val userName = "USERNAME"
         val roomId = etJoinRoom.text.toString()
-        val userBean = UserBean(roomId, userId, userName)
+        val userBean = UserBean(roomId, userId, userName,MainActivity.ROOM_ROLE_GENERAL_MEMBER)
         GlobalScope.launch(Dispatchers.IO) {
             val respUserJoinRoomBean = myRepository.joinRoom(userBean)
             println(respUserJoinRoomBean)
@@ -120,7 +120,7 @@ class MyTestActivity : AppCompatActivity() {
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
             val respUserJoinRoomBean =
-                myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(), "", userName))
+                myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(), "", userName,MainActivity.ROOM_ROLE_MANAGER))
             println(respUserJoinRoomBean)
             val userId = respUserJoinRoomBean.userId.toString()
             intent.putExtra("roomid", resultRoomBean.roomId.toString())

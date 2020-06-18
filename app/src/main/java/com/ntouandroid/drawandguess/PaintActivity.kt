@@ -95,6 +95,7 @@ class PaintActivity : AppCompatActivity() {
         userName = intent.getStringExtra(MainActivity.USER_NAME)
 
         paintB = findViewById(R.id.layout_paint_board)
+        progressBar = findViewById(R.id.pb_timer)
 
         initTopicSection()
         initDrawers()
@@ -135,27 +136,6 @@ class PaintActivity : AppCompatActivity() {
         btnSendMessage.setOnClickListener { sendMessage("answer") }
         btnChat.setOnClickListener { sendMessage("chat") }
 
-
-        progressBar = findViewById(R.id.pb_timer)
-
-        val timeSec = 5f
-
-        mTimer = GameTimer(object : GameTimer.TimerBarController {
-            override fun timerOnUpdate() {
-//                println("計時器進度條跳一次")
-            }
-
-            override fun timesUp() {
-//                println("計時器進度條停止")
-            }
-
-        })
-        mTimer.secondsCount = timeSec
-        mTimer.maxTimeInSeconds = timeSec
-
-        mTimer.startTimer()
-
-
     }
 
     private fun initTopicSection() {
@@ -165,7 +145,7 @@ class PaintActivity : AppCompatActivity() {
             llDrawTopic.visibility = View.GONE
             myRoomWebSocketListener!!.sendMessage(
                 MessageBean(
-                    "startGame",
+                    "startDraw",
                     userId,
                     userName,
                     roomId,
@@ -180,7 +160,6 @@ class PaintActivity : AppCompatActivity() {
             val btnStartGame: Button = findViewById(R.id.btn_game_start)
             btnStartGame.setOnClickListener {
                 llStartGame.visibility = View.GONE
-                llDrawTopic.visibility = View.VISIBLE
                 getDrawTopic()
             }
         } else {
@@ -197,6 +176,7 @@ class PaintActivity : AppCompatActivity() {
                 runOnUiThread {
                     val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
                     tvDrawTopic.text = topicDetailBean.topic
+                    llDrawTopic.visibility = View.VISIBLE
                 }
             }
         }
@@ -564,13 +544,12 @@ class PaintActivity : AppCompatActivity() {
                 }
                 "startDraw" -> {
                     // 當畫畫的人按下開始畫畫按鈕
-                    // todo("在這邊實作倒數計時")
+                    outerClass.get()?.startDraw()
                 }
                 "nextDraw" -> {
                     // 當大家都倒數完之後，會發請求(ready)
                     // 當大家伺服器的狀態都是ready
                     // 發請求開始下一題
-                    outerClass.get()?.llDrawTopic?.visibility = View.VISIBLE
                     outerClass.get()?.getDrawTopic()
                 }
                 "chat" -> {
@@ -610,6 +589,7 @@ class PaintActivity : AppCompatActivity() {
 
     private fun startDraw() {
         // 開始倒數計時
+        startTimer(10.toFloat())
         // 控制/鎖住 UI
 
         // 呈現題目...給畫畫的人
@@ -620,16 +600,7 @@ class PaintActivity : AppCompatActivity() {
         // 控制/鎖住 UI
         // 公佈答案
         // 倒數完後 -end
-        myRoomWebSocketListener.sendMessage(
-            MessageBean(
-                "ready",
-                userId,
-                userName,
-                roomId,
-                "",
-                false
-            )
-        )
+
 
     }
 
@@ -716,7 +687,7 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    private  fun startTimer(timeSec:Float){
+    private fun startTimer(timeSec:Float){
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
 //                println(mTimer.secondsCount * 100)
@@ -726,6 +697,17 @@ class PaintActivity : AppCompatActivity() {
 
             override fun timesUp() {
 //                println("計時器進度條停止")
+                // 跟server說你ready了
+                myRoomWebSocketListener?.sendMessage(
+                    MessageBean(
+                        "ready",
+                        userId,
+                        userName,
+                        roomId,
+                        "",
+                        false
+                    )
+                )
             }
 
         })
