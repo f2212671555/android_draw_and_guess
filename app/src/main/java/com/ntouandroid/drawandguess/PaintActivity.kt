@@ -69,6 +69,7 @@ class PaintActivity : AppCompatActivity() {
     private var userId: String = ""
     private var userName: String = ""
     private var userRole: String = ""
+    private var answer: String = ""
 
     private lateinit var userListAdapter: UserListAdapter
     private lateinit var progressBar: ProgressBar
@@ -98,6 +99,7 @@ class PaintActivity : AppCompatActivity() {
         paintB = findViewById(R.id.layout_paint_board)
         progressBar = findViewById(R.id.pb_timer)
 
+//        initUIControl()
         initTopicSection()
         initDrawers()
         initChatRoom()
@@ -175,6 +177,7 @@ class PaintActivity : AppCompatActivity() {
             val topicDetailBean = myRepository.startDraw(roomId)
             println(topicDetailBean)
             if (topicDetailBean.result!!) {
+                answer = topicDetailBean.topic.toString()
                 runOnUiThread {
                     val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
                     tvDrawTopic.text = topicDetailBean.topic
@@ -512,22 +515,20 @@ class PaintActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        var text = ""
-        if (messageBean.userId == userId) { // 自己
-            params.apply {
-                gravity = Gravity.END
-                topMargin = 10.dp
-                leftMargin = 20.dp
-            }
-            text = "你 : ${messageBean.message}"
+
+        val tmpGravity: Int = if (messageBean.userId == userId) { // 自己
+            Gravity.END
         } else {
-            params.apply {
-                gravity = Gravity.START
-                topMargin = 10.dp
-                rightMargin = 20.dp
-            }
-            text = "${messageBean.userName} : ${messageBean.message}"
+            Gravity.START
         }
+        params.apply {
+            gravity = tmpGravity
+            topMargin = 10.dp
+            rightMargin = 20.dp
+        }
+
+        val text = "${messageBean.userName} : ${messageBean.message}"
+
         val cardView = CardView(this)
         cardView.radius = 10.dp.toFloat()
         cardView.layoutParams = params
@@ -539,7 +540,7 @@ class PaintActivity : AppCompatActivity() {
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
         override fun handleMessage(msg: Message) {
-            val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
+            val messageBean = Gson().fromJson(msg.obj.toString(), MessageBean::class.java)
             when (messageBean.type) {
                 "startGame" -> {
                     // 當室長按下開始遊戲按鈕
@@ -560,7 +561,7 @@ class PaintActivity : AppCompatActivity() {
                 }
                 "answer" -> {
                     //某某人猜答案
-                    outerClass.get()?.tvMessage?.append(messageBean.message)
+                    outerClass.get()?.checkAndSetAnswer(messageBean)
                 }
                 "join" -> {
                     //某某人加入房間
@@ -576,6 +577,22 @@ class PaintActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun checkAndSetAnswer(messageBean: MessageBean) {
+        var text = ""
+        if (messageBean.result!!) {
+            // 答案正確
+            if (messageBean.userId == userId) {
+                // 自己的答案正確
+                text = "恭喜你答對了喔！！"
+//                answerCurrentUIControl()
+            }
+        } else {
+            // 答案不正確
+            text = messageBean.userName + " : " + messageBean.message
+        }
+        tvMessage.append(text)
     }
 
     /*
@@ -603,7 +620,7 @@ class PaintActivity : AppCompatActivity() {
 
     /*
     答對題目時，控制UI
-    關閉答題EditView，並在答題EditView呈現出你答對了
+    關閉答題EditView
      */
     private fun answerCurrentUIControl() {
         //todo 答對題目時，控制UI
@@ -611,9 +628,11 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun startDraw() {
+        // 控制/鎖住 UI
+//        drawStartUIControl()
         // 開始倒數計時
         startTimer(10.toFloat())
-        // 控制/鎖住 UI
+
     }
 
     private fun getDrawTopicDetail() {
@@ -709,19 +728,11 @@ class PaintActivity : AppCompatActivity() {
 
             override fun timesUp() {
 //                println("計時器進度條停止")
-                // 跟server說你ready了
-                myRoomWebSocketListener?.sendMessage(
-                    MessageBean(
-                        "ready",
-                        userId,
-                        userName,
-                        roomId,
-                        "",
-                        false
-                    )
-                )
+                // show answer
+                showAnswer(10.toFloat())
             }
             // 控制/鎖住 UI
+//            initUIControl()
             // 公佈答案
 
         })
@@ -735,5 +746,34 @@ class PaintActivity : AppCompatActivity() {
     private fun update(progressIncrement: Int, trueProgress: Int) {
         if (isAnimatingUpdatingDelayed) progressBar.incrementProgressBy(progressIncrement)
         else progressBar.progress = trueProgress
+    }
+
+    private fun showAnswer(timeSec: Float) {
+        llDrawTopicAnswer.visibility = View.VISIBLE
+        val tvDrawTopicAnswer: TextView = findViewById(R.id.tv_draw_topic_answer)
+        tvDrawTopicAnswer.text = answer
+        mTimer = GameTimer(object : GameTimer.TimerBarController {
+            override fun timerOnUpdate() {
+            }
+
+            override fun timesUp() {
+                llDrawTopicAnswer.visibility = View.GONE
+                // 準備下一題
+                // 跟server說你ready了
+                myRoomWebSocketListener?.sendMessage(
+                    MessageBean(
+                        "ready",
+                        userId,
+                        userName,
+                        roomId,
+                        "",
+                        false
+                    )
+                )
+            }
+        })
+        mTimer.secondsCount = timeSec
+        mTimer.maxTimeInSeconds = timeSec
+        mTimer.startTimer()
     }
 }
