@@ -4,9 +4,9 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFBF00"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    android:background="#FFBF00">
+    tools:openDrawer="start">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,44 +29,95 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/bt_paint"
-                android:src="@drawable/brush_white"/>
+                android:src="@drawable/brush_white" />
 
             <ImageButton
                 android:id="@+id/eraser"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/bt_paint"
-                android:src="@drawable/clean_white"/>
+                android:src="@drawable/clean_white" />
 
             <ImageButton
                 android:id="@+id/size"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/bt_paint"
-                android:src="@drawable/size_white"/>
+                android:src="@drawable/size_white" />
 
             <ImageButton
                 android:id="@+id/backgroundClean"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/bt_paint"
-                android:src="@drawable/spark_white"/>
+                android:src="@drawable/spark_white" />
 
             <ImageButton
                 android:id="@+id/btnRightNav"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/bt_paint"
-                android:src="@drawable/conversation_white"/>
+                android:src="@drawable/conversation_white" />
         </LinearLayout>
 
-
-        <com.ntouandroid.drawandguess.colorPicker.PaintBoard
-            android:id="@+id/layout_paint_board"
+        <FrameLayout
+            android:id="@+id/fl_draw_section"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/pb_timer"
             android:layout_below="@+id/ll_nav"
-            android:layout_above="@+id/chatSection" />
+            android:orientation="vertical">
+
+            <com.ntouandroid.drawandguess.colorPicker.PaintBoard
+                android:id="@+id/layout_paint_board"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/ll_game_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/gray_color"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/btn_game_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="開始遊戲" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_draw_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/gray_color"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_draw_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn_draw_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="開始畫畫" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_timer"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_above="@+id/chatSection"
+            android:background="@drawable/gray_color" />
 
         <RelativeLayout
             android:id="@+id/chatSection"
@@ -78,9 +129,9 @@
                 android:id="@+id/tv_recieve"
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:scrollbars="vertical"
                 android:background="@drawable/tv_paint_message"
-                android:textColor="#000000"/>
+                android:scrollbars="vertical"
+                android:textColor="#000000" />
 
             <EditText
                 android:id="@+id/message_et"
@@ -89,8 +140,7 @@
                 android:layout_below="@+id/tv_recieve"
                 android:layout_toStartOf="@+id/send_message_btn"
                 android:layout_toLeftOf="@+id/send_message_btn"
-                android:background="@drawable/et_paint_message"
-                />
+                android:background="@drawable/et_paint_message" />
 
             <ImageButton
                 android:id="@+id/send_message_btn"
@@ -100,9 +150,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/bt_paint"
-                android:textColor="#ffffff"
                 android:src="@drawable/share_white"
-                />
+                android:textColor="#ffffff" />
 
         </RelativeLayout>
 
@@ -118,8 +167,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="#FFCBB3">
+            android:background="#FFCBB3"
+            android:orientation="horizontal">
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/view_user_list"
                 android:layout_width="match_parent"
@@ -174,8 +224,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentBottom="true"
                 android:background="@drawable/bt_paint"
-                android:text="@string/send_message_btn"
-                android:src="@drawable/share_white"/>
+                android:src="@drawable/share_white"
+                android:text="@string/send_message_btn" />
 
         </RelativeLayout>
     </com.google.android.material.navigation.NavigationView>

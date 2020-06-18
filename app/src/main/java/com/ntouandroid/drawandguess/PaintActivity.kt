@@ -71,6 +71,7 @@ class PaintActivity : AppCompatActivity() {
     private var userRole: String = ""
 
     private lateinit var userListAdapter: UserListAdapter
+    private lateinit var progressBar: ProgressBar
 
     companion object {
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
@@ -106,6 +107,7 @@ class PaintActivity : AppCompatActivity() {
             }
         })
 
+
         lateinit var btnColorPreview: Button
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
@@ -129,8 +131,11 @@ class PaintActivity : AppCompatActivity() {
         btnSendMessage.setOnClickListener { sendMessage("answer") }
         btnChat.setOnClickListener { sendMessage("chat") }
 
-        val timeSec = 5f
+        initTopicSection()
 
+        progressBar = findViewById(R.id.pb_timer)
+
+        val timeSec = 5f
 
         mTimer = GameTimer(object : GameTimer.TimerBarController {
             override fun timerOnUpdate() {
@@ -150,34 +155,87 @@ class PaintActivity : AppCompatActivity() {
 
     }
 
+    private fun initTopicSection() {
+
+        if (userRole == MainActivity.ROOM_ROLE_MANAGER) {
+            val llStartGame: LinearLayout = findViewById(R.id.ll_game_start)
+            llStartGame.visibility = View.VISIBLE
+            val btnStartGame: Button = findViewById(R.id.btn_game_start)
+            val llDrawTopic: LinearLayout = findViewById(R.id.ll_draw_topic)
+            val btnDrawTopic: Button = findViewById(R.id.btn_draw_topic)
+            btnStartGame.setOnClickListener {
+                llStartGame.visibility = View.GONE
+                llDrawTopic.visibility = View.VISIBLE
+                val myRepository =
+                    MyRepository()
+                GlobalScope.launch(Dispatchers.IO) {
+                    val topicDetailBean = myRepository.startDraw(roomId)
+                    println(topicDetailBean)
+                    if (topicDetailBean.result!!) {
+                        runOnUiThread {
+                            val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
+                            tvDrawTopic.text = topicDetailBean.topic
+                        }
+                    }
+                }
+            }
+            btnDrawTopic.setOnClickListener {
+                llDrawTopic.visibility = View.GONE
+                myRoomWebSocketListener!!.sendMessage(
+                    MessageBean(
+                        "startGame",
+                        userId,
+                        userName,
+                        roomId,
+                        "",
+                        false
+                    )
+                )
+            }
+        } else {
+        }
+    }
+
+
     private fun sendMessage(type: String) {
         if (myRoomWebSocketListener != null) {
             when (type) {
                 "chat" -> {
+                    val text = etChat.text.toString()
+                    if (text.isEmpty()) {
+                        return
+                    }
                     val messageBean =
                         MessageBean(
                             type,
                             userId,
                             userName,
                             roomId,
-                            etChat.text.toString(),
+                            text,
                             false
                         )
                     etChat.setText("")
                     myRoomWebSocketListener!!.sendMessage(messageBean)
                 }
                 "answer" -> {
+                    val text = etMessage.text.toString()
+                    if (text.isEmpty()) {
+                        return
+                    }
                     val messageBean =
                         MessageBean(
                             type,
                             userId,
                             userName,
                             roomId,
-                            etMessage.text.toString(),
+                            text,
                             false
                         )
                     etMessage.setText("")
                     myRoomWebSocketListener!!.sendMessage(messageBean)
+                }
+                "startGame" -> {
+
                 }
                 else -> {
                     println("sendMessage missing type")
@@ -461,6 +519,7 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun addChatCardView(messageBean: MessageBean) {
+        println(messageBean)
         val llChat: LinearLayout = findViewById(R.id.ll_chat)
         val params = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -495,7 +554,13 @@ class PaintActivity : AppCompatActivity() {
         override fun handleMessage(msg: Message) {
             val messageBean = Gson().fromJson(msg?.obj.toString(), MessageBean::class.java)
             when (messageBean.type) {
-                "startDraw" ->{}
+                "startGame" -> {
+                    // 當室長按下開始遊戲按鈕
+                }
+                "startDraw" -> {
+                    // 當畫畫的人按下開始畫畫按鈕
+                    // todo("在這邊實作倒數計時")
+                }
                 "chat" -> {
                     //某某人聊天
                     outerClass.get()?.addChatCardView(messageBean)

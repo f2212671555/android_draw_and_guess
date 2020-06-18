@@ -41,6 +41,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun init(width: Int, height: Int): PaintBoard {
         println("HI INIT")
+
         // bitmap
         mWidth = width
         mHeight = height
@@ -81,7 +82,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         myDrawWebSocketListener!!.setHandler(myHandler)
     }
 
-    fun closeWebSocket(){
+    fun closeWebSocket() {
         myDrawWebSocketListener?.close()
     }
 
