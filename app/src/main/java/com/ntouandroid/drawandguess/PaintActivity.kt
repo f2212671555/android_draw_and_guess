@@ -175,7 +175,6 @@ class PaintActivity : AppCompatActivity() {
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.startDraw(roomId)
-            println(topicDetailBean)
             if (topicDetailBean.result!!) {
                 runOnUiThread {
                     val tvDrawTopic: TextView = findViewById(R.id.tv_draw_topic)
@@ -640,7 +639,6 @@ class PaintActivity : AppCompatActivity() {
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.getRoomTopic(roomId)
-            println(topicDetailBean)
             answer = topicDetailBean.topic.toString()
         }
     }
