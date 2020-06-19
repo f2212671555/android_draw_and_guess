@@ -81,8 +81,12 @@ class PaintActivity : AppCompatActivity() {
 
     private lateinit var llDrawTopic: LinearLayout
     private lateinit var llDrawTopicAnswer: LinearLayout
+    private var userMode = INIT_MODE
 
     companion object {
+        const val INIT_MODE = "INIT_MODE"
+        const val DRAW_MODE = "DRAW_MODE"
+        const val ANSWER_MODE = "ANSWER_MODE"
         var colorpaint = ColorPaint(0, 0, 0, 30.0f)
     }
 
@@ -103,8 +107,10 @@ class PaintActivity : AppCompatActivity() {
 
         paintB = findViewById(R.id.layout_paint_board)
         progressBar = findViewById(R.id.pb_timer)
+        userMode = INIT_MODE
+        etMessage = findViewById(R.id.message_et)
 
-//        initUIControl()
+        initUIControl()
         initTopicSection()
         initDrawers()
         initChatRoom()
@@ -124,7 +130,6 @@ class PaintActivity : AppCompatActivity() {
         lateinit var btnColorPreview: Button
         eraser = findViewById(R.id.eraser)
         size = findViewById(R.id.size)
-        etMessage = findViewById(R.id.message_et)
 
         etChat = findViewById(R.id.et_chat)
         btnChat = findViewById(R.id.btn_chat)
@@ -587,7 +592,7 @@ class PaintActivity : AppCompatActivity() {
             if (messageBean.userId == userId) {
                 // 自己的答案正確
                 text = "恭喜你答對了喔！！\n"
-//                answerCurrentUIControl()
+                answerCurrentUIControl()
             }
         } else {
             // 答案不正確
@@ -601,7 +606,9 @@ class PaintActivity : AppCompatActivity() {
     鎖大家的畫布、和答題EditView
      */
     private fun initUIControl() {
-        //todo 在畫畫開始前，就控制UI
+        userMode = INIT_MODE
+        paintB.setUserMode(userMode)
+        etMessage.isEnabled = false
     }
 
     /*
@@ -609,13 +616,13 @@ class PaintActivity : AppCompatActivity() {
     開啟要畫畫的人的畫布，鎖不用畫畫的人的畫布
     開啟不用畫畫的人的答題EditView，鎖要畫畫的人的答題EditView
      */
-    private fun drawStartUIControl(currentDrawUserId: String) {
-        //todo 在畫畫開始時，控制UI
-        if (userId == currentDrawUserId) {
-            //lock chat
-            etMessage.setEnabled(false)
-        } else {
-            etMessage.setEnabled(true)
+    private fun drawStartUIControl() {
+        if (userMode == ANSWER_MODE) {
+            paintB.setUserMode(userMode)
+            etMessage.isEnabled = true
+        } else if (userMode == DRAW_MODE) {
+            paintB.setUserMode(userMode)
+            etMessage.isEnabled = false
         }
     }
 
@@ -624,13 +631,12 @@ class PaintActivity : AppCompatActivity() {
     關閉答題EditView
      */
     private fun answerCurrentUIControl() {
-        //todo 答對題目時，控制UI
-
+        etMessage.isEnabled = false
     }
 
     private fun startDraw() {
         // 控制/鎖住 UI
-//        drawStartUIControl()
+        drawStartUIControl()
         // 開始倒數計時
         startTimer(10.toFloat())
 
@@ -644,6 +650,14 @@ class PaintActivity : AppCompatActivity() {
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.getRoomTopic(roomId)
+            userMode = if (userId == topicDetailBean.currentDrawUserId) {
+                // 開啟畫畫模式
+                DRAW_MODE
+            } else {
+                // 開啟答題模式
+                ANSWER_MODE
+            }
+            runOnUiThread { drawStartUIControl() }
             answer = topicDetailBean.topic.toString()
         }
     }
@@ -740,9 +754,9 @@ class PaintActivity : AppCompatActivity() {
             override fun timesUp() {
 //                println("計時器進度條停止")
                 // 控制/鎖住 UI
-//            drawStartUIControl()
+                initUIControl()
                 // show answer
-                showAnswer(10.toFloat())
+                showAnswer(6.toFloat())
             }
         })
         mTimer.secondsCount = timeSec

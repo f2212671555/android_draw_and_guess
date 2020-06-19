@@ -38,10 +38,12 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var myDrawWebSocketListener: DrawWebSocketListener? = null
     private var mWidth = 0
     private var mHeight = 0
+    private var userMode = ""
 
     fun init(width: Int, height: Int): PaintBoard {
         println("HI INIT")
 
+        userMode = PaintActivity.INIT_MODE
         // bitmap
         mWidth = width
         mHeight = height
@@ -146,12 +148,12 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+
+        if (userMode != PaintActivity.DRAW_MODE) {
+            return false
+        }
+
         println("HI onTouchEvent")
-//        if(PaintActivity.userid!= PaintActivity.nextid){
-//            return true
-//        }
-
-
         changeColor()
         sizeChange()
         when (event.action) {
@@ -242,6 +244,10 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
             invalidate()
         }
 
+    }
+
+    fun setUserMode(userMode: String) {
+        this.userMode = userMode
     }
 
     // Declare the Handler as a static class.
