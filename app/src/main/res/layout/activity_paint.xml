@@ -184,13 +184,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#FFCBB3"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:paddingTop="20dp">
+
+            <Button
+                android:id="@+id/btn_invite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="邀請好友" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/view_user_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp">
+                android:layout_height="wrap_content">
 
             </androidx.recyclerview.widget.RecyclerView>
 

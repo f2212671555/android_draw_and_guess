@@ -89,6 +89,7 @@ class JoinRoomActivity : AppCompatActivity() {
             if (resultUserJoinRoomBean.result!!) {
                 intent.putExtra(MainActivity.ROOM_ID, roomId)
                 intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
+                intent.putExtra(MainActivity.ROOM_NAME, resultUserJoinRoomBean.roomName.toString())
                 intent.putExtra(MainActivity.USER_NAME, userName)
                 intent.putExtra(MainActivity.ROOM_ROLE, MainActivity.ROOM_ROLE_GENERAL_MEMBER)
                 startActivity(intent)

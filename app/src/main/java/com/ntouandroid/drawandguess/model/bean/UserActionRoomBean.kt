@@ -9,6 +9,8 @@ data class UserActionRoomBean(
     var userId: String?,
     @SerializedName("userName")
     var userName: String?,
+    @SerializedName("roomName")
+    var roomName: String?,
     @SerializedName("result")
     var result: Boolean?
 )

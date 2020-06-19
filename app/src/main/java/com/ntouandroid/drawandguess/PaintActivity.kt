@@ -1,6 +1,8 @@
 package com.ntouandroid.drawandguess
 
 import android.app.Dialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
@@ -28,6 +30,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.adapter.UserListAdapter
 import com.ntouandroid.drawandguess.colorPicker.PaintBoard
+import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.MessageBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
@@ -66,6 +69,7 @@ class PaintActivity : AppCompatActivity() {
     lateinit var mTimer: GameTimer
 
     private var roomId: String = ""
+    private var roomName: String = ""
     private var userId: String = ""
     private var userName: String = ""
     private var userRole: String = ""
@@ -92,6 +96,7 @@ class PaintActivity : AppCompatActivity() {
         UIHandler.setStatusBarColor(this)
 
         roomId = intent.getStringExtra(MainActivity.ROOM_ID)
+        roomName = intent.getStringExtra(MainActivity.ROOM_NAME)
         userRole = intent.getStringExtra(MainActivity.ROOM_ROLE)
         userId = intent.getStringExtra(MainActivity.USER_ID)
         userName = intent.getStringExtra(MainActivity.USER_NAME)
@@ -644,6 +649,16 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun initDrawers() {
+        val btnInvite: Button = findViewById(R.id.btn_invite)
+        btnInvite.setOnClickListener {
+            val appLinkUrl =
+                Config.HTTP_SCHEME + Config.HOST + Config.APP_LINK + "?" + Config.ROOM_ID_KEY + "=" + roomId + "&" + Config.ROOM_NAME_KEY + "=" + roomName
+            val clipboard: ClipboardManager =
+                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip: ClipData = ClipData.newPlainText("appLinkUrl", appLinkUrl)
+            clipboard.setPrimaryClip(clip)
+            Toast.makeText(this, "邀請網址已經複製了喔！！", Toast.LENGTH_SHORT).show()
+        }
 
         val drawLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
