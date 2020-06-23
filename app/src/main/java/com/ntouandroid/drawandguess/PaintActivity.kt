@@ -593,6 +593,8 @@ class PaintActivity : AppCompatActivity() {
                 // 自己的答案正確
                 text = "恭喜你答對了喔！！\n"
                 answerCurrentUIControl()
+            }else{
+                text = "恭喜${messageBean.userName}答對了喔！！\n"
             }
         } else {
             // 答案不正確
@@ -638,7 +640,7 @@ class PaintActivity : AppCompatActivity() {
         // 控制/鎖住 UI
         drawStartUIControl()
         // 開始倒數計時
-        startTimer(10.toFloat())
+        startTimer(30.toFloat())
 
     }
 
@@ -753,10 +755,12 @@ class PaintActivity : AppCompatActivity() {
 
             override fun timesUp() {
 //                println("計時器進度條停止")
+                // 清空畫布
+                backgroundClean()
                 // 控制/鎖住 UI
                 initUIControl()
                 // show answer
-                showAnswer(6.toFloat())
+                showAnswer(15.toFloat())
             }
         })
         mTimer.secondsCount = timeSec
