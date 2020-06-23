@@ -88,8 +88,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         myDrawWebSocketListener?.close()
     }
 
-    fun cleanBackground() {
-        println("cleanBackground")
+    fun sendCleanBackground(){
         val paintBoardDraw =
             PaintBoardDrawBean(
                 "clean",
@@ -104,6 +103,10 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 0f
             )
         sendDrawToServer(paintBoardDraw)
+    }
+
+    fun cleanBackground() {
+        println("cleanBackground")
         bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
         mCanvas = Canvas(bitmap!!)
         mCanvas?.drawColor(Color.argb(255, 0, 0, 0))

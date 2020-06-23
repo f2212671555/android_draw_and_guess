@@ -143,7 +143,10 @@ class PaintActivity : AppCompatActivity() {
         initColorPickerDialog()
         eraser.setOnClickListener { eraserFun() }
         initSizeChangeDialog()
-        clean.setOnClickListener { backgroundClean() }
+        clean.setOnClickListener {
+            paintB.sendCleanBackground()
+            backgroundClean()
+        }
 
 
         btnSendMessage.setOnClickListener { sendMessage("answer") }
@@ -593,7 +596,7 @@ class PaintActivity : AppCompatActivity() {
                 // 自己的答案正確
                 text = "恭喜你答對了喔！！\n"
                 answerCurrentUIControl()
-            }else{
+            } else {
                 text = "恭喜${messageBean.userName}答對了喔！！\n"
             }
         } else {
