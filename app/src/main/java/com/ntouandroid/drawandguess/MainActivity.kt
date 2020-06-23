@@ -1,5 +1,6 @@
 package com.ntouandroid.drawandguess
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.filter.NameInputFilter
 import com.ntouandroid.drawandguess.utils.InternetJudge
 import com.ntouandroid.drawandguess.utils.UIHandler
+import com.ntouandroid.drawandguess.utils.notification.ClockBean
+import com.ntouandroid.drawandguess.utils.notification.NotificationUtil
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         app_context = applicationContext
+        initNotification()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -134,5 +138,11 @@ class MainActivity : AppCompatActivity() {
         var intent = Intent(this@MainActivity, MyTestActivity::class.java)
         startActivity(intent)
     }
-
+    private fun initNotification(){
+        val pendingIntent1 = NotificationUtil.setPendingIntent(this@MainActivity, 12, 0)
+        val pendingIntent2 = NotificationUtil.setPendingIntent(this@MainActivity, 18, 0)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        NotificationUtil.startClock(this,alarmManager, ClockBean(12,0,pendingIntent1))
+        NotificationUtil.startClock(this,alarmManager, ClockBean(12,0,pendingIntent2))
+    }
 }

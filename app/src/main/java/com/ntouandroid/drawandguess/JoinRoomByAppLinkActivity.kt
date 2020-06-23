@@ -11,10 +11,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
+import com.ntouandroid.drawandguess.utils.InternetJudge
 import com.ntouandroid.drawandguess.utils.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -49,7 +51,11 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
             userName = userNameET.text.toString()
             if (userName.isNotEmpty()) {
                 if (roomId.isNotEmpty()) {
-                    joinRoom(userName, roomId)
+                    if (InternetJudge.isInternetAvailable(this)) {
+                        joinRoom(userName, roomId)
+                    } else {
+                        showDialog("網路連接異常", "請檢查是否有連接網路！！")
+                    }
                 }
             } else {
                 Toast.makeText(this, "請輸入名稱", Toast.LENGTH_SHORT).show()
@@ -103,5 +109,19 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun showDialog(title: String, message: String) {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(title)
+        builder.setMessage(message)
+        builder.setPositiveButton("確認") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        // create dialog and show it
+        val dialog = builder.create()
+        dialog.show()
     }
 }

@@ -148,7 +148,6 @@ class PaintActivity : AppCompatActivity() {
             backgroundClean()
         }
 
-
         btnSendMessage.setOnClickListener { sendMessage("answer") }
         btnChat.setOnClickListener { sendMessage("chat") }
 

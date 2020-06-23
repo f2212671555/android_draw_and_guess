@@ -43,6 +43,10 @@
         <activity android:name=".JoinRoomActivity" />
         <activity android:name=".PaintActivity" />
         <activity android:name=".MyTestActivity" />
+        <receiver
+            android:name=".utils.notification.Receiver"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>
