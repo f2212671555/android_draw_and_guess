@@ -146,10 +146,7 @@ class PaintActivity : AppCompatActivity() {
         initColorPickerDialog()
         eraser.setOnClickListener { eraserFun() }
         initSizeChangeDialog()
-        clean.setOnClickListener {
-            paintB.sendCleanBackground()
-            backgroundClean()
-        }
+        clean.setOnClickListener { backgroundClean() }
 
         btnSendMessage.setOnClickListener { sendMessage("answer") }
         btnChat.setOnClickListener { sendMessage("chat") }
@@ -786,7 +783,7 @@ class PaintActivity : AppCompatActivity() {
                 // 控制/鎖住 UI
                 initUIControl()
                 // show answer
-                showAnswer(15.toFloat())
+                showAnswer(6.toFloat())
             }
         })
         mTimer.secondsCount = timeSec

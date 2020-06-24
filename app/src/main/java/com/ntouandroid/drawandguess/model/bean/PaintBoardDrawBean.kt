@@ -1,26 +1,11 @@
 package com.ntouandroid.drawandguess.model.bean
 
+import android.graphics.Bitmap
 import com.google.gson.annotations.SerializedName
 
 data class PaintBoardDrawBean(
     @SerializedName("action")
     var action: String?,
-    @SerializedName("drawShape")
-    var drawShape: String?,
-    @SerializedName("startX")
-    var startX: Float = 0f,
-    @SerializedName("startY")
-    var startY: Float = 0f,
-    @SerializedName("stopX")
-    var stopX: Float = 0f,
-    @SerializedName("stopY")
-    var stopY: Float = 0f,
-    @SerializedName("r")
-    var r: Int = 0,
-    @SerializedName("g")
-    var g: Int = 0,
-    @SerializedName("b")
-    var b: Int = 0,
-    @SerializedName("size")
-    var size: Float = 0f
+    @SerializedName("bitmap")
+    var bitmap: Bitmap?
 )

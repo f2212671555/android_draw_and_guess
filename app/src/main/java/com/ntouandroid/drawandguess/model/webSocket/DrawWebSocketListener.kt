@@ -35,7 +35,6 @@ class DrawWebSocketListener : WebSocketListener() {
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
-        Log.d("onMessage", text)
         handler?.sendMessage(handler!!.obtainMessage(0, text))
 
     }

@@ -3,25 +3,22 @@ package com.ntouandroid.drawandguess.view.colorPicker
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Base64
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.drawtest.ColorPaintBean
-import com.google.gson.Gson
-import com.ntouandroid.drawandguess.view.PaintActivity
 import com.ntouandroid.drawandguess.model.bean.PaintBoardDrawBean
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.model.webSocket.DrawWebSocketListener
-import java.io.OutputStream
+import com.ntouandroid.drawandguess.view.PaintActivity
+import java.io.ByteArrayOutputStream
 import java.lang.ref.WeakReference
 
 
@@ -90,38 +87,17 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         myDrawWebSocketListener?.close()
     }
 
-    fun sendCleanBackground() {
-        val paintBoardDraw =
-            PaintBoardDrawBean(
-                "clean",
-                "",
-                0f,
-                0f,
-                0f,
-                0f,
-                0,
-                0,
-                0,
-                0f
-            )
-        sendDrawToServer(paintBoardDraw)
-    }
-
     fun cleanBackground() {
         println("cleanBackground")
         bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
         mCanvas = Canvas(bitmap!!)
         mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
+        sendDrawToServer()
         invalidate()
     }
 
     fun erase(isErase: Boolean) {
         PaintActivity.colorpaint = ColorPaintBean(0, 0, 0, 50.0f)
-//        if(isErase){
-//            paint?.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-//        }else{
-//            paint?.xfermode = null
-//        }
 
     }
 
@@ -147,9 +123,8 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     }
 
-    private fun sendDrawToServer(paintBoardDraw: PaintBoardDrawBean) {
-        val jsonStr = Gson().toJson(paintBoardDraw)
-        myDrawWebSocketListener?.getWebSocket()?.send(jsonStr)
+    private fun sendDrawToServer() {
+        myDrawWebSocketListener?.getWebSocket()?.send(convertBitmapToString(bitmap))
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -173,82 +148,37 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
                 if (paint != null && mCanvas != null) {
                     mCanvas?.drawLine(startX, startY, stopX, stopY, paint!!)
-                    // dp to px
-                    val paintBoardDraw =
-                        PaintBoardDrawBean(
-                            "draw",
-                            "drawLine",
-                            startX / mWidth,
-                            startY / mHeight,
-                            stopX / mWidth,
-                            stopY / mHeight,
-                            r,
-                            g,
-                            b,
-                            size / (mHeight * mWidth)
-                        )
+
                     startX = event.x
                     startY = event.y
 
-
-                    sendDrawToServer(paintBoardDraw)
-
-                    // call onDraw
-//                draw(paintBoardDraw)
                     invalidate()
-                }
 
+                    sendDrawToServer()
+                }
             }
         }
-
         return true
     }
 
-    fun saveBitmap(stream: OutputStream) {
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+    private fun convertBitmapToString(bitmap: Bitmap?): String {
+        val stream = ByteArrayOutputStream()
+        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT)
+    }
+
+    private fun convertStringToBitmap(str: String?): Bitmap {
+        val byteArray = Base64.decode(str, Base64.DEFAULT)
+        val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        return Bitmap.createScaledBitmap(bitmap!!, mWidth, mHeight, true)
     }
 
     // for other player draw
-    private fun setColorAndSize(paintBDBean: PaintBoardDrawBean) {
-        r = paintBDBean.r
-        g = paintBDBean.g
-        b = paintBDBean.b
-
-        paint?.color = Color.rgb(r, g, b)
-
-        size = paintBDBean.size * mWidth * mHeight
-
-        paint?.strokeWidth = size
-    }
-
-    fun paintBoardDrawBeanActionDispatcher(paintBDBean: PaintBoardDrawBean) {
-        when (paintBDBean.action) {
-            "draw" -> {
-                draw(paintBDBean)
-            }
-            "clean" -> {
-                cleanBackground()
-            }
-            else -> {
-                println("action not exist")
-            }
-        }
-    }
-
-    // for other player draw
-    fun draw(paintBDBean: PaintBoardDrawBean) {
-        setColorAndSize(paintBDBean)
-        if (mCanvas != null && paint != null) {
-            mCanvas?.drawLine(
-                paintBDBean.startX * mWidth,
-                paintBDBean.startY * mHeight,
-                paintBDBean.stopX * mWidth,
-                paintBDBean.stopY * mHeight,
-                paint!!
-            )
+    fun draw(bitmap: Bitmap?) {
+        if (mCanvas != null && paint != null && bitmap != null) {
+            mCanvas?.drawBitmap(bitmap, 0f, 0f, paint)
             invalidate()
         }
-
     }
 
     fun setUserMode(userMode: String) {
@@ -261,12 +191,13 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
             when (msg.what) {
                 0 -> {
                     val text = msg.obj.toString()
-                    val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDrawBean::class.java)
-                    outerClass.get()?.paintBoardDrawBeanActionDispatcher(paintBoardDrawBean)
+                    outerClass.get()?.draw(outerClass.get()?.convertStringToBitmap(text))
+//                    val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDrawBean::class.java)
+//                    outerClass.get()?.paintBoardDrawBeanActionDispatcher(paintBoardDrawBean)
                 }
                 1 -> {
                     val a = outerClass.get()?.context as Activity
-                    Toast.makeText(a,"與伺服器失去連線!!",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(a, "與伺服器失去連線!!", Toast.LENGTH_SHORT).show()
                     a.finish()
                 }
                 else -> {
