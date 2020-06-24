@@ -68,7 +68,7 @@
             android:layout_below="@+id/ll_nav"
             android:orientation="vertical">
 
-            <com.ntouandroid.drawandguess.colorPicker.PaintBoard
+            <com.ntouandroid.drawandguess.view.colorPicker.PaintBoard
                 android:id="@+id/layout_paint_board"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

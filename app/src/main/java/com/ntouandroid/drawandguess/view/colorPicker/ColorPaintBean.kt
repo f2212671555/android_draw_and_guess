@@ -1,6 +1,6 @@
 package com.example.drawtest
 
-data class ColorPaint(
+data class ColorPaintBean(
     var r: Int = 0,
     var g: Int = 0,
     var b: Int = 0,

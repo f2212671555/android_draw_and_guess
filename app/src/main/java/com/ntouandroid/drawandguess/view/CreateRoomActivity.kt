@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.filter.NameInputFilter
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
@@ -89,7 +90,10 @@ class CreateRoomActivity : AppCompatActivity() {
                     )
                 )
             dialog.dismiss()
-            intent.putExtra(MainActivity.ROOM_ROLE, MainActivity.ROOM_ROLE_MANAGER)
+            intent.putExtra(
+                MainActivity.ROOM_ROLE,
+                MainActivity.ROOM_ROLE_MANAGER
+            )
             intent.putExtra(MainActivity.ROOM_ID, resultRoomBean.roomId.toString())
             intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
             intent.putExtra(MainActivity.ROOM_NAME, roomName)

@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.app.Dialog
 import android.content.ClipData
@@ -25,11 +25,12 @@ import androidx.cardview.widget.CardView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.drawtest.ColorPaint
+import com.example.drawtest.ColorPaintBean
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
-import com.ntouandroid.drawandguess.adapter.UserListAdapter
-import com.ntouandroid.drawandguess.colorPicker.PaintBoard
+import com.ntouandroid.drawandguess.R
+import com.ntouandroid.drawandguess.view.adapter.UserListAdapter
+import com.ntouandroid.drawandguess.view.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.MessageBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
@@ -81,13 +82,14 @@ class PaintActivity : AppCompatActivity() {
 
     private lateinit var llDrawTopic: LinearLayout
     private lateinit var llDrawTopicAnswer: LinearLayout
-    private var userMode = INIT_MODE
+    private var userMode =
+        INIT_MODE
 
     companion object {
         const val INIT_MODE = "INIT_MODE"
         const val DRAW_MODE = "DRAW_MODE"
         const val ANSWER_MODE = "ANSWER_MODE"
-        var colorpaint = ColorPaint(0, 0, 0, 30.0f)
+        var colorpaint = ColorPaintBean(0, 0, 0, 30.0f)
     }
 
     val Int.dp: Int
@@ -107,7 +109,8 @@ class PaintActivity : AppCompatActivity() {
 
         paintB = findViewById(R.id.layout_paint_board)
         progressBar = findViewById(R.id.pb_timer)
-        userMode = INIT_MODE
+        userMode =
+            INIT_MODE
         etMessage = findViewById(R.id.message_et)
 
         initUIControl()
@@ -257,7 +260,8 @@ class PaintActivity : AppCompatActivity() {
                 )
             )
         val outerClass = WeakReference(this)
-        val myHandler = MyHandler(outerClass)
+        val myHandler =
+            MyHandler(outerClass)
 
         MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomId, userId)
 
@@ -428,7 +432,7 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun sizeChange() {
-        colorpaint = ColorPaint(
+        colorpaint = ColorPaintBean(
             ((255 * colorR.progress) / colorR.max),
             ((255 * colorG.progress) / colorG.max),
             ((255 * colorB.progress) / colorB.max),
@@ -437,7 +441,7 @@ class PaintActivity : AppCompatActivity() {
     }
 
     fun setColor() {
-        colorpaint = ColorPaint(
+        colorpaint = ColorPaintBean(
             ((255 * colorR.progress) / colorR.max),
             ((255 * colorG.progress) / colorG.max),
             ((255 * colorB.progress) / colorB.max),
@@ -627,7 +631,8 @@ class PaintActivity : AppCompatActivity() {
     鎖大家的畫布、和答題EditView
      */
     private fun initUIControl() {
-        userMode = INIT_MODE
+        userMode =
+            INIT_MODE
         paintB.setUserMode(userMode)
         etMessage.isEnabled = false
     }

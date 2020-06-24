@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.colorPicker
+package com.ntouandroid.drawandguess.view.colorPicker
 
 
 import android.app.Activity
@@ -15,9 +15,9 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.example.drawtest.ColorPaint
+import com.example.drawtest.ColorPaintBean
 import com.google.gson.Gson
-import com.ntouandroid.drawandguess.PaintActivity
+import com.ntouandroid.drawandguess.view.PaintActivity
 import com.ntouandroid.drawandguess.model.bean.PaintBoardDrawBean
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.model.webSocket.DrawWebSocketListener
@@ -116,7 +116,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     fun erase(isErase: Boolean) {
-        PaintActivity.colorpaint = ColorPaint(0, 0, 0, 50.0f)
+        PaintActivity.colorpaint = ColorPaintBean(0, 0, 0, 50.0f)
 //        if(isErase){
 //            paint?.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
 //        }else{

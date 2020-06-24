@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
@@ -84,7 +85,8 @@ class MyTestActivity : AppCompatActivity() {
         var userId = ""
         val userName = "USERNAME"
         val roomId = etJoinRoom.text.toString()
-        val userBean = UserBean(roomId, userId, userName,MainActivity.ROOM_ROLE_GENERAL_MEMBER)
+        val userBean = UserBean(roomId, userId, userName,
+            MainActivity.ROOM_ROLE_GENERAL_MEMBER)
         GlobalScope.launch(Dispatchers.IO) {
             val respUserJoinRoomBean = myRepository.joinRoom(userBean)
             println(respUserJoinRoomBean)
@@ -121,7 +123,8 @@ class MyTestActivity : AppCompatActivity() {
             val resultRoomBean = myRepository.createRoom(roomBean)
             println(resultRoomBean)
             val respUserJoinRoomBean =
-                myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(), "", userName,MainActivity.ROOM_ROLE_MANAGER))
+                myRepository.joinRoom(UserBean(resultRoomBean.roomId.toString(), "", userName,
+                    MainActivity.ROOM_ROLE_MANAGER))
             println(respUserJoinRoomBean)
             val userId = respUserJoinRoomBean.userId.toString()
             intent.putExtra("roomid", resultRoomBean.roomId.toString())

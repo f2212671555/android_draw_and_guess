@@ -1,9 +1,10 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 

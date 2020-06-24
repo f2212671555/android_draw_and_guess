@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
@@ -93,7 +94,10 @@ class JoinRoomByAppLinkActivity : AppCompatActivity() {
                 intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
                 intent.putExtra(MainActivity.USER_NAME, userName)
                 intent.putExtra(MainActivity.ROOM_NAME, resultUserJoinRoomBean.roomName.toString())
-                intent.putExtra(MainActivity.ROOM_ROLE, MainActivity.ROOM_ROLE_GENERAL_MEMBER)
+                intent.putExtra(
+                    MainActivity.ROOM_ROLE,
+                    MainActivity.ROOM_ROLE_GENERAL_MEMBER
+                )
                 startActivity(intent)
             } else {
                 runOnUiThread {

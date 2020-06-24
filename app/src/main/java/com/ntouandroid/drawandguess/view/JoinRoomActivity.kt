@@ -1,10 +1,11 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
@@ -91,7 +92,10 @@ class JoinRoomActivity : AppCompatActivity() {
                 intent.putExtra(MainActivity.USER_ID, resultUserJoinRoomBean.userId.toString())
                 intent.putExtra(MainActivity.ROOM_NAME, resultUserJoinRoomBean.roomName.toString())
                 intent.putExtra(MainActivity.USER_NAME, userName)
-                intent.putExtra(MainActivity.ROOM_ROLE, MainActivity.ROOM_ROLE_GENERAL_MEMBER)
+                intent.putExtra(
+                    MainActivity.ROOM_ROLE,
+                    MainActivity.ROOM_ROLE_GENERAL_MEMBER
+                )
                 startActivity(intent)
             }
         }

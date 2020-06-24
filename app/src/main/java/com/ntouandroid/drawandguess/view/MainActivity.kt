@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess
+package com.ntouandroid.drawandguess.view
 
 import android.app.AlarmManager
 import android.content.Context
@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.ntouandroid.drawandguess.R
 import com.ntouandroid.drawandguess.filter.NameInputFilter
 import com.ntouandroid.drawandguess.utils.internet.InternetJudge
 import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
