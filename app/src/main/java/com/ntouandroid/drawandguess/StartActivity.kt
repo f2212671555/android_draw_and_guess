@@ -4,17 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
-import com.ntouandroid.drawandguess.model.bean.RoomBean
-import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
-import com.ntouandroid.drawandguess.utils.UIHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 
 class StartActivity : AppCompatActivity() {
 

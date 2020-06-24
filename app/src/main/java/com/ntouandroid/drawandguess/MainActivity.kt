@@ -12,8 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.filter.NameInputFilter
-import com.ntouandroid.drawandguess.utils.InternetJudge
-import com.ntouandroid.drawandguess.utils.UIHandler
+import com.ntouandroid.drawandguess.utils.internet.InternetJudge
+import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 import com.ntouandroid.drawandguess.utils.notification.ClockBean
 import com.ntouandroid.drawandguess.utils.notification.NotificationUtil
 

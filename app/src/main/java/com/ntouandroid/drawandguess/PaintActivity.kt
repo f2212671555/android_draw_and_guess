@@ -1,6 +1,5 @@
 package com.ntouandroid.drawandguess
 
-import android.app.Activity
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -37,13 +36,12 @@ import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
-import com.ntouandroid.drawandguess.utils.GameTimer
-import com.ntouandroid.drawandguess.utils.UIHandler
+import com.ntouandroid.drawandguess.utils.timer.GameTimer
+import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
-import java.security.AccessController.getContext
 
 
 class PaintActivity : AppCompatActivity() {
@@ -767,7 +765,8 @@ class PaintActivity : AppCompatActivity() {
     }
 
     private fun startTimer(timeSec: Float) {
-        mTimer = GameTimer(object : GameTimer.TimerBarController {
+        mTimer = GameTimer(object :
+            GameTimer.TimerBarController {
             override fun timerOnUpdate() {
 //                println(mTimer.secondsCount * 100)
 //                println("計時器進度條跳一次")
@@ -800,7 +799,8 @@ class PaintActivity : AppCompatActivity() {
         llDrawTopicAnswer.visibility = View.VISIBLE
         val tvDrawTopicAnswer: TextView = findViewById(R.id.tv_draw_topic_answer)
         tvDrawTopicAnswer.text = answer
-        mTimer = GameTimer(object : GameTimer.TimerBarController {
+        mTimer = GameTimer(object :
+            GameTimer.TimerBarController {
             override fun timerOnUpdate() {
             }
 

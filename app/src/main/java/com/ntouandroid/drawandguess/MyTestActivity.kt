@@ -12,7 +12,7 @@ import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.listener.ArchLifecycleApp
 import com.ntouandroid.drawandguess.model.repository.MyRepository
-import com.ntouandroid.drawandguess.utils.GameTimer
+import com.ntouandroid.drawandguess.utils.timer.GameTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -53,7 +53,8 @@ class MyTestActivity : AppCompatActivity() {
 
         val timeSec = 5f //time設定幾秒
 
-        mTimer = GameTimer(object : GameTimer.TimerBarController {
+        mTimer = GameTimer(object :
+            GameTimer.TimerBarController {
             override fun timerOnUpdate() {
 //                println(mTimer.secondsCount * 100)
 //                println("計時器進度條跳一次")

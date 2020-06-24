@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.utils
+package com.ntouandroid.drawandguess.utils.timer
 
 import android.os.Handler
 

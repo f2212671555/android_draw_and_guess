@@ -15,7 +15,7 @@ import com.ntouandroid.drawandguess.filter.NameInputFilter
 import com.ntouandroid.drawandguess.model.bean.RoomBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
-import com.ntouandroid.drawandguess.utils.UIHandler
+import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

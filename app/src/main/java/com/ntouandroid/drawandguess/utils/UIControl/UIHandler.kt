@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.utils
+package com.ntouandroid.drawandguess.utils.UIControl
 
 import android.app.Activity
 import android.os.Build

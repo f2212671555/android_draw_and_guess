@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.utils
+package com.ntouandroid.drawandguess.utils.internet
 
 import android.content.Context
 import android.net.ConnectivityManager

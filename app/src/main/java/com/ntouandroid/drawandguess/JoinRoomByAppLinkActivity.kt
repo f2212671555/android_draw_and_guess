@@ -16,8 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
-import com.ntouandroid.drawandguess.utils.InternetJudge
-import com.ntouandroid.drawandguess.utils.UIHandler
+import com.ntouandroid.drawandguess.utils.internet.InternetJudge
+import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
