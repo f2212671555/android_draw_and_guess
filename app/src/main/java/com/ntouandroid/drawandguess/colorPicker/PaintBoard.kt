@@ -1,6 +1,7 @@
 package com.ntouandroid.drawandguess.colorPicker
 
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -12,6 +13,7 @@ import android.os.Message
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.drawtest.ColorPaint
 import com.google.gson.Gson
@@ -88,7 +90,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         myDrawWebSocketListener?.close()
     }
 
-    fun sendCleanBackground(){
+    fun sendCleanBackground() {
         val paintBoardDraw =
             PaintBoardDrawBean(
                 "clean",
@@ -256,10 +258,21 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     // Declare the Handler as a static class.
     class MyHandler(private val outerClass: WeakReference<PaintBoard>) : Handler() {
         override fun handleMessage(msg: Message) {
-            val text = msg?.obj.toString()
-            val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDrawBean::class.java)
-            outerClass.get()?.paintBoardDrawBeanActionDispatcher(paintBoardDrawBean)
+            when (msg.what) {
+                0 -> {
+                    val text = msg.obj.toString()
+                    val paintBoardDrawBean = Gson().fromJson(text, PaintBoardDrawBean::class.java)
+                    outerClass.get()?.paintBoardDrawBeanActionDispatcher(paintBoardDrawBean)
+                }
+                1 -> {
+                    val a = outerClass.get()?.context as Activity
+                    Toast.makeText(a,"與伺服器失去連線!!",Toast.LENGTH_SHORT).show()
+                    a.finish()
+                }
+                else -> {
+                    println("handleMessage what not control!!")
+                }
+            }
         }
-
     }
 }

@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         Bt_Start = findViewById(R.id.button_start)
         Et_Name = findViewById(R.id.Et_Name)
+        initNotification()
 
         Et_Name.filters = arrayOf(NameInputFilter())
         Bt_Start.setOnClickListener {
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         app_context = applicationContext
-        initNotification()
+
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -139,10 +140,8 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
     private fun initNotification(){
-        val pendingIntent1 = NotificationUtil.setPendingIntent(this@MainActivity, 12, 0)
-        val pendingIntent2 = NotificationUtil.setPendingIntent(this@MainActivity, 18, 0)
+        val pendingIntent1 = NotificationUtil.setPendingIntent(this@MainActivity, 18, 0)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        NotificationUtil.startClock(this,alarmManager, ClockBean(12,0,pendingIntent1))
-        NotificationUtil.startClock(this,alarmManager, ClockBean(12,0,pendingIntent2))
+        NotificationUtil.startClock(this,alarmManager, ClockBean(18,0,pendingIntent1))
     }
 }

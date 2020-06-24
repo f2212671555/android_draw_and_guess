@@ -1,5 +1,6 @@
 package com.ntouandroid.drawandguess
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -42,6 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
+import java.security.AccessController.getContext
 
 
 class PaintActivity : AppCompatActivity() {
@@ -550,41 +552,58 @@ class PaintActivity : AppCompatActivity() {
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
         override fun handleMessage(msg: Message) {
-            val messageBean = Gson().fromJson(msg.obj.toString(), MessageBean::class.java)
-            when (messageBean.type) {
-                "startDraw" -> {
-                    // 當畫畫的人按下開始畫畫按鈕
-                    outerClass.get()?.startDraw()
-                    // 拿答案
-                    outerClass.get()?.getDrawTopicDetail()
+            when(msg.what){
+                0 ->{
+                    val messageBean = Gson().fromJson(msg.obj.toString(), MessageBean::class.java)
+                    when (messageBean.type) {
+                        "startDraw" -> {
+                            // 當畫畫的人按下開始畫畫按鈕
+                            outerClass.get()?.startDraw()
+                            // 拿答案
+                            outerClass.get()?.getDrawTopicDetail()
+                        }
+                        "nextDraw" -> {
+                            // 當大家都倒數完之後，會發請求(ready)
+                            // 當大家伺服器的狀態都是ready
+                            // 發請求開始下一題
+                            outerClass.get()?.getDrawTopic()
+                        }
+                        "chat" -> {
+                            //某某人聊天
+                            outerClass.get()?.addChatCardView(messageBean)
+                        }
+                        "answer" -> {
+                            //某某人猜答案
+                            outerClass.get()?.checkAndSetAnswer(messageBean)
+                        }
+                        "join" -> {
+                            //某某人加入房間
+                            outerClass.get()?.modifyUserList(messageBean)
+                        }
+                        "quit" -> {
+                            //某某人離開房間
+                            outerClass.get()?.modifyUserList(messageBean)
+                        }
+                        else -> {
+                            println("handleMessage missing type!!")
+                        }
+                    }
                 }
-                "nextDraw" -> {
-                    // 當大家都倒數完之後，會發請求(ready)
-                    // 當大家伺服器的狀態都是ready
-                    // 發請求開始下一題
-                    outerClass.get()?.getDrawTopic()
+                1->{
+                    val a = outerClass.get()?.getMyContext()
+                    Toast.makeText(a,"與伺服器失去連線!!",Toast.LENGTH_SHORT).show()
+                    outerClass.get()?.finish()
                 }
-                "chat" -> {
-                    //某某人聊天
-                    outerClass.get()?.addChatCardView(messageBean)
-                }
-                "answer" -> {
-                    //某某人猜答案
-                    outerClass.get()?.checkAndSetAnswer(messageBean)
-                }
-                "join" -> {
-                    //某某人加入房間
-                    outerClass.get()?.modifyUserList(messageBean)
-                }
-                "quit" -> {
-                    //某某人離開房間
-                    outerClass.get()?.modifyUserList(messageBean)
-                }
-                else -> {
-                    println("handleMessage missing type!!")
+                else->{
+                    println("handleMessage what not control!!")
                 }
             }
+
         }
+    }
+
+    private fun getMyContext():Context{
+        return this
     }
 
     private fun checkAndSetAnswer(messageBean: MessageBean) {

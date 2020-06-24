@@ -32,15 +32,14 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         Log.d("onClosing", "RoomWebSocketListener closing!!")
-        webSocket.close(1000, null)
-
+        handler?.sendMessage(handler!!.obtainMessage(1, "onClosing"))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         Log.d("onFailure", "RoomWebSocketListener failure!!")
-        webSocket.close(1000, null)
-        close()
+        handler?.sendMessage(handler!!.obtainMessage(1, "onFailure"))
+        this.close()
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
@@ -58,6 +57,7 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
     }
 
     fun close() {
+        Log.d("close", "RoomWebSocketListener call close()!!")
         webSocket?.close(1000, "RoomWebSocketListener Connection closed")
     }
 
