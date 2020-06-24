@@ -12,7 +12,6 @@ import okhttp3.WebSocketListener
 class DrawWebSocketListener : WebSocketListener() {
     private var handler: Handler? = null
     private var url: HttpUrl? = null
-    private var isConnected: Boolean = false
     private var webSocket: WebSocket? = null
 
     fun getWebSocket(): WebSocket? {
@@ -26,8 +25,6 @@ class DrawWebSocketListener : WebSocketListener() {
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         Log.d("onClosing", "DrawWebSocketListener closing!!")
         webSocket.close(1000, null)
-        Log.d("onClosing", "Code: $code, Reason: $reason")
-//        this.isConnected = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -35,7 +32,6 @@ class DrawWebSocketListener : WebSocketListener() {
         Log.d("onFailure", "DrawWebSocketListener failure!!")
         webSocket.close(1000, null)
         close()
-        // reconnect...
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
@@ -46,7 +42,6 @@ class DrawWebSocketListener : WebSocketListener() {
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.d("onOpen", "DrawWebSocketListener onOpen")
-        this.isConnected = true
         this.webSocket = webSocket
 
     }

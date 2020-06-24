@@ -5,7 +5,7 @@ class Config {
         const val WS_SCHEME = "wss://"
         const val HTTP_SCHEME = "https://"
         const val HOST = "draw-and-guess-ntou.herokuapp.com"
-//        const val HOST ="4d93dee9cc0a.ngrok.io"
+//        const val HOST ="4308479145bc.ngrok.io"
         const val ROOM_LIST = "/room/list"
         const val ROOM_USERS= "/room/users"
         const val CREATE_ROOM = "/room/create"

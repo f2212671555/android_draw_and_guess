@@ -5,7 +5,10 @@ import androidx.annotation.RequiresApi
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.webSocket.DrawWebSocketListener
 import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
-import okhttp3.*
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.WebSocket
 import java.time.Duration
 
 
@@ -23,7 +26,7 @@ class MyWebSocket {
                 .addQueryParameter(Config.USER_ID_KEY, userId).build()
             webSocketListener.setUrl(url)
             val request = Request.Builder().url(url).build()
-            val okHttpClient = OkHttpClient.Builder().pingInterval(Duration.ofSeconds(10)).build()
+            val okHttpClient = OkHttpClient.Builder().pingInterval(Duration.ofSeconds(40)).build()
             val realWebSocket = okHttpClient.newWebSocket(request, webSocketListener)
 
             okHttpClient.dispatcher.executorService.shutdown()
@@ -43,7 +46,7 @@ class MyWebSocket {
                 .addQueryParameter(Config.USER_ID_KEY, userId).build()
             webSocketListener.setUrl(url)
             val request = Request.Builder().url(url).build()
-            val okHttpClient = OkHttpClient.Builder().pingInterval(Duration.ofSeconds(10)).build()
+            val okHttpClient = OkHttpClient.Builder().pingInterval(Duration.ofSeconds(40)).build()
             val realWebSocket = okHttpClient.newWebSocket(request, webSocketListener)
 
             okHttpClient.dispatcher.executorService.shutdown()

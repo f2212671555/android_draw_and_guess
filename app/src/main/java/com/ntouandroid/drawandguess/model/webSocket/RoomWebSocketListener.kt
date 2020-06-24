@@ -15,7 +15,6 @@ import okhttp3.WebSocketListener
 class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
     private var handler: Handler? = null
     private var url: HttpUrl? = null
-    private var isConnected: Boolean = false
     private var webSocket: WebSocket? = null
     private var flag: String = ""
 
@@ -33,11 +32,8 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         Log.d("onClosing", "RoomWebSocketListener closing!!")
-
-
         webSocket.close(1000, null)
-        Log.d("onClosing", "Code: $code, Reason: $reason")
-//        this.isConnected = false
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -45,7 +41,6 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
         Log.d("onFailure", "RoomWebSocketListener failure!!")
         webSocket.close(1000, null)
         close()
-        // reconnect...
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
@@ -58,9 +53,8 @@ class RoomWebSocketListener(val userBean: UserBean) : WebSocketListener() {
         this.webSocket = webSocket
         if (flag == QUIT_FLAG) {
             this.close()
-        } else {
-            this.isConnected = true
         }
+
     }
 
     fun close() {
