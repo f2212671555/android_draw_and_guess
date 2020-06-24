@@ -97,6 +97,11 @@ class JoinRoomActivity : AppCompatActivity() {
                     MainActivity.ROOM_ROLE_GENERAL_MEMBER
                 )
                 startActivity(intent)
+            } else {
+                runOnUiThread {
+                    Toast.makeText(this@JoinRoomActivity, "不存在此房間!!", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
         }
     }

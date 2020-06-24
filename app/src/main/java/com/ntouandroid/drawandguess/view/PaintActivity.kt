@@ -29,16 +29,16 @@ import com.example.drawtest.ColorPaintBean
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.ntouandroid.drawandguess.R
-import com.ntouandroid.drawandguess.view.adapter.UserListAdapter
-import com.ntouandroid.drawandguess.view.colorPicker.PaintBoard
 import com.ntouandroid.drawandguess.config.Config
 import com.ntouandroid.drawandguess.model.bean.MessageBean
 import com.ntouandroid.drawandguess.model.bean.UserBean
 import com.ntouandroid.drawandguess.model.repository.MyRepository
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.model.webSocket.RoomWebSocketListener
-import com.ntouandroid.drawandguess.utils.timer.GameTimer
 import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
+import com.ntouandroid.drawandguess.utils.timer.GameTimer
+import com.ntouandroid.drawandguess.view.adapter.UserListAdapter
+import com.ntouandroid.drawandguess.view.colorPicker.PaintBoard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -513,6 +513,7 @@ class PaintActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         println("onDestroy")
+        Toast.makeText(this, "離開房間~", Toast.LENGTH_SHORT).show()
         // 倒數 後 退出房間
         // close webSocket 觸發 退出房間
         paintB.closeWebSocket()
@@ -554,8 +555,8 @@ class PaintActivity : AppCompatActivity() {
 
     class MyHandler(private val outerClass: WeakReference<PaintActivity>) : Handler() {
         override fun handleMessage(msg: Message) {
-            when(msg.what){
-                0 ->{
+            when (msg.what) {
+                0 -> {
                     val messageBean = Gson().fromJson(msg.obj.toString(), MessageBean::class.java)
                     when (messageBean.type) {
                         "startDraw" -> {
@@ -591,12 +592,12 @@ class PaintActivity : AppCompatActivity() {
                         }
                     }
                 }
-                1->{
+                1 -> {
                     val a = outerClass.get()?.getMyContext()
-                    Toast.makeText(a,"與伺服器失去連線!!",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(a, "與伺服器失去連線!!", Toast.LENGTH_SHORT).show()
                     outerClass.get()?.finish()
                 }
-                else->{
+                else -> {
                     println("handleMessage what not control!!")
                 }
             }
@@ -604,7 +605,7 @@ class PaintActivity : AppCompatActivity() {
         }
     }
 
-    private fun getMyContext():Context{
+    private fun getMyContext(): Context {
         return this
     }
 

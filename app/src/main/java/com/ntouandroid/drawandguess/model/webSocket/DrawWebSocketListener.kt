@@ -24,7 +24,7 @@ class DrawWebSocketListener : WebSocketListener() {
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
         Log.d("onClosing", "DrawWebSocketListener closing!!")
-        handler?.sendMessage(handler!!.obtainMessage(1, "onClosing"))
+//        handler?.sendMessage(handler!!.obtainMessage(2, "onClosing"))
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
