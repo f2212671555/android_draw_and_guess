@@ -124,7 +124,9 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun sendDrawToServer() {
-        myDrawWebSocketListener?.getWebSocket()?.send(convertBitmapToString(bitmap))
+        Thread{
+            myDrawWebSocketListener?.getWebSocket()?.send(convertBitmapToString(bitmap))
+        }.start()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
