@@ -158,6 +158,7 @@ class PaintActivity : AppCompatActivity() {
         llDrawTopicAnswer = findViewById(R.id.ll_draw_topic_answer)
         val btnDrawTopic: Button = findViewById(R.id.btn_draw_topic)
         btnDrawTopic.setOnClickListener {
+            userMode = DRAW_MODE
             llDrawTopic.visibility = View.GONE
             myRoomWebSocketListener!!.sendMessage(
                 MessageBean(
@@ -557,9 +558,7 @@ class PaintActivity : AppCompatActivity() {
                     val messageBean = Gson().fromJson(msg.obj.toString(), MessageBean::class.java)
                     when (messageBean.type) {
                         "startDraw" -> {
-                            // 當畫畫的人按下開始畫畫按鈕
-                            outerClass.get()?.startDraw()
-                            // 拿答案
+                            // 拿答案..
                             outerClass.get()?.getDrawTopicDetail()
                         }
                         "nextDraw" -> {
@@ -642,10 +641,10 @@ class PaintActivity : AppCompatActivity() {
      */
     private fun drawStartUIControl() {
         if (userMode == ANSWER_MODE) {
-            paintB.setUserMode(userMode)
+            paintB.setUserMode(ANSWER_MODE)
             etMessage.isEnabled = true
         } else if (userMode == DRAW_MODE) {
-            paintB.setUserMode(userMode)
+            paintB.setUserMode(DRAW_MODE)
             etMessage.isEnabled = false
         }
     }
@@ -674,6 +673,7 @@ class PaintActivity : AppCompatActivity() {
             MyRepository()
         GlobalScope.launch(Dispatchers.IO) {
             val topicDetailBean = myRepository.getRoomTopic(roomId)
+
             userMode = if (userId == topicDetailBean.currentDrawUserId) {
                 // 開啟畫畫模式
                 DRAW_MODE
@@ -681,7 +681,9 @@ class PaintActivity : AppCompatActivity() {
                 // 開啟答題模式
                 ANSWER_MODE
             }
-            runOnUiThread { drawStartUIControl() }
+            runOnUiThread {
+                startDraw()
+            }
             answer = topicDetailBean.topic.toString()
         }
     }

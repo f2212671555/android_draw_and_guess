@@ -124,18 +124,16 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     private fun sendDrawToServer() {
-        Thread{
-            myDrawWebSocketListener?.getWebSocket()?.send(convertBitmapToString(bitmap))
-        }.start()
+        myDrawWebSocketListener?.getWebSocket()?.send(convertBitmapToString(bitmap))
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
+        println("HI onTouchEvent")
         if (userMode != PaintActivity.DRAW_MODE) {
             return false
         }
 
-        println("HI onTouchEvent")
+        println("HI draw")
         changeColor()
         sizeChange()
         when (event.action) {
