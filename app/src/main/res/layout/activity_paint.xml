@@ -22,7 +22,8 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/bt_paint"
-                android:text="ROOM" />
+                android:text="ROOM"
+                android:src="@drawable/user"/>
 
             <ImageButton
                 android:id="@+id/btnColorSelected"
@@ -86,6 +87,8 @@
                     android:id="@+id/btn_game_start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bt_main"
+                    android:textColor="#fcfbdc"
                     android:text="開始遊戲" />
             </LinearLayout>
 
@@ -107,6 +110,8 @@
                     android:id="@+id/btn_draw_topic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bt_main"
+                    android:textColor="#fcfbdc"
                     android:text="開始畫畫" />
             </LinearLayout>
 
@@ -191,6 +196,8 @@
                 android:id="@+id/btn_invite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bt_main"
+                android:textColor="#fcfbdc"
                 android:text="邀請好友" />
 
             <androidx.recyclerview.widget.RecyclerView
