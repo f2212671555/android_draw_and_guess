@@ -583,6 +583,22 @@ class PaintActivity : AppCompatActivity() {
                             //某某人離開房間
                             outerClass.get()?.modifyUserList(messageBean)
                         }
+                        "gameStop" -> {
+                            //畫圖的人離開房間
+                            outerClass.get()?.mTimer?.stopTimer()
+                            // 準備下一題
+                            // 跟server說你ready了
+                            outerClass.get()?.myRoomWebSocketListener?.sendMessage(
+                                MessageBean(
+                                    "ready",
+                                    outerClass.get()?.userId,
+                                    outerClass.get()?.userName,
+                                    outerClass.get()?.roomId,
+                                    "",
+                                    false
+                                )
+                            )
+                        }
                         else -> {
                             println("handleMessage missing type!!")
                         }
