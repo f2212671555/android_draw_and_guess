@@ -177,8 +177,12 @@ class PaintActivity : AppCompatActivity() {
             llStartGame.visibility = View.VISIBLE
             val btnStartGame: Button = findViewById(R.id.btn_game_start)
             btnStartGame.setOnClickListener {
-                llStartGame.visibility = View.GONE
-                getDrawTopic()
+                if (userListAdapter.itemCount > 1) {
+                    llStartGame.visibility = View.GONE
+                    getDrawTopic()
+                } else {
+                    Toast.makeText(this, "人數還不夠喔!!", Toast.LENGTH_SHORT).show()
+                }
             }
         } else {
         }
@@ -525,7 +529,7 @@ class PaintActivity : AppCompatActivity() {
 
     }
 
-    fun addChatCardView(messageBean: MessageBean) {
+    fun addChatCardView(messageBean: MessageBean, text: String) {
         println(messageBean)
         val llChat: LinearLayout = findViewById(R.id.ll_chat)
         val params = LinearLayout.LayoutParams(
@@ -543,8 +547,6 @@ class PaintActivity : AppCompatActivity() {
             topMargin = 10.dp
             rightMargin = 20.dp
         }
-
-        val text = "${messageBean.userName} : ${messageBean.message}"
 
         val cardView = CardView(this)
         cardView.radius = 10.dp.toFloat()
@@ -564,16 +566,23 @@ class PaintActivity : AppCompatActivity() {
                         "startDraw" -> {
                             // 拿答案..
                             outerClass.get()?.getDrawTopicDetail()
+                            // 這回合換其他人畫
+                            outerClass.get()?.tvMessage?.append("這回合換${messageBean.userName}畫畫喔~")
                         }
                         "nextDraw" -> {
+                            // 這回合換你畫畫
                             // 當大家都倒數完之後，會發請求(ready)
                             // 當大家伺服器的狀態都是ready
                             // 發請求開始下一題
+                            outerClass.get()?.tvMessage?.append("這回合換你畫畫喔~")
                             outerClass.get()?.getDrawTopic()
                         }
                         "chat" -> {
                             //某某人聊天
-                            outerClass.get()?.addChatCardView(messageBean)
+                            outerClass.get()?.addChatCardView(
+                                messageBean,
+                                "${messageBean.userName} : ${messageBean.message}"
+                            )
                         }
                         "answer" -> {
                             //某某人猜答案
@@ -581,10 +590,14 @@ class PaintActivity : AppCompatActivity() {
                         }
                         "join" -> {
                             //某某人加入房間
+                            outerClass.get()
+                                ?.addChatCardView(messageBean, "${messageBean.userName} 加入了喔!!")
                             outerClass.get()?.modifyUserList(messageBean)
                         }
                         "quit" -> {
                             //某某人離開房間
+                            outerClass.get()
+                                ?.addChatCardView(messageBean, "${messageBean.userName} 離開了喔!!")
                             outerClass.get()?.modifyUserList(messageBean)
                         }
                         "roomQuit" -> {

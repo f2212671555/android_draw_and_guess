@@ -82,7 +82,14 @@
                 android:background="@drawable/gray_color"
                 android:orientation="vertical"
                 android:visibility="gone">
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="等待中" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="等待其他玩家..." />
                 <Button
                     android:id="@+id/btn_game_start"
                     android:layout_width="wrap_content"
