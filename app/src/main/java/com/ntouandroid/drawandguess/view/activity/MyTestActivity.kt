@@ -28,6 +28,8 @@ class MyTestActivity : AppCompatActivity() {
     lateinit var btnJoinRoom: Button
     lateinit var etJoinRoom: EditText
 
+    lateinit var btnPause:Button
+    lateinit var btnCancel: Button
     lateinit var progressBar: ProgressBar
     var isAnimatingUpdatingDelayed: Boolean = false
     lateinit var mTimer: GameTimer
@@ -44,6 +46,8 @@ class MyTestActivity : AppCompatActivity() {
         btnJoinRoom = findViewById(R.id.btn_joinRoom)
         etJoinRoom = findViewById(R.id.et_joinRoom)
         progressBar = findViewById(R.id.pb_timer)
+        btnCancel = findViewById(R.id.btn_cancel)
+        btnPause = findViewById(R.id.btn_pause)
 
         tvTestRoomList.movementMethod = ScrollingMovementMethod()
         btnTestPaint.setOnClickListener { goTestPaintBtn() }
@@ -51,19 +55,24 @@ class MyTestActivity : AppCompatActivity() {
         btnJoinRoom.setOnClickListener { joinRoom() }
         //loadingRoomList()
 
+        btnPause.setOnClickListener { mTimer.stopTimer() }
 
-        val timeSec = 5f //time設定幾秒
+        btnCancel.setOnClickListener {
+            progressBar.progress = 0
+
+            mTimer.cancelTimer()
+
+        }
+
+        val timeSec = 60f //time設定幾秒
 
         mTimer = GameTimer(object :
             GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-//                println(mTimer.secondsCount * 100)
-//                println("計時器進度條跳一次")
                 update(-1, (mTimer.secondsCount * 100).toInt())
             }
 
             override fun timesUp() {
-//                println("計時器進度條停止")
             }
 
         })

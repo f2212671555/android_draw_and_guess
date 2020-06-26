@@ -17,6 +17,7 @@ import com.ntouandroid.drawandguess.utils.internet.InternetJudge
 import com.ntouandroid.drawandguess.utils.UIControl.UIHandler
 import com.ntouandroid.drawandguess.utils.notification.ClockBean
 import com.ntouandroid.drawandguess.utils.notification.NotificationUtil
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,12 +41,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         UIHandler.setStatusBarColor(this)
+        //bt_Test = findViewById(R.id.bt_test)
 
         Bt_Start = findViewById(R.id.button_start)
         Et_Name = findViewById(R.id.Et_Name)
         initNotification()
 
         Et_Name.filters = arrayOf(NameInputFilter())
+        //bt_Test.setOnClickListener{
+        //    btntestclick()
+        //}
         Bt_Start.setOnClickListener {
             if (InternetJudge.isInternetAvailable(this)) {
                 nextpagecheck()
@@ -136,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun btn_test_click() {
+    private fun btntestclick() {
         var intent = Intent(this@MainActivity, MyTestActivity::class.java)
         startActivity(intent)
     }

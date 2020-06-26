@@ -677,6 +677,7 @@ class PaintActivity : AppCompatActivity() {
     在畫畫開始前，就控制UI
     鎖大家的畫布、和答題EditView
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initUIControl() {
         userMode =
             INIT_MODE
@@ -689,6 +690,7 @@ class PaintActivity : AppCompatActivity() {
     開啟要畫畫的人的畫布，鎖不用畫畫的人的畫布
     開啟不用畫畫的人的答題EditView，鎖要畫畫的人的答題EditView
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun drawStartUIControl() {
         if (userMode == ANSWER_MODE) {
             paintB.setUserMode(ANSWER_MODE)
@@ -707,6 +709,7 @@ class PaintActivity : AppCompatActivity() {
         etMessage.isEnabled = false
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startDraw() {
         // 控制/鎖住 UI
         drawStartUIControl()
@@ -715,6 +718,7 @@ class PaintActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getDrawTopicDetail() {
         /* 跟 myRepository.startDraw(roomId)的差別 在於 不會指派 畫畫
          一樣會回傳題目 目前畫畫 下個畫畫的人
@@ -823,13 +827,11 @@ class PaintActivity : AppCompatActivity() {
         mTimer = GameTimer(object :
             GameTimer.TimerBarController {
             override fun timerOnUpdate() {
-//                println(mTimer.secondsCount * 100)
-//                println("計時器進度條跳一次")
                 update(-1, (mTimer!!.secondsCount * 100).toInt())
             }
 
+            @RequiresApi(Build.VERSION_CODES.O)
             override fun timesUp() {
-//                println("計時器進度條停止")
                 // 清空畫布
                 backgroundClean()
                 // 控制/鎖住 UI
@@ -878,5 +880,10 @@ class PaintActivity : AppCompatActivity() {
         mTimer!!.secondsCount = timeSec
         mTimer!!.maxTimeInSeconds = timeSec
         mTimer!!.startTimer()
+    }
+
+    private fun cancelTimer(){
+        progressBar.progress = 0
+        mTimer!!.cancelTimer()
     }
 }

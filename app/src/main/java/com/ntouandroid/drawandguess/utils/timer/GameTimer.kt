@@ -11,6 +11,8 @@ class GameTimer(private var timerBarController: TimerBarController){
     var secondsCount = 40f
     var maxTimeInSeconds = secondsCount
     var isOnStart = false
+    var isCancel = false
+
     private var stopTimer = false
 
     private lateinit var timerThread: Thread
@@ -22,7 +24,7 @@ class GameTimer(private var timerBarController: TimerBarController){
             isOnStart = true
 
             timerThread = Thread{
-                while(secondsCount>=0 && !stopTimer){
+                while(secondsCount>=0 && !stopTimer && !isCancel){
                     Thread.sleep(10) // 0.01 second
                     secondsCount -= 0.01f
                 }
@@ -32,6 +34,7 @@ class GameTimer(private var timerBarController: TimerBarController){
                         stopTimer()
                     }
                 }
+                isCancel = false
                 println("timer thread end")
             }
 
@@ -53,6 +56,6 @@ class GameTimer(private var timerBarController: TimerBarController){
     }
 
     fun cancelTimer() {
-
+        isCancel = true
     }
 }
