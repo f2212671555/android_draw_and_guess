@@ -566,15 +566,19 @@ class PaintActivity : AppCompatActivity() {
                         "startDraw" -> {
                             // 拿答案..
                             outerClass.get()?.getDrawTopicDetail()
-                            // 這回合換其他人畫
-                            outerClass.get()?.tvMessage?.append("這回合換${messageBean.userName}畫畫喔~")
+                            val text =
+                                if (messageBean.userName == outerClass.get()?.userId) {// 這回合換你畫畫
+                                    "這回合換你畫畫喔~\n"
+                                } else {// 這回合換其他人畫
+                                    "這回合換${messageBean.userName}畫畫喔~\n"
+                                }
+                            outerClass.get()?.tvMessage?.append(text)
                         }
                         "nextDraw" -> {
                             // 這回合換你畫畫
                             // 當大家都倒數完之後，會發請求(ready)
                             // 當大家伺服器的狀態都是ready
                             // 發請求開始下一題
-                            outerClass.get()?.tvMessage?.append("這回合換你畫畫喔~")
                             outerClass.get()?.getDrawTopic()
                         }
                         "chat" -> {
@@ -587,6 +591,10 @@ class PaintActivity : AppCompatActivity() {
                         "answer" -> {
                             //某某人猜答案
                             outerClass.get()?.checkAndSetAnswer(messageBean)
+                        }
+                        "gameRoundEnd"->{
+                            // 大家都答對了
+                            outerClass.get()?.mTimer?.cancelTimer()
                         }
                         "join" -> {
                             //某某人加入房間
