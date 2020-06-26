@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.view
+package com.ntouandroid.drawandguess.view.activity
 
 import android.app.ProgressDialog
 import android.content.Intent

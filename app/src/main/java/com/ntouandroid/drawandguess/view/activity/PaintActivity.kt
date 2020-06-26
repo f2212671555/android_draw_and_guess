@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.view
+package com.ntouandroid.drawandguess.view.activity
 
 import android.app.Dialog
 import android.content.ClipData
@@ -67,7 +67,7 @@ class PaintActivity : AppCompatActivity() {
     private var myRoomWebSocketListener: RoomWebSocketListener? = null
     lateinit var paintB: PaintBoard
     var eraserMode = false
-    lateinit var mTimer: GameTimer
+    private var mTimer: GameTimer? = null
 
     private var roomId: String = ""
     private var roomName: String = ""
@@ -158,7 +158,8 @@ class PaintActivity : AppCompatActivity() {
         llDrawTopicAnswer = findViewById(R.id.ll_draw_topic_answer)
         val btnDrawTopic: Button = findViewById(R.id.btn_draw_topic)
         btnDrawTopic.setOnClickListener {
-            userMode = DRAW_MODE
+            userMode =
+                DRAW_MODE
             llDrawTopic.visibility = View.GONE
             myRoomWebSocketListener!!.sendMessage(
                 MessageBean(
@@ -259,7 +260,9 @@ class PaintActivity : AppCompatActivity() {
             )
         val outerClass = WeakReference(this)
         val myHandler =
-            MyHandler(outerClass)
+            MyHandler(
+                outerClass
+            )
 
         MyWebSocket.createRoomWebSocket(myRoomWebSocketListener!!, roomId, userId)
 
@@ -484,6 +487,7 @@ class PaintActivity : AppCompatActivity() {
         builder.setTitle(title)
         builder.setMessage(message)
         builder.setPositiveButton("確認") { dialog, whichButton ->
+            Toast.makeText(this, "離開房間~", Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -511,7 +515,7 @@ class PaintActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         println("onDestroy")
-        Toast.makeText(this, "離開房間~", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "離開房間~", Toast.LENGTH_SHORT).show()
         // 倒數 後 退出房間
         // close webSocket 觸發 退出房間
         paintB.closeWebSocket()
@@ -583,9 +587,18 @@ class PaintActivity : AppCompatActivity() {
                             //某某人離開房間
                             outerClass.get()?.modifyUserList(messageBean)
                         }
+                        "roomQuit" -> {
+                            //房間關閉
+                            Toast.makeText(
+                                outerClass.get()?.getMyContext(),
+                                "房間關閉了喔~",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            outerClass.get()?.finish()
+                        }
                         "gameStop" -> {
                             //畫圖的人離開房間
-                            outerClass.get()?.mTimer?.stopTimer()
+                            outerClass.get()?.mTimer?.cancelTimer()
                             // 準備下一題
                             // 跟server說你ready了
                             outerClass.get()?.myRoomWebSocketListener?.sendMessage(
@@ -791,7 +804,7 @@ class PaintActivity : AppCompatActivity() {
             override fun timerOnUpdate() {
 //                println(mTimer.secondsCount * 100)
 //                println("計時器進度條跳一次")
-                update(-1, (mTimer.secondsCount * 100).toInt())
+                update(-1, (mTimer!!.secondsCount * 100).toInt())
             }
 
             override fun timesUp() {
@@ -804,11 +817,11 @@ class PaintActivity : AppCompatActivity() {
                 showAnswer(6.toFloat())
             }
         })
-        mTimer.secondsCount = timeSec
-        mTimer.maxTimeInSeconds = timeSec
+        mTimer!!.secondsCount = timeSec
+        mTimer!!.maxTimeInSeconds = timeSec
         progressBar.max = (timeSec * 100).toInt()
         progressBar.progress = (timeSec * 100).toInt()
-        mTimer.startTimer()
+        mTimer!!.startTimer()
     }
 
     private fun update(progressIncrement: Int, trueProgress: Int) {
@@ -841,8 +854,8 @@ class PaintActivity : AppCompatActivity() {
                 )
             }
         })
-        mTimer.secondsCount = timeSec
-        mTimer.maxTimeInSeconds = timeSec
-        mTimer.startTimer()
+        mTimer!!.secondsCount = timeSec
+        mTimer!!.maxTimeInSeconds = timeSec
+        mTimer!!.startTimer()
     }
 }

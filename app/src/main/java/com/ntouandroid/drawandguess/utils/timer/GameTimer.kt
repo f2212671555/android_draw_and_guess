@@ -51,4 +51,8 @@ class GameTimer(private var timerBarController: TimerBarController){
         isOnStart = false
         handlerUI.removeCallbacks(runnable)
     }
+
+    fun cancelTimer() {
+
+    }
 }

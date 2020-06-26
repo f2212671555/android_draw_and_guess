@@ -1,4 +1,4 @@
-package com.ntouandroid.drawandguess.view
+package com.ntouandroid.drawandguess.view.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

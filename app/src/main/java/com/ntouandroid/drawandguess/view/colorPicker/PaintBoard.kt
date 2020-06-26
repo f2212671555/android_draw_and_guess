@@ -14,10 +14,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.drawtest.ColorPaintBean
-import com.ntouandroid.drawandguess.model.bean.PaintBoardDrawBean
 import com.ntouandroid.drawandguess.model.service.MyWebSocket
 import com.ntouandroid.drawandguess.model.webSocket.DrawWebSocketListener
-import com.ntouandroid.drawandguess.view.PaintActivity
+import com.ntouandroid.drawandguess.view.activity.PaintActivity
 import java.io.ByteArrayOutputStream
 import java.lang.ref.WeakReference
 
@@ -46,7 +45,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         // bitmap
         mWidth = width
         mHeight = height
-        bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
+        bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.RGB_565)
 
         // Canvas                   畫布
         mCanvas = Canvas(bitmap!!)
@@ -61,10 +60,6 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         paint?.color = Color.rgb(r, g, b)
         paint?.strokeWidth = 10f
 
-//        paint?.isAntiAlias = true;//抗锯齿功能
-//        paint?.style = Paint.Style.FILL;//设置填充样式，Style.STOKE 为空心
-        //paint.setStrokeWidth(30);//设置画笔宽度
-        //paint.setShadowLayer(10, 15, 15, Color.GREEN);//设置阴影
         invalidate()
         return this
     }
@@ -89,7 +84,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun cleanBackground() {
         println("cleanBackground")
-        bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888)
+        bitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.RGB_565)
         mCanvas = Canvas(bitmap!!)
         mCanvas?.drawColor(Color.argb(255, 0, 0, 0))
         sendDrawToServer()
@@ -123,8 +118,13 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     }
 
+    private var count = 0
     private fun sendDrawToServer() {
-        myDrawWebSocketListener?.getWebSocket()?.send(convertBitmapToString(bitmap))
+        Thread{
+            val str = convertBitmapToString(bitmap)
+            myDrawWebSocketListener?.getWebSocket()?.send(str)
+            Thread.sleep(10)
+        }.start()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -153,7 +153,6 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
                     startY = event.y
 
                     invalidate()
-
                     sendDrawToServer()
                 }
             }
@@ -178,6 +177,7 @@ class PaintBoard(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if (mCanvas != null && paint != null && bitmap != null) {
             mCanvas?.drawBitmap(bitmap, 0f, 0f, paint)
             invalidate()
+            bitmap.recycle()
         }
     }
 

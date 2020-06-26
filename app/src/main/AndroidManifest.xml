@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.JoinRoomByAppLinkActivity">
+        <activity android:name=".view.activity.JoinRoomByAppLinkActivity">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,13 +36,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.StartActivity" />
+        <activity android:name=".view.activity.StartActivity" />
         <activity
-            android:name=".view.CreateRoomActivity"
+            android:name=".view.activity.CreateRoomActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".view.JoinRoomActivity" />
-        <activity android:name=".view.PaintActivity" />
-        <activity android:name=".view.MyTestActivity" />
+        <activity android:name=".view.activity.JoinRoomActivity" />
+        <activity android:name=".view.activity.PaintActivity" />
+        <activity android:name=".view.activity.MyTestActivity" />
         <receiver
             android:name=".utils.notification.Receiver"
             android:enabled="true"

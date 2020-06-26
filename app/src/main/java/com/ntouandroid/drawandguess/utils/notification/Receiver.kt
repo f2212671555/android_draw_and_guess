@@ -9,7 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.ntouandroid.drawandguess.view.MainActivity
+import com.ntouandroid.drawandguess.view.activity.MainActivity
 import com.ntouandroid.drawandguess.R
 
 class Receiver : BroadcastReceiver() {
